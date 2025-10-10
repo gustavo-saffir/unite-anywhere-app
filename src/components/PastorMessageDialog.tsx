@@ -14,11 +14,45 @@ interface PastorMessageDialogProps {
 const PastorMessageDialog = ({ devotionalId, onClose }: PastorMessageDialogProps) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [pastorInfo, setPastorInfo] = useState<{ name: string; position: string } | null>(null);
   const { toast } = useToast();
 
-  // Por enquanto, vamos usar um ID fixo de pastor (você mencionou que será Gustavo Saffir inicialmente)
-  // No futuro, isso virá do perfil do usuário linkado ao pastor/líder
-  const PASTOR_ID = 'pastor-default-id'; // Temporário - será substituído pela lógica real
+  // Buscar informações do pastor/líder ao montar o componente
+  useState(() => {
+    const loadPastorInfo = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        // Buscar o pastor_id e informações do pastor
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('pastor_id')
+          .eq('id', user.id)
+          .single();
+
+        if (profile?.pastor_id) {
+          // Buscar informações do pastor/líder
+          const { data: pastorData } = await supabase
+            .from('profiles')
+            .select('full_name, position')
+            .eq('id', profile.pastor_id)
+            .single();
+
+          if (pastorData) {
+            setPastorInfo({
+              name: pastorData.full_name,
+              position: pastorData.position === 'pastor' ? 'Pastor' : 'Líder'
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error loading pastor info:', error);
+      }
+    };
+
+    loadPastorInfo();
+  });
 
   const sendMessage = async () => {
     if (!message.trim() || loading) return;
@@ -83,7 +117,9 @@ const PastorMessageDialog = ({ devotionalId, onClose }: PastorMessageDialogProps
       <div className="flex items-center justify-between p-4 border-b border-border bg-gradient-celestial">
         <div className="flex items-center gap-2">
           <MessageCircle className="w-5 h-5 text-primary-foreground" />
-          <h3 className="font-semibold text-primary-foreground">Mensagem ao Pastor</h3>
+          <h3 className="font-semibold text-primary-foreground">
+            Mensagem ao {pastorInfo?.position || 'Líder'}
+          </h3>
         </div>
         <Button
           variant="ghost"
@@ -99,10 +135,14 @@ const PastorMessageDialog = ({ devotionalId, onClose }: PastorMessageDialogProps
       <div className="p-6 space-y-4">
         <div className="text-sm text-muted-foreground space-y-2">
           <p>
-            Envie uma mensagem para <strong>Pastor Gustavo Saffir</strong> sobre este devocional.
+            Envie uma mensagem {pastorInfo ? (
+              <>ao <strong>{pastorInfo.position} {pastorInfo.name}</strong></>
+            ) : (
+              'ao seu líder'
+            )} sobre este devocional.
           </p>
           <p className="text-xs">
-            Ele receberá uma notificação e poderá responder diretamente no app.
+            {pastorInfo?.position === 'Pastor' ? 'Ele' : 'Ela'} receberá uma notificação e poderá responder diretamente no app.
           </p>
         </div>
 

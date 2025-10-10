@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,6 +33,39 @@ const Devotional = () => {
   const [saving, setSaving] = useState(false);
   const [showAIChat, setShowAIChat] = useState(false);
   const [showPastorDialog, setShowPastorDialog] = useState(false);
+  const [pastorPosition, setPastorPosition] = useState<string>('Pastor');
+
+  // Buscar informações do pastor/líder
+  useEffect(() => {
+    const loadPastorPosition = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('pastor_id')
+          .eq('id', user.id)
+          .single();
+
+        if (profile?.pastor_id) {
+          const { data: pastorData } = await supabase
+            .from('profiles')
+            .select('position')
+            .eq('id', profile.pastor_id)
+            .single();
+
+          if (pastorData) {
+            setPastorPosition(pastorData.position === 'pastor' ? 'Pastor' : 'Líder');
+          }
+        }
+      } catch (error) {
+        console.error('Error loading pastor position:', error);
+      }
+    };
+
+    loadPastorPosition();
+  }, []);
 
   const handleComplete = async () => {
     if (!reflection || !application) {
@@ -479,7 +513,7 @@ const Devotional = () => {
             onClick={() => setShowPastorDialog(true)}
           >
             <MessageCircle className="w-4 h-4 mr-2" />
-            Perguntar ao Pastor Gustavo
+            Perguntar ao {pastorPosition}
           </Button>
         </div>
 
