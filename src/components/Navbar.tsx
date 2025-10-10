@@ -29,10 +29,10 @@ const Navbar = () => {
             <a href="#planos" className="text-foreground hover:text-primary transition-colors font-medium">
               Planos
             </a>
-            <Button variant="outline" className="border-primary/30">
-              Entrar
+            <Button variant="outline" className="border-primary/30" asChild>
+              <Link to="/auth">Entrar</Link>
             </Button>
-            <Link to="/dashboard">
+            <Link to="/auth">
               <Button className="bg-gradient-celestial hover:opacity-90 shadow-celestial">
                 Começar Grátis
               </Button>
@@ -61,10 +61,10 @@ const Navbar = () => {
               Planos
             </a>
             <div className="flex flex-col gap-2 pt-2">
-              <Button variant="outline" className="w-full border-primary/30">
-                Entrar
+              <Button variant="outline" className="w-full border-primary/30" asChild>
+                <Link to="/auth">Entrar</Link>
               </Button>
-              <Link to="/dashboard" className="w-full">
+              <Link to="/auth" className="w-full">
                 <Button className="w-full bg-gradient-celestial hover:opacity-90 shadow-celestial">
                   Começar Grátis
                 </Button>

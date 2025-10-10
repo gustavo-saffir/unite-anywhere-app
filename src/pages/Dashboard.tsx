@@ -9,17 +9,30 @@ import {
   Calendar,
   CheckCircle2,
   Sparkles,
-  MessageCircle
+  MessageCircle,
+  LogOut,
+  Shield
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import bibleIcon from "@/assets/bible-icon.jpg";
+import { useAuth } from "@/hooks/useAuth";
 
 const Dashboard = () => {
+  const { user, signOut, isAdmin } = useAuth();
+  const navigate = useNavigate();
+  
   const today = new Date().toLocaleDateString('pt-BR', { 
     weekday: 'long', 
     day: 'numeric', 
     month: 'long' 
   });
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
+
+  const userName = user?.user_metadata?.full_name || 'Usuário';
 
   return (
     <div className="min-h-screen bg-gradient-peaceful">
@@ -32,13 +45,24 @@ const Dashboard = () => {
                 <BookOpen className="w-6 h-6 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-foreground">Bem-vindo de volta, João!</h1>
+                <h1 className="text-xl font-bold text-foreground">Bem-vindo de volta, {userName}!</h1>
                 <p className="text-sm text-muted-foreground">{today}</p>
               </div>
             </div>
-            <Button variant="outline" className="border-primary/30">
-              Ver Perfil
-            </Button>
+            <div className="flex gap-2">
+              {isAdmin && (
+                <Button variant="outline" className="border-primary/30" asChild>
+                  <Link to="/admin">
+                    <Shield className="w-4 h-4 mr-2" />
+                    Admin
+                  </Link>
+                </Button>
+              )}
+              <Button variant="outline" className="border-primary/30" onClick={handleSignOut}>
+                <LogOut className="w-4 h-4 mr-2" />
+                Sair
+              </Button>
+            </div>
           </div>
         </div>
       </header>
