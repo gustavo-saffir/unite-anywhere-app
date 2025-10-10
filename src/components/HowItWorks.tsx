@@ -4,8 +4,8 @@ import growthImage from "@/assets/growth-journey.jpg";
 const steps = [
   {
     number: "01",
-    title: "Cadastre-se Grátis",
-    description: "Crie sua conta em menos de 1 minuto. Sem cartão de crédito, sem compromisso. Comece seu teste de 30 dias imediatamente.",
+    title: "Cadastre-se",
+    description: "Crie sua conta em menos de 1 minuto e comece sua jornada de crescimento espiritual hoje mesmo.",
   },
   {
     number: "02",
@@ -59,7 +59,7 @@ const HowItWorks = () => {
 
           <div className="mt-12 text-center p-6 rounded-2xl bg-gradient-peaceful border border-border/50">
             <p className="text-lg text-muted-foreground">
-              <strong className="text-primary">95% dos usuários</strong> relatam crescimento espiritual real nos primeiros 30 dias
+              <strong className="text-primary">95% dos usuários</strong> relatam crescimento espiritual consistente com a prática diária
             </p>
           </div>
         </div>

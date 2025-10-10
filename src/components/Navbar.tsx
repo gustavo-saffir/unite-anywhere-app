@@ -22,7 +22,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-4">
             <Link to="/auth">
               <Button className="bg-gradient-celestial hover:opacity-90 shadow-celestial text-base px-6">
-                Cadastrar Grátis
+                Criar Conta
               </Button>
             </Link>
           </div>
@@ -41,7 +41,7 @@ const Navbar = () => {
           <div className="md:hidden py-4 border-t border-border/50">
             <Link to="/auth" className="w-full">
               <Button className="w-full bg-gradient-celestial hover:opacity-90 shadow-celestial">
-                Cadastrar Grátis
+                Criar Conta
               </Button>
             </Link>
           </div>
