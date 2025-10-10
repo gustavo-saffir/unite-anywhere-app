@@ -206,6 +206,28 @@ const Dashboard = () => {
               </Button>
             </Card>
 
+            {/* Mensagens do Pastor/Líder */}
+            {userPosition === 'discipulo' && (
+              <Card className="p-6 bg-gradient-to-br from-secondary/5 to-accent/5 border-secondary/20">
+                <div className="flex items-center gap-2 mb-3">
+                  <MessageCircle className="w-5 h-5 text-secondary" />
+                  <h3 className="text-lg font-semibold text-foreground">Mensagens</h3>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Veja as respostas do seu pastor/líder às suas perguntas sobre os devocionais.
+                </p>
+                <Button 
+                  variant="outline" 
+                  className="w-full border-secondary/30"
+                  asChild
+                >
+                  <Link to="/my-messages">
+                    Ver Minhas Mensagens
+                  </Link>
+                </Button>
+              </Card>
+            )}
+
             {/* Recent Badges */}
             <Card className="p-6">
               <h3 className="text-lg font-semibold text-foreground mb-4">Conquistas Recentes</h3>

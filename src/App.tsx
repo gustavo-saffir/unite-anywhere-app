@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import PastorPanel from "./pages/PastorPanel";
 import ManageUsers from "./pages/ManageUsers";
+import MyMessages from "./pages/MyMessages";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -61,6 +62,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <PastorPanel />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/my-messages" 
+            element={
+              <ProtectedRoute>
+                <MyMessages />
               </ProtectedRoute>
             } 
           />
