@@ -126,7 +126,13 @@ const PastorPanel = () => {
         .update({ status: 'read' })
         .eq('id', messageId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error marking as read:', error);
+        throw error;
+      }
+      
+      // Recarregar mensagens para atualizar a interface
+      await loadMessages();
     } catch (error) {
       console.error('Error marking as read:', error);
     }
@@ -146,6 +152,9 @@ const PastorPanel = () => {
 
     setSending(true);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Usuário não autenticado');
+
       const { error } = await supabase
         .from('pastor_messages')
         .update({
@@ -153,9 +162,13 @@ const PastorPanel = () => {
           status: 'responded',
           responded_at: new Date().toISOString(),
         })
-        .eq('id', selectedMessage.id);
+        .eq('id', selectedMessage.id)
+        .eq('pastor_id', user.id); // Adicionar verificação do pastor_id
 
-      if (error) throw error;
+      if (error) {
+        console.error('Update error details:', error);
+        throw error;
+      }
 
       toast({
         title: 'Resposta enviada!',
