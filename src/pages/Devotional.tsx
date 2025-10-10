@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,73 +10,22 @@ import {
   Share2,
   ArrowLeft,
   Sparkles,
-  MessageCircle
+  MessageCircle,
+  AlertCircle
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { useDevotional } from "@/hooks/useDevotional";
 import bibleIcon from "@/assets/bible-icon.jpg";
-
-interface DevotionalData {
-  id: string;
-  date: string;
-  verse_reference: string;
-  verse_text: string;
-  reflection_question: string;
-  application_question: string;
-}
 
 const Devotional = () => {
   const { toast } = useToast();
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { devotional, loading, error, saveProgress } = useDevotional();
   const [step, setStep] = useState(1);
   const [reflection, setReflection] = useState("");
   const [application, setApplication] = useState("");
   const [completed, setCompleted] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [devotional, setDevotional] = useState<DevotionalData | null>(null);
-
-  useEffect(() => {
-    loadTodayDevotional();
-  }, []);
-
-  const loadTodayDevotional = async () => {
-    setLoading(true);
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      
-      const { data, error } = await supabase
-        .from('devotionals')
-        .select('*')
-        .eq('date', today)
-        .maybeSingle();
-
-      if (error) throw error;
-
-      if (!data) {
-        toast({
-          title: "Devocional não disponível",
-          description: "Ainda não há devocional para hoje. Voltando ao dashboard...",
-          variant: "destructive",
-        });
-        setTimeout(() => navigate('/dashboard'), 2000);
-        return;
-      }
-
-      setDevotional(data);
-    } catch (error: any) {
-      toast({
-        title: "Erro ao carregar devocional",
-        description: error.message,
-        variant: "destructive",
-      });
-      setTimeout(() => navigate('/dashboard'), 2000);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [saving, setSaving] = useState(false);
 
   const handleComplete = async () => {
     if (!reflection || !application) {
@@ -88,29 +37,29 @@ const Devotional = () => {
       return;
     }
 
-    if (!user || !devotional) return;
+    if (!devotional) {
+      toast({
+        title: "Erro",
+        description: "Devocional não encontrado.",
+        variant: "destructive",
+      });
+      return;
+    }
 
-    try {
-      const { error } = await supabase
-        .from('user_devotionals')
-        .insert({
-          user_id: user.id,
-          devotional_id: devotional.id,
-          reflection,
-          application,
-        });
+    setSaving(true);
+    const result = await saveProgress(devotional.id, reflection, application);
+    setSaving(false);
 
-      if (error) throw error;
-
+    if (result.success) {
       setCompleted(true);
       toast({
         title: "🎉 Devocional Completado!",
         description: "+50 pontos de experiência. Continue sua jornada!",
       });
-    } catch (error: any) {
+    } else {
       toast({
-        title: "Erro ao salvar progresso",
-        description: error.message,
+        title: "Erro ao salvar",
+        description: result.error || "Tente novamente.",
         variant: "destructive",
       });
     }
@@ -130,8 +79,25 @@ const Devotional = () => {
     );
   }
 
-  if (!devotional) {
-    return null;
+  if (error || !devotional) {
+    return (
+      <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center p-4">
+        <Card className="max-w-md w-full p-8 text-center space-y-4">
+          <div className="w-16 h-16 rounded-full bg-muted mx-auto flex items-center justify-center">
+            <AlertCircle className="w-8 h-8 text-muted-foreground" />
+          </div>
+          <h2 className="text-2xl font-bold text-foreground">Devocional Não Disponível</h2>
+          <p className="text-muted-foreground">
+            {error || "Ainda não há um devocional cadastrado para hoje. Entre em contato com o administrador."}
+          </p>
+          <Link to="/dashboard">
+            <Button className="w-full bg-gradient-celestial hover:opacity-90">
+              Voltar ao Dashboard
+            </Button>
+          </Link>
+        </Card>
+      </div>
+    );
   }
 
   if (completed) {
@@ -239,7 +205,9 @@ const Devotional = () => {
           <Card className="p-8 shadow-celestial space-y-6">
             <div>
               <h2 className="text-2xl font-bold text-foreground mb-3">Reflexão Guiada</h2>
-              <p className="text-muted-foreground">{devotional.reflection_question}</p>
+              <p className="text-muted-foreground">
+                {devotional.reflection_question}
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -279,13 +247,8 @@ const Devotional = () => {
             <div>
               <h2 className="text-2xl font-bold text-foreground mb-3">Aplicação Prática</h2>
               <p className="text-muted-foreground">
-                A fé sem ação é morta. Vamos transformar o que aprendemos em passos práticos para hoje.
+                {devotional.application_question}
               </p>
-            </div>
-
-            <div className="bg-gradient-to-br from-accent/5 to-accent/10 rounded-xl p-6 border border-accent/20">
-              <h3 className="font-semibold text-foreground mb-3">Desafio do Dia:</h3>
-              <p className="text-muted-foreground">{devotional.application_question}</p>
             </div>
 
             <div className="space-y-2">
@@ -365,9 +328,10 @@ const Devotional = () => {
                 onClick={handleComplete} 
                 className="flex-1 bg-gradient-divine hover:opacity-90 shadow-divine"
                 size="lg"
+                disabled={saving}
               >
                 <CheckCircle2 className="w-5 h-5 mr-2" />
-                Completar Devocional
+                {saving ? 'Salvando...' : 'Completar Devocional'}
               </Button>
             </div>
           </Card>
