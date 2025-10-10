@@ -122,11 +122,11 @@ const Devotional = () => {
               <div className="text-sm text-muted-foreground">XP Ganho</div>
             </div>
             <div className="p-4 rounded-lg bg-secondary/10">
-              <div className="text-2xl font-bold text-secondary">46</div>
+              <div className="text-2xl font-bold text-secondary">1</div>
               <div className="text-sm text-muted-foreground">Dias Seguidos</div>
             </div>
             <div className="p-4 rounded-lg bg-accent/10">
-              <div className="text-2xl font-bold text-accent">Nível 5</div>
+              <div className="text-2xl font-bold text-accent">Nível 1</div>
               <div className="text-sm text-muted-foreground">Seu Nível</div>
             </div>
           </div>
