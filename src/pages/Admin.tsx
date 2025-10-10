@@ -231,34 +231,94 @@ const Admin = () => {
             </form>
           </Card>
 
-          {/* List Column */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-4">
-              <Calendar className="w-5 h-5 text-primary" />
-              <h2 className="text-xl font-bold text-foreground">Devocionais Recentes</h2>
-            </div>
+          {/* Preview & List Column */}
+          <div className="space-y-6">
+            {/* Preview Section */}
+            <Card className="p-6 shadow-celestial">
+              <div className="flex items-center gap-2 mb-4">
+                <BookOpen className="w-5 h-5 text-primary" />
+                <h2 className="text-xl font-bold text-foreground">Preview do Devocional</h2>
+              </div>
 
-            {devotionals.length === 0 ? (
-              <Card className="p-8 text-center">
-                <p className="text-muted-foreground">Nenhum devocional cadastrado ainda.</p>
-              </Card>
-            ) : (
-              devotionals.map((devotional) => (
-                <Card key={devotional.id} className="p-4 hover:shadow-celestial transition-all">
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <h3 className="font-semibold text-foreground">{devotional.verse_reference}</h3>
+              {!verseReference && !verseText ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  Preencha os campos para ver o preview
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Verse Section */}
+                  <div className="text-center space-y-3 p-4 rounded-lg bg-gradient-peaceful/30">
+                    <h3 className="text-lg font-semibold text-primary">
+                      {verseReference || 'Referência do Versículo'}
+                    </h3>
+                    <p className="text-foreground/90 italic leading-relaxed">
+                      "{verseText || 'Texto do versículo aparecerá aqui...'}"
+                    </p>
+                  </div>
+
+                  {/* Questions Section */}
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-foreground flex items-center gap-2">
+                        💭 Reflexão
+                      </h4>
                       <p className="text-sm text-muted-foreground">
-                        {new Date(devotional.date).toLocaleDateString('pt-BR')}
+                        {reflectionQuestion || 'Pergunta de reflexão aparecerá aqui...'}
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-foreground flex items-center gap-2">
+                        ✨ Aplicação
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        {applicationQuestion || 'Pergunta de aplicação aparecerá aqui...'}
                       </p>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {devotional.verse_text}
-                  </p>
+
+                  {date && (
+                    <div className="text-xs text-muted-foreground text-center pt-4 border-t border-border">
+                      Será publicado em: {new Date(date).toLocaleDateString('pt-BR', { 
+                        day: '2-digit', 
+                        month: 'long', 
+                        year: 'numeric' 
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+            </Card>
+
+            {/* Recent Devotionals List */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-primary" />
+                <h2 className="text-xl font-bold text-foreground">Devocionais Recentes</h2>
+              </div>
+
+              {devotionals.length === 0 ? (
+                <Card className="p-8 text-center">
+                  <p className="text-muted-foreground">Nenhum devocional cadastrado ainda.</p>
                 </Card>
-              ))
-            )}
+              ) : (
+                devotionals.map((devotional) => (
+                  <Card key={devotional.id} className="p-4 hover:shadow-celestial transition-all">
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <h3 className="font-semibold text-foreground">{devotional.verse_reference}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(devotional.date).toLocaleDateString('pt-BR')}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {devotional.verse_text}
+                    </p>
+                  </Card>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </main>
