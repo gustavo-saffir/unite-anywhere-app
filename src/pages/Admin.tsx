@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { BookOpen, Plus, LogOut, Calendar } from 'lucide-react';
+import { BookOpen, Plus, LogOut, Calendar, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { TextEditor } from '@/components/TextEditor';
@@ -168,6 +168,10 @@ const Admin = () => {
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => navigate('/dashboard')}>
                 Dashboard
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/manage-users')}>
+                <Users className="w-4 h-4 mr-2" />
+                Gerenciar Usuários
               </Button>
               <Button variant="outline" onClick={handleSignOut}>
                 <LogOut className="w-4 h-4 mr-2" />

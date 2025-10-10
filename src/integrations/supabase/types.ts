@@ -173,6 +173,7 @@ export type Database = {
           created_at: string
           full_name: string
           id: string
+          pastor_id: string | null
           position: Database["public"]["Enums"]["user_position"]
           updated_at: string
         }
@@ -181,6 +182,7 @@ export type Database = {
           created_at?: string
           full_name: string
           id: string
+          pastor_id?: string | null
           position?: Database["public"]["Enums"]["user_position"]
           updated_at?: string
         }
@@ -189,6 +191,7 @@ export type Database = {
           created_at?: string
           full_name?: string
           id?: string
+          pastor_id?: string | null
           position?: Database["public"]["Enums"]["user_position"]
           updated_at?: string
         }
@@ -252,6 +255,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_user_pastor: {
+        Args: { _user_id: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

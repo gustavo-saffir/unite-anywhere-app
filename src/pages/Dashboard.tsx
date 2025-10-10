@@ -16,6 +16,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import DailyDevotionalCard from "@/components/DailyDevotionalCard";
+import PastorNotifications from "@/components/PastorNotifications";
 
 const Dashboard = () => {
   const { user, signOut, isAdmin } = useAuth();
@@ -58,6 +59,12 @@ const Dashboard = () => {
                   </Link>
                 </Button>
               )}
+              <Button variant="outline" className="border-primary/30" asChild>
+                <Link to="/pastor-panel">
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Painel Pastor
+                </Link>
+              </Button>
               <Button variant="outline" className="border-primary/30" onClick={handleSignOut}>
                 <LogOut className="w-4 h-4 mr-2" />
                 Sair
@@ -189,6 +196,9 @@ const Dashboard = () => {
           </div>
         </div>
       </main>
+      
+      {/* Notificações em tempo real para pastores */}
+      <PastorNotifications />
     </div>
   );
 };

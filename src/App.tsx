@@ -8,6 +8,8 @@ import Dashboard from "./pages/Dashboard";
 import Devotional from "./pages/Devotional";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import PastorPanel from "./pages/PastorPanel";
+import ManageUsers from "./pages/ManageUsers";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -43,6 +45,22 @@ const App = () => (
             element={
               <ProtectedRoute requireAdmin>
                 <Admin />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/manage-users" 
+            element={
+              <ProtectedRoute requireAdmin>
+                <ManageUsers />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/pastor-panel" 
+            element={
+              <ProtectedRoute>
+                <PastorPanel />
               </ProtectedRoute>
             } 
           />

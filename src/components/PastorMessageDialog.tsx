@@ -28,13 +28,30 @@ const PastorMessageDialog = ({ devotionalId, onClose }: PastorMessageDialogProps
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
 
-      // Por enquanto, usando o próprio user.id como pastor_id para teste
-      // No futuro, buscar o pastor_id do perfil do usuário
+      // Buscar o pastor_id do perfil do usuário
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('pastor_id')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) throw profileError;
+      
+      if (!profile?.pastor_id) {
+        toast({
+          title: 'Pastor não configurado',
+          description: 'Você ainda não tem um pastor vinculado ao seu perfil. Entre em contato com o administrador.',
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
+
       const { error } = await supabase
         .from('pastor_messages')
         .insert({
           user_id: user.id,
-          pastor_id: user.id, // Temporário - será substituído
+          pastor_id: profile.pastor_id,
           devotional_id: devotionalId,
           message: message.trim(),
           status: 'pending',
