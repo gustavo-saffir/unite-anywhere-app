@@ -1,10 +1,10 @@
-import { BookOpen, Mail, Instagram, Facebook, Youtube } from "lucide-react";
+import { BookOpen, Mail, Instagram } from "lucide-react";
 
 const Footer = () => {
   return (
     <footer className="bg-muted/30 border-t border-border/50">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
+      <div className="grid md:grid-cols-2 gap-8 mb-8">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -18,30 +18,15 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Contact */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">Contato</h3>
-            <ul className="space-y-2">
-              <li><a href="mailto:contato@caminhodiario.com" className="text-sm text-muted-foreground hover:text-primary transition-colors">contato@caminhodiario.com</a></li>
-              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Central de Ajuda</a></li>
-            </ul>
-          </div>
-
           {/* Connect */}
           <div>
             <h3 className="font-semibold text-foreground mb-4">Redes Sociais</h3>
             <div className="flex gap-3">
-              <a href="#" className="w-10 h-10 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center">
+              <a href="mailto:ipvmilagres@gmail.com" className="w-10 h-10 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center">
                 <Mail className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center">
+              <a href="https://www.instagram.com/pr_gustavo__/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center">
                 <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center">
-                <Youtube className="w-5 h-5" />
               </a>
             </div>
           </div>
