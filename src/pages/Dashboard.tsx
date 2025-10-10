@@ -11,6 +11,7 @@ import {
   Sparkles,
   MessageCircle
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import bibleIcon from "@/assets/bible-icon.jpg";
 
 const Dashboard = () => {
@@ -65,10 +66,12 @@ const Dashboard = () => {
                   <p className="text-muted-foreground mb-4">
                     "Se você tiver fé do tamanho de um grão de mostarda..." - Mateus 17:20
                   </p>
-                  <Button className="bg-gradient-celestial hover:opacity-90 shadow-celestial">
-                    <BookOpen className="w-4 h-4 mr-2" />
-                    Iniciar Devocional
-                  </Button>
+                  <Link to="/devotional">
+                    <Button className="bg-gradient-celestial hover:opacity-90 shadow-celestial">
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      Iniciar Devocional
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </Card>
