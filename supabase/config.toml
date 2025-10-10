@@ -2,3 +2,6 @@ project_id = "kxlgecrhypiozlvjkoon"
 
 [functions.ai-mentor-chat]
 verify_jwt = true
+
+[functions.validate-memorization]
+verify_jwt = true

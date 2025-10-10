@@ -13,7 +13,8 @@ import {
   Sparkles,
   MessageCircle,
   AlertCircle,
-  Bot
+  Bot,
+  Loader2
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -36,6 +37,10 @@ const Devotional = () => {
   const [showAIChat, setShowAIChat] = useState(false);
   const [showPastorDialog, setShowPastorDialog] = useState(false);
   const [pastorPosition, setPastorPosition] = useState<string>('Pastor');
+  const [memorization, setMemorization] = useState("");
+  const [memorizationValidated, setMemorizationValidated] = useState(false);
+  const [memorizationScore, setMemorizationScore] = useState(0);
+  const [validatingMemorization, setValidatingMemorization] = useState(false);
 
   // Buscar informações do pastor/líder
   useEffect(() => {
@@ -59,6 +64,49 @@ const Devotional = () => {
     loadPastorPosition();
   }, []);
 
+  const handleValidateMemorization = async () => {
+    if (!devotional || !memorization.trim()) return;
+    
+    setValidatingMemorization(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('validate-memorization', {
+        body: {
+          originalVerse: devotional.verse_text,
+          userVerse: memorization,
+          verseReference: devotional.verse_reference
+        }
+      });
+
+      if (error) throw error;
+
+      setMemorizationValidated(true);
+      setMemorizationScore(data.score);
+      
+      if (data.isValid) {
+        toast({
+          title: "🎉 Memorização validada!",
+          description: `Pontuação: ${data.score}%. ${data.feedback}`,
+        });
+      } else {
+        toast({
+          title: "Continue praticando!",
+          description: `Pontuação: ${data.score}%. ${data.feedback}`,
+          variant: "default",
+        });
+      }
+    } catch (error) {
+      console.error('Error validating memorization:', error);
+      toast({
+        title: "Erro ao validar",
+        description: "Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setValidatingMemorization(false);
+    }
+  };
+
   const handleComplete = async () => {
     if (!reflection || !application) {
       toast({
@@ -79,17 +127,25 @@ const Devotional = () => {
     }
 
     setSaving(true);
-    const progressResult = await saveProgress(devotional.id, reflection, application);
+    const progressResult = await saveProgress(
+      devotional.id, 
+      reflection, 
+      application,
+      memorization,
+      memorizationValidated
+    );
     
     if (progressResult.success && progressResult.isFirstCompletion) {
-      // Only update stats if this is the first completion today
-      const statsResult = await updateStatsAfterDevotional(50);
+      // Calculate XP: 50 base + 25 bonus for validated memorization
+      const xpGained = memorizationValidated ? 75 : 50;
+      const statsResult = await updateStatsAfterDevotional(xpGained);
       
       if (statsResult.success) {
         setCompleted(true);
+        const bonusText = memorizationValidated ? " (+25 XP bônus de memorização!)" : "";
         toast({
           title: "🎉 Devocional Completado!",
-          description: `+50 XP ganhos! Você está no nível ${statsResult.newLevel}`,
+          description: `+${xpGained} XP ganhos! Você está no nível ${statsResult.newLevel}${bonusText}`,
         });
       } else {
         toast({
@@ -114,7 +170,7 @@ const Devotional = () => {
     setSaving(false);
   };
 
-  const totalSteps = 7;
+  const totalSteps = 8;
   const progress = (step / totalSteps) * 100;
 
   const handleShare = async () => {
@@ -249,7 +305,7 @@ const Devotional = () => {
 
           <div className="grid md:grid-cols-3 gap-4 pt-4">
             <div className="p-4 rounded-lg bg-primary/10">
-              <div className="text-2xl font-bold text-primary">+50</div>
+              <div className="text-2xl font-bold text-primary">+{memorizationValidated ? 75 : 50}</div>
               <div className="text-sm text-muted-foreground">XP Ganho</div>
             </div>
             <div className="p-4 rounded-lg bg-secondary/10">
@@ -529,8 +585,108 @@ const Devotional = () => {
           </Card>
         )}
 
-        {/* Step 7: Fechamento e Revisão */}
+        {/* Step 7: Memorização */}
         {step === 7 && (
+          <Card className="p-8 shadow-celestial space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-3">
+                🧠 Desafio de Memorização
+              </h2>
+              <p className="text-muted-foreground mb-4">
+                Escreva o versículo de hoje de memória. Não precisa ser palavra por palavra, 
+                mas tente capturar a essência e o sentido do versículo.
+              </p>
+              <div className="bg-primary/5 rounded-lg p-4 mb-4 border border-primary/10">
+                <p className="text-sm text-muted-foreground mb-1">
+                  Versículo de hoje:
+                </p>
+                <p className="font-semibold text-foreground">
+                  {devotional.verse_reference}
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground">
+                Escreva o versículo de memória:
+              </label>
+              <Textarea 
+                placeholder="Escreva o versículo aqui..."
+                value={memorization}
+                onChange={(e) => setMemorization(e.target.value)}
+                className="min-h-[120px]"
+                disabled={memorizationValidated}
+              />
+            </div>
+
+            {memorizationValidated && (
+              <div className={`p-4 rounded-lg border ${
+                memorizationScore >= 70 
+                  ? 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800' 
+                  : 'bg-yellow-50 dark:bg-yellow-950 border-yellow-200 dark:border-yellow-800'
+              }`}>
+                <div className="flex items-center gap-2 mb-2">
+                  {memorizationScore >= 70 ? (
+                    <>
+                      <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
+                      <span className="font-semibold text-green-800 dark:text-green-200">
+                        Parabéns! Memorização validada! 🎉
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <AlertCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                      <span className="font-semibold text-yellow-800 dark:text-yellow-200">
+                        Quase lá! Continue praticando 💪
+                      </span>
+                    </>
+                  )}
+                </div>
+                <p className="text-sm text-foreground">
+                  Pontuação: {memorizationScore}%
+                </p>
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => setStep(6)} 
+                variant="outline"
+                className="flex-1"
+                disabled={validatingMemorization}
+              >
+                Voltar
+              </Button>
+              
+              {!memorizationValidated ? (
+                <Button 
+                  onClick={handleValidateMemorization}
+                  className="flex-1 bg-gradient-celestial hover:opacity-90"
+                  disabled={!memorization.trim() || validatingMemorization}
+                >
+                  {validatingMemorization ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Validando...
+                    </>
+                  ) : (
+                    'Validar Memorização'
+                  )}
+                </Button>
+              ) : (
+                <Button 
+                  onClick={() => setStep(8)}
+                  className="flex-1 bg-gradient-celestial hover:opacity-90"
+                >
+                  Continuar
+                </Button>
+              )}
+            </div>
+          </Card>
+        )}
+
+        {/* Step 8: Fechamento e Revisão */}
+        {step === 8 && (
           <Card className="p-8 shadow-celestial space-y-6">
             <div>
               <h2 className="text-2xl font-bold text-foreground mb-3">🙏 Fechamento</h2>
@@ -573,7 +729,7 @@ const Devotional = () => {
 
             <div className="flex gap-3">
               <Button 
-                onClick={() => setStep(6)} 
+                onClick={() => setStep(7)} 
                 variant="outline"
                 className="flex-1"
               >

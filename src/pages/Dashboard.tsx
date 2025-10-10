@@ -23,12 +23,14 @@ import GeneralMentorChat from "@/components/GeneralMentorChat";
 import ChallengesList from "@/components/ChallengesList";
 import WeeklyCalendar from "@/components/WeeklyCalendar";
 import { useUserStats } from "@/hooks/useUserStats";
+import { useSpiritualGoals } from "@/hooks/useSpiritualGoals";
 import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const [showMentorChat, setShowMentorChat] = useState(false);
   const { user, signOut, isAdmin } = useAuth();
   const { stats, loading: statsLoading, getXPProgressPercentage } = useUserStats();
+  const { goals, loading: goalsLoading } = useSpiritualGoals();
   const navigate = useNavigate();
   const [userPosition, setUserPosition] = useState<string | null>(null);
   
@@ -180,23 +182,23 @@ const Dashboard = () => {
                 <div>
                   <div className="flex justify-between text-sm mb-2">
                     <span className="text-foreground">Leitura Bíblica</span>
-                    <span className="text-muted-foreground">0%</span>
+                    <span className="text-muted-foreground">{goalsLoading ? '-' : `${goals.reading}%`}</span>
                   </div>
-                  <Progress value={0} className="h-2" />
+                  <Progress value={goalsLoading ? 0 : goals.reading} className="h-2" />
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-2">
                     <span className="text-foreground">Oração Diária</span>
-                    <span className="text-muted-foreground">0%</span>
+                    <span className="text-muted-foreground">{goalsLoading ? '-' : `${goals.prayer}%`}</span>
                   </div>
-                  <Progress value={0} className="h-2" />
+                  <Progress value={goalsLoading ? 0 : goals.prayer} className="h-2" />
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-2">
                     <span className="text-foreground">Memorização</span>
-                    <span className="text-muted-foreground">0%</span>
+                    <span className="text-muted-foreground">{goalsLoading ? '-' : `${goals.memorization}%`}</span>
                   </div>
-                  <Progress value={0} className="h-2" />
+                  <Progress value={goalsLoading ? 0 : goals.memorization} className="h-2" />
                 </div>
               </div>
             </Card>

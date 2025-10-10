@@ -283,24 +283,30 @@ export type Database = {
           completed_at: string
           devotional_id: string
           id: string
+          memorization_validated: boolean | null
           reflection: string | null
           user_id: string
+          verse_memorization: string | null
         }
         Insert: {
           application?: string | null
           completed_at?: string
           devotional_id: string
           id?: string
+          memorization_validated?: boolean | null
           reflection?: string | null
           user_id: string
+          verse_memorization?: string | null
         }
         Update: {
           application?: string | null
           completed_at?: string
           devotional_id?: string
           id?: string
+          memorization_validated?: boolean | null
           reflection?: string | null
           user_id?: string
+          verse_memorization?: string | null
         }
         Relationships: [
           {

@@ -45,7 +45,13 @@ export const useDevotional = () => {
     }
   };
 
-  const saveProgress = async (devotionalId: string, reflection: string, application: string) => {
+  const saveProgress = async (
+    devotionalId: string, 
+    reflection: string, 
+    application: string,
+    verseMemorization?: string,
+    memorizationValidated?: boolean
+  ) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
@@ -67,6 +73,8 @@ export const useDevotional = () => {
           devotional_id: devotionalId,
           reflection,
           application,
+          verse_memorization: verseMemorization || null,
+          memorization_validated: memorizationValidated || false,
           completed_at: new Date().toISOString(),
         });
 
