@@ -23,7 +23,7 @@ import { useUserStats } from "@/hooks/useUserStats";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import AIMentorChat from "@/components/AIMentorChat";
 import PastorMessageDialog from "@/components/PastorMessageDialog";
-import growthJourney from "@/assets/growth-journey.jpg";
+import bibleIcon from "@/assets/bible-icon.jpg";
 
 const Devotional = () => {
   const { toast } = useToast();
@@ -364,7 +364,7 @@ const Devotional = () => {
         {step === 1 && (
           <Card className="p-8 shadow-celestial border-primary/20 space-y-6">
             <div className="flex items-center gap-3">
-              <img src={growthJourney} alt="Jornada Espiritual" className="w-16 h-16 rounded-xl shadow-glow object-cover" />
+              <img src={bibleIcon} alt="Bíblia" className="w-16 h-16 rounded-xl shadow-glow" />
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <Sparkles className="w-4 h-4 text-accent" />
