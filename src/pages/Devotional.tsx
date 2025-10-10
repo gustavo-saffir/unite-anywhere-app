@@ -276,7 +276,7 @@ const Devotional = () => {
         {step === 4 && (
           <Card className="p-8 shadow-celestial space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-4">💡 Insight Central</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-4">💡 Reflexão Central</h2>
               <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
                 {devotional.central_insight ? (
                   <MarkdownRenderer 
@@ -325,7 +325,7 @@ const Devotional = () => {
                 Escreva sua reflexão pessoal:
               </label>
               <Textarea 
-                placeholder="Como este versículo fala com sua vida hoje? Que insights Deus está revelando?"
+                placeholder="De que forma este versículo se aplica à sua vida neste momento? Quais verdades ou ensinamentos Deus está revelando a você por meio dele?"
                 value={reflection}
                 onChange={(e) => setReflection(e.target.value)}
                 className="min-h-[150px]"

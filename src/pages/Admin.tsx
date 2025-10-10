@@ -19,7 +19,7 @@ const devotionalSchema = z.object({
   verse_reference: z.string().min(1, 'Referência do versículo é obrigatória'),
   verse_text: z.string().min(10, 'Texto do versículo deve ter no mínimo 10 caracteres'),
   context: z.string().min(10, 'Contexto deve ter no mínimo 10 caracteres'),
-  central_insight: z.string().min(10, 'Insight central deve ter no mínimo 10 caracteres'),
+  central_insight: z.string().min(10, 'Reflexão central deve ter no mínimo 10 caracteres'),
   reflection_question: z.string().min(10, 'Pergunta de reflexão deve ter no mínimo 10 caracteres'),
   application_question: z.string().min(10, 'Pergunta de aplicação deve ter no mínimo 10 caracteres'),
   closing_text: z.string().min(10, 'Fechamento deve ter no mínimo 10 caracteres'),
@@ -246,7 +246,7 @@ const Admin = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="centralInsight">Insight Central</Label>
+                <Label htmlFor="centralInsight">Reflexão Central</Label>
                 <TextEditor
                   id="centralInsight"
                   value={centralInsight}
@@ -349,7 +349,7 @@ const Admin = () => {
                   {/* Central Insight */}
                   {centralInsight && (
                     <div className="space-y-2 p-4 rounded-lg bg-primary/5 border border-primary/20">
-                      <h4 className="font-semibold text-primary">💡 Insight Central</h4>
+                      <h4 className="font-semibold text-primary">💡 Reflexão Central</h4>
                       <MarkdownRenderer 
                         content={centralInsight} 
                         className="text-sm text-foreground leading-relaxed"
