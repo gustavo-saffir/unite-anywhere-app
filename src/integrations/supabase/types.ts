@@ -75,6 +75,45 @@ export type Database = {
           },
         ]
       }
+      challenges: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string
+          description: string
+          duration_days: number
+          id: string
+          reward_type: string
+          reward_value: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by: string
+          description: string
+          duration_days: number
+          id?: string
+          reward_type: string
+          reward_value: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string
+          description?: string
+          duration_days?: number
+          id?: string
+          reward_type?: string
+          reward_value?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       devotionals: {
         Row: {
           application_question: string
@@ -199,6 +238,44 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      user_challenges: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          id: string
+          progress: number
+          started_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          id?: string
+          progress?: number
+          started_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          id?: string
+          progress?: number
+          started_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_devotionals: {
         Row: {

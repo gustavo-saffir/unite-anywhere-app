@@ -19,9 +19,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import DailyDevotionalCard from "@/components/DailyDevotionalCard";
 import PastorNotifications from "@/components/PastorNotifications";
+import GeneralMentorChat from "@/components/GeneralMentorChat";
+import ChallengesList from "@/components/ChallengesList";
 import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
+  const [showMentorChat, setShowMentorChat] = useState(false);
   const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [userPosition, setUserPosition] = useState<string | null>(null);
@@ -201,7 +204,10 @@ const Dashboard = () => {
               <p className="text-sm text-muted-foreground mb-4">
                 Tem dúvidas sobre o devocional de hoje? Converse com seu mentor virtual 24/7!
               </p>
-              <Button className="w-full bg-gradient-celestial hover:opacity-90">
+              <Button 
+                className="w-full bg-gradient-celestial hover:opacity-90"
+                onClick={() => setShowMentorChat(true)}
+              >
                 Iniciar Conversa
               </Button>
             </Card>
@@ -240,9 +246,27 @@ const Dashboard = () => {
               </div>
             </Card>
           </div>
+
+          {/* Seção de Desafios */}
+          <div className="space-y-4 mt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">Desafios Disponíveis</h2>
+                <p className="text-muted-foreground">
+                  Complete desafios e ganhe recompensas!
+                </p>
+              </div>
+            </div>
+            <ChallengesList />
+          </div>
         </div>
       </main>
       
+      {/* Mentor Virtual Chat */}
+      {showMentorChat && (
+        <GeneralMentorChat onClose={() => setShowMentorChat(false)} />
+      )}
+
       {/* Notificações em tempo real para pastores */}
       <PastorNotifications />
     </div>
