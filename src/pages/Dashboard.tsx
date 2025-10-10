@@ -209,9 +209,6 @@ const Dashboard = () => {
                   <Progress value={0} className="h-2" />
                 </div>
               </div>
-              <Button variant="outline" className="w-full mt-4 border-primary/30">
-                Definir Novos Objetivos
-              </Button>
             </Card>
 
             {/* Mentor Chat */}
