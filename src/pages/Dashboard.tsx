@@ -125,7 +125,7 @@ const Dashboard = () => {
                   </div>
                   <span className="text-2xl font-bold text-secondary">0</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Badges Conquistadas</p>
+                <p className="text-sm text-muted-foreground">Medalhas Conquistadas</p>
                 <Progress value={0} className="mt-2 h-2" />
               </Card>
 
@@ -236,7 +236,7 @@ const Dashboard = () => {
                   <Award className="w-8 h-8 text-muted-foreground" />
                 </div>
                 <p className="text-sm text-muted-foreground">Ainda não há conquistas.</p>
-                <p className="text-xs text-muted-foreground mt-1">Complete devocionais para ganhar badges!</p>
+                <p className="text-xs text-muted-foreground mt-1">Complete devocionais para ganhar medalhas!</p>
               </div>
             </Card>
           </div>
