@@ -21,6 +21,7 @@ import DailyDevotionalCard from "@/components/DailyDevotionalCard";
 import PastorNotifications from "@/components/PastorNotifications";
 import GeneralMentorChat from "@/components/GeneralMentorChat";
 import ChallengesList from "@/components/ChallengesList";
+import WeeklyCalendar from "@/components/WeeklyCalendar";
 import { useUserStats } from "@/hooks/useUserStats";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -164,18 +165,7 @@ const Dashboard = () => {
             </div>
 
             {/* Weekly Calendar */}
-            <Card className="p-6">
-              <h3 className="text-xl font-semibold text-foreground mb-4">Última Semana</h3>
-              <div className="grid grid-cols-7 gap-2">
-                {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day, i) => (
-                  <div key={i} className="text-center">
-                    <div className="text-xs text-muted-foreground mb-2">{day}</div>
-                    <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-muted">
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
+            <WeeklyCalendar />
           </div>
 
           {/* Sidebar */}

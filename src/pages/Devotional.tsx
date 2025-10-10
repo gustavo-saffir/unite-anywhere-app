@@ -221,7 +221,7 @@ const Devotional = () => {
           <p className="text-muted-foreground">
             {error || "Ainda não há um devocional cadastrado para hoje. Entre em contato com o administrador."}
           </p>
-          <Link to="/">
+          <Link to="/dashboard">
             <Button className="w-full bg-gradient-celestial hover:opacity-90">
               Fechar Devocional
             </Button>
@@ -263,7 +263,7 @@ const Devotional = () => {
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Link to="/" className="flex-1">
+            <Link to="/dashboard" className="flex-1">
               <Button className="w-full bg-gradient-celestial hover:opacity-90">
                 Fechar Devocional
               </Button>
