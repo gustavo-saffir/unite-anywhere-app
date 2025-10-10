@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Sparkles } from 'lucide-react';
+import { BookOpen, Sparkles, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import bibleIcon from '@/assets/bible-icon.jpg';
+import growthJourney from '@/assets/growth-journey.jpg';
 
 const DailyDevotionalCard = () => {
   const [devotional, setDevotional] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   useEffect(() => {
     loadTodayDevotional();
@@ -20,11 +21,26 @@ const DailyDevotionalCard = () => {
       
       const { data } = await supabase
         .from('devotionals')
-        .select('verse_reference, verse_text')
+        .select('id, verse_reference, verse_text')
         .eq('date', today)
         .maybeSingle();
 
       setDevotional(data);
+
+      // Check if user completed today's devotional
+      if (data) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: completion } = await supabase
+            .from('user_devotionals')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('devotional_id', data.id)
+            .maybeSingle();
+          
+          setIsCompleted(!!completion);
+        }
+      }
     } catch (error) {
       console.error('Error loading devotional:', error);
     } finally {
@@ -49,7 +65,7 @@ const DailyDevotionalCard = () => {
       <Card className="p-6 shadow-celestial border-primary/20 bg-card/90 backdrop-blur-sm">
         <div className="text-center space-y-4">
           <img 
-            src={bibleIcon} 
+            src={growthJourney} 
             alt="Devocional" 
             className="w-16 h-16 rounded-xl shadow-glow mx-auto"
           />
@@ -70,14 +86,23 @@ const DailyDevotionalCard = () => {
     <Card className="p-6 shadow-celestial border-primary/20 bg-card/90 backdrop-blur-sm">
       <div className="flex items-start gap-4">
         <img 
-          src={bibleIcon} 
+          src={growthJourney} 
           alt="Devocional" 
           className="w-16 h-16 rounded-xl shadow-glow"
         />
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="w-5 h-5 text-accent" />
-            <span className="text-sm font-semibold text-accent">Devocional de Hoje</span>
+            {isCompleted ? (
+              <>
+                <CheckCircle2 className="w-5 h-5 text-accent" />
+                <span className="text-sm font-semibold text-accent">Devocional Completado</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5 text-accent" />
+                <span className="text-sm font-semibold text-accent">Devocional de Hoje</span>
+              </>
+            )}
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
             {devotional.verse_reference}
@@ -85,12 +110,24 @@ const DailyDevotionalCard = () => {
           <p className="text-muted-foreground mb-4 line-clamp-2">
             "{devotional.verse_text.substring(0, 100)}..."
           </p>
-          <Link to="/devotional">
-            <Button className="bg-gradient-celestial hover:opacity-90 shadow-celestial">
-              <BookOpen className="w-4 h-4 mr-2" />
-              Iniciar Devocional
-            </Button>
-          </Link>
+          {isCompleted ? (
+            <div>
+              <Button disabled className="bg-muted cursor-not-allowed">
+                <CheckCircle2 className="w-4 h-4 mr-2" />
+                Devocional Concluído
+              </Button>
+              <p className="text-sm text-muted-foreground mt-2">
+                Parabéns! Volte amanhã para um novo devocional.
+              </p>
+            </div>
+          ) : (
+            <Link to="/devotional">
+              <Button className="bg-gradient-celestial hover:opacity-90 shadow-celestial">
+                <BookOpen className="w-4 h-4 mr-2" />
+                Iniciar Devocional
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </Card>
