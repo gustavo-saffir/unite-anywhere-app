@@ -76,6 +76,8 @@ export const useDevotional = () => {
           verse_memorization: verseMemorization || null,
           memorization_validated: memorizationValidated || false,
           completed_at: new Date().toISOString(),
+        }, {
+          onConflict: 'user_id,devotional_id'
         });
 
       if (error) throw error;
