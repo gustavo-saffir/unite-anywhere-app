@@ -17,10 +17,14 @@ export type Database = {
       devotionals: {
         Row: {
           application_question: string
+          central_insight: string | null
+          closing_text: string | null
+          context: string | null
           created_at: string
           created_by: string | null
           date: string
           id: string
+          opening_text: string | null
           reflection_question: string
           updated_at: string
           verse_reference: string
@@ -28,10 +32,14 @@ export type Database = {
         }
         Insert: {
           application_question: string
+          central_insight?: string | null
+          closing_text?: string | null
+          context?: string | null
           created_at?: string
           created_by?: string | null
           date: string
           id?: string
+          opening_text?: string | null
           reflection_question: string
           updated_at?: string
           verse_reference: string
@@ -39,10 +47,14 @@ export type Database = {
         }
         Update: {
           application_question?: string
+          central_insight?: string | null
+          closing_text?: string | null
+          context?: string | null
           created_at?: string
           created_by?: string | null
           date?: string
           id?: string
+          opening_text?: string | null
           reflection_question?: string
           updated_at?: string
           verse_reference?: string

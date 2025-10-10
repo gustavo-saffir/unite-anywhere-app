@@ -4,10 +4,14 @@ import { supabase } from '@/integrations/supabase/client';
 interface Devotional {
   id: string;
   date: string;
+  opening_text: string;
   verse_reference: string;
   verse_text: string;
+  context: string;
+  central_insight: string;
   reflection_question: string;
   application_question: string;
+  closing_text: string;
 }
 
 export const useDevotional = () => {

@@ -16,6 +16,7 @@ import {
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useDevotional } from "@/hooks/useDevotional";
+import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import bibleIcon from "@/assets/bible-icon.jpg";
 
 const Devotional = () => {
@@ -65,7 +66,7 @@ const Devotional = () => {
     }
   };
 
-  const totalSteps = 4;
+  const totalSteps = 7;
   const progress = (step / totalSteps) * 100;
 
   if (loading) {
@@ -169,7 +170,7 @@ const Devotional = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Step 1: Versículo */}
+        {/* Step 1: Abertura */}
         {step === 1 && (
           <Card className="p-8 shadow-celestial border-primary/20 space-y-6">
             <div className="flex items-center gap-3">
@@ -177,17 +178,22 @@ const Devotional = () => {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <Sparkles className="w-4 h-4 text-accent" />
-                  <span className="text-sm font-semibold text-accent">Versículo do Dia</span>
+                  <span className="text-sm font-semibold text-accent">Devocional do Dia</span>
                 </div>
-                <h1 className="text-2xl font-bold text-foreground">{devotional.verse_reference}</h1>
+                <h1 className="text-2xl font-bold text-foreground">Bem-vindo</h1>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl p-6 border border-primary/10">
-              <p className="text-lg text-foreground leading-relaxed italic mb-2">
-                "{devotional.verse_text}"
-              </p>
-              <p className="text-sm text-muted-foreground font-medium">— {devotional.verse_reference}</p>
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold text-foreground">📖 Abertura</h2>
+              {devotional.opening_text ? (
+                <MarkdownRenderer 
+                  content={devotional.opening_text} 
+                  className="text-foreground leading-relaxed"
+                />
+              ) : (
+                <p className="text-muted-foreground">Preparando seu coração para o estudo de hoje...</p>
+              )}
             </div>
 
             <Button 
@@ -195,19 +201,123 @@ const Devotional = () => {
               className="w-full bg-gradient-celestial hover:opacity-90 shadow-celestial"
               size="lg"
             >
-              Continuar para Reflexão
+              Continuar para o Versículo
             </Button>
           </Card>
         )}
 
-        {/* Step 2: Reflexão */}
+        {/* Step 2: Versículo */}
         {step === 2 && (
+          <Card className="p-8 shadow-celestial border-primary/20 space-y-6">
+            <div className="flex items-center gap-3 mb-4">
+              <BookOpen className="w-8 h-8 text-primary" />
+              <h2 className="text-2xl font-bold text-foreground">Versículo do Dia</h2>
+            </div>
+
+            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl p-6 border border-primary/10">
+              <h3 className="text-lg font-semibold text-primary mb-4">{devotional.verse_reference}</h3>
+              <p className="text-lg text-foreground leading-relaxed italic">
+                "{devotional.verse_text}"
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => setStep(1)} 
+                variant="outline"
+                className="flex-1"
+              >
+                Voltar
+              </Button>
+              <Button 
+                onClick={() => setStep(3)} 
+                className="flex-1 bg-gradient-celestial hover:opacity-90"
+              >
+                Continuar
+              </Button>
+            </div>
+          </Card>
+        )}
+
+        {/* Step 3: Contexto */}
+        {step === 3 && (
           <Card className="p-8 shadow-celestial space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-3">Reflexão Guiada</h2>
-              <p className="text-muted-foreground">
-                {devotional.reflection_question}
-              </p>
+              <h2 className="text-2xl font-bold text-foreground mb-4">📜 Contexto Rápido</h2>
+              {devotional.context ? (
+                <MarkdownRenderer 
+                  content={devotional.context} 
+                  className="text-foreground leading-relaxed"
+                />
+              ) : (
+                <p className="text-muted-foreground">Entendendo o contexto do versículo...</p>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => setStep(2)} 
+                variant="outline"
+                className="flex-1"
+              >
+                Voltar
+              </Button>
+              <Button 
+                onClick={() => setStep(4)} 
+                className="flex-1 bg-gradient-celestial hover:opacity-90"
+              >
+                Continuar
+              </Button>
+            </div>
+          </Card>
+        )}
+
+        {/* Step 4: Insight Central */}
+        {step === 4 && (
+          <Card className="p-8 shadow-celestial space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">💡 Insight Central</h2>
+              <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
+                {devotional.central_insight ? (
+                  <MarkdownRenderer 
+                    content={devotional.central_insight} 
+                    className="text-foreground leading-relaxed"
+                  />
+                ) : (
+                  <p className="text-muted-foreground">O ensinamento principal de hoje...</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => setStep(3)} 
+                variant="outline"
+                className="flex-1"
+              >
+                Voltar
+              </Button>
+              <Button 
+                onClick={() => setStep(5)} 
+                className="flex-1 bg-gradient-celestial hover:opacity-90"
+              >
+                Continuar para Reflexão
+              </Button>
+            </div>
+          </Card>
+        )}
+
+        {/* Step 5: Reflexão */}
+        {step === 5 && (
+          <Card className="p-8 shadow-celestial space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-3">💭 Reflexão Guiada</h2>
+              {devotional.reflection_question && (
+                <MarkdownRenderer 
+                  content={devotional.reflection_question} 
+                  className="text-muted-foreground mb-4"
+                />
+              )}
             </div>
 
             <div className="space-y-2">
@@ -224,14 +334,14 @@ const Devotional = () => {
 
             <div className="flex gap-3">
               <Button 
-                onClick={() => setStep(1)} 
+                onClick={() => setStep(4)} 
                 variant="outline"
                 className="flex-1"
               >
                 Voltar
               </Button>
               <Button 
-                onClick={() => setStep(3)} 
+                onClick={() => setStep(6)} 
                 className="flex-1 bg-gradient-celestial hover:opacity-90"
                 disabled={!reflection.trim()}
               >
@@ -241,14 +351,17 @@ const Devotional = () => {
           </Card>
         )}
 
-        {/* Step 3: Aplicação */}
-        {step === 3 && (
+        {/* Step 6: Aplicação */}
+        {step === 6 && (
           <Card className="p-8 shadow-celestial space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-3">Aplicação Prática</h2>
-              <p className="text-muted-foreground">
-                {devotional.application_question}
-              </p>
+              <h2 className="text-2xl font-bold text-foreground mb-3">✨ Aplicação Prática</h2>
+              {devotional.application_question && (
+                <MarkdownRenderer 
+                  content={devotional.application_question} 
+                  className="text-muted-foreground mb-4"
+                />
+              )}
             </div>
 
             <div className="space-y-2">
@@ -265,14 +378,14 @@ const Devotional = () => {
 
             <div className="flex gap-3">
               <Button 
-                onClick={() => setStep(2)} 
+                onClick={() => setStep(5)} 
                 variant="outline"
                 className="flex-1"
               >
                 Voltar
               </Button>
               <Button 
-                onClick={() => setStep(4)} 
+                onClick={() => setStep(7)} 
                 className="flex-1 bg-gradient-celestial hover:opacity-90"
                 disabled={!application.trim()}
               >
@@ -282,11 +395,19 @@ const Devotional = () => {
           </Card>
         )}
 
-        {/* Step 4: Revisão */}
-        {step === 4 && (
+        {/* Step 7: Fechamento e Revisão */}
+        {step === 7 && (
           <Card className="p-8 shadow-celestial space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-3">Revisão Final</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-3">🙏 Fechamento</h2>
+              {devotional.closing_text && (
+                <div className="mb-6">
+                  <MarkdownRenderer 
+                    content={devotional.closing_text} 
+                    className="text-foreground leading-relaxed"
+                  />
+                </div>
+              )}
               <p className="text-muted-foreground">
                 Revise suas anotações antes de finalizar o devocional de hoje.
               </p>
@@ -318,7 +439,7 @@ const Devotional = () => {
 
             <div className="flex gap-3">
               <Button 
-                onClick={() => setStep(3)} 
+                onClick={() => setStep(6)} 
                 variant="outline"
                 className="flex-1"
               >
