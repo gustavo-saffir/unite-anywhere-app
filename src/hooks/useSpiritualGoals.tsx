@@ -79,7 +79,7 @@ export const useSpiritualGoals = () => {
   useEffect(() => {
     calculateGoals();
 
-    // Subscribe to changes in user_devotionals
+    // Subscribe to changes in user_devotionals and user_stats
     const channel = supabase
       .channel('spiritual_goals_changes')
       .on(
@@ -88,6 +88,17 @@ export const useSpiritualGoals = () => {
           event: '*',
           schema: 'public',
           table: 'user_devotionals',
+        },
+        () => {
+          calculateGoals();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_stats',
         },
         () => {
           calculateGoals();

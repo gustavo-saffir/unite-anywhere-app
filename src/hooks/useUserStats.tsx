@@ -106,21 +106,42 @@ export const useUserStats = () => {
   const updateStatsAfterDevotional = async (xpGained: number = 50) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user || !stats) return { success: false };
+      if (!user) return { success: false };
+
+      // Always fetch the latest stats from the DB to avoid stale state
+      const { data: current, error: fetchErr } = await supabase
+        .from('user_stats')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (fetchErr) throw fetchErr;
+
+      let base = current;
+      if (!base) {
+        const { data: created, error: createErr } = await supabase
+          .from('user_stats')
+          .insert({ user_id: user.id })
+          .select()
+          .single();
+        if (createErr) throw createErr;
+        base = created;
+      }
 
       const today = new Date().toISOString().split('T')[0];
-      const lastDate = stats.last_devotional_date;
-      
-      // Calculate streak
-      let newStreak = stats.current_streak;
+      const lastDate = base.last_devotional_date;
+
+      // Calculate streak based on DB value
+      let newStreak = base.current_streak;
       if (lastDate) {
         const lastDateObj = new Date(lastDate);
         const todayObj = new Date(today);
         const diffDays = Math.floor((todayObj.getTime() - lastDateObj.getTime()) / (1000 * 60 * 60 * 24));
-        
+
         if (diffDays === 1) {
-          newStreak = stats.current_streak + 1;
+          newStreak = base.current_streak + 1;
         } else if (diffDays === 0) {
+          // Already counted today – don't award again
           return { success: false, message: 'Já completou hoje' };
         } else {
           newStreak = 1;
@@ -129,11 +150,11 @@ export const useUserStats = () => {
         newStreak = 1;
       }
 
-      const newXP = stats.total_xp + xpGained;
+      const newXP = base.total_xp + xpGained;
       const newLevel = calculateLevel(newXP);
-      const newLongestStreak = Math.max(newStreak, stats.longest_streak);
+      const newLongestStreak = Math.max(newStreak, base.longest_streak);
 
-      const { error } = await supabase
+      const { error: updateErr } = await supabase
         .from('user_stats')
         .update({
           total_xp: newXP,
@@ -141,20 +162,20 @@ export const useUserStats = () => {
           current_streak: newStreak,
           longest_streak: newLongestStreak,
           last_devotional_date: today,
-          total_devotionals_completed: stats.total_devotionals_completed + 1,
+          total_devotionals_completed: base.total_devotionals_completed + 1,
         })
         .eq('user_id', user.id);
 
-      if (error) throw error;
+      if (updateErr) throw updateErr;
 
       await loadStats();
 
-      return { 
-        success: true, 
-        newLevel, 
-        newXP, 
+      return {
+        success: true,
+        newLevel,
+        newXP,
         newStreak,
-        xpGained 
+        xpGained,
       };
     } catch (err: any) {
       console.error('Error updating stats:', err);
