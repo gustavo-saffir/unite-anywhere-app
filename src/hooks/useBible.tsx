@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { bibleBooks } from '@/data/bibleBooks';
 
-const API_BASE_URL = 'https://bible-edge.onrender.com';
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
 
 interface Verse {
-  id: number;
   number: number;
   text: string;
 }
@@ -25,43 +25,33 @@ export const useBibleChapter = (bookAbbrev: string, chapterNumber: number) => {
   return useQuery({
     queryKey: ['bible', 'chapter', bookAbbrev, chapterNumber],
     queryFn: async (): Promise<Chapter> => {
-      // Encontrar o ID do livro
       const book = bibleBooks.find(b => b.abbrev === bookAbbrev);
-      if (!book) {
-        throw new Error('Livro não encontrado');
-      }
-      
-      // Calcular o bookId baseado na posição (1-indexed)
-      const bookId = bibleBooks.findIndex(b => b.abbrev === bookAbbrev) + 1;
-      
-      const response = await fetch(
-        `${API_BASE_URL}/books/${bookId}/chapters/${chapterNumber}/verses`
-      );
-      
+      if (!book) throw new Error('Livro não encontrado');
+
+      const url = `${SUPABASE_URL}/functions/v1/bible-proxy?book=${bookAbbrev}&chapter=${chapterNumber}`;
+      const response = await fetch(url, {
+        headers: {
+          apikey: SUPABASE_ANON,
+          Authorization: `Bearer ${SUPABASE_ANON}`,
+        },
+      });
+
       if (!response.ok) {
-        throw new Error('Falha ao carregar capítulo');
+        const err = await response.text().catch(() => '');
+        throw new Error(err || 'Falha ao carregar capítulo');
       }
-      
-      const verses = await response.json();
-      
-      // Transformar para o formato esperado
+
+      const data = await response.json();
+      const verses: Verse[] = (data.verses || []).map((v: any) => ({ number: v.number, text: v.text }));
+
       return {
-        book: {
-          abbrev: bookAbbrev,
-          name: book.name,
-        },
-        chapter: {
-          number: chapterNumber,
-          verses: verses.length,
-        },
-        verses: verses.map((v: any) => ({
-          number: v.verse,
-          text: v.text,
-        })),
+        book: { abbrev: bookAbbrev, name: book.name },
+        chapter: { number: chapterNumber, verses: verses.length },
+        verses,
       };
     },
     enabled: !!bookAbbrev && chapterNumber > 0,
-    staleTime: 1000 * 60 * 60, // 1 hora - cache agressivo
-    retry: 2,
+    staleTime: 1000 * 60 * 60,
+    retry: 1,
   });
 };
