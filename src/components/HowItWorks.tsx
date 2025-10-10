@@ -4,23 +4,18 @@ import growthImage from "@/assets/growth-journey.jpg";
 const steps = [
   {
     number: "01",
-    title: "Crie seu Perfil",
-    description: "Defina seus objetivos espirituais e conecte-se com seu mentor ou líder.",
+    title: "Cadastre-se Grátis",
+    description: "Crie sua conta em menos de 1 minuto. Sem cartão de crédito, sem compromisso. Comece seu teste de 30 dias imediatamente.",
   },
   {
     number: "02",
-    title: "Devocional Diário",
-    description: "Receba notificações e complete seu devocional estruturado todos os dias.",
+    title: "Complete Devocionais Diários",
+    description: "Reserve 5-10 minutos por dia para crescer espiritualmente. Conteúdo estruturado, reflexões profundas e aplicação prática.",
   },
   {
     number: "03",
-    title: "Interaja com IA",
-    description: "Tire dúvidas, reflita mais profundamente e receba orientação personalizada.",
-  },
-  {
-    number: "04",
-    title: "Acompanhe Progresso",
-    description: "Veja seu crescimento através de métricas, calendário e relatórios detalhados.",
+    title: "Acompanhe Seu Crescimento",
+    description: "Veja sua evolução com níveis, XP e sequência de dias. Seu pastor também acompanha seu progresso para te apoiar melhor.",
   },
 ];
 
@@ -28,64 +23,44 @@ const HowItWorks = () => {
   return (
     <section className="py-24 px-4 bg-background">
       <div className="container mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-          {/* Left: Steps */}
-          <div className="space-y-8">
-            <div>
-              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Como Funciona
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                Um caminho simples e poderoso para transformação espiritual
-              </p>
-            </div>
-
-            <div className="space-y-6">
-              {steps.map((step, index) => (
-                <div 
-                  key={index}
-                  className="flex gap-4 group"
-                >
-                  <div className="flex-shrink-0">
-                    <div className="w-14 h-14 rounded-xl bg-gradient-celestial flex items-center justify-center text-primary-foreground font-bold text-lg group-hover:scale-110 transition-transform">
-                      {step.number}
-                    </div>
-                  </div>
-                  <div className="pt-1">
-                    <h3 className="text-xl font-semibold text-foreground mb-2 flex items-center gap-2">
-                      {step.title}
-                      <CheckCircle2 className="w-5 h-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </h3>
-                    <p className="text-muted-foreground">
-                      {step.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+              Como Funciona
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Três passos simples para transformar seu discipulado
+            </p>
           </div>
 
-          {/* Right: Image */}
-          <div className="relative">
-            <div className="relative rounded-2xl overflow-hidden shadow-celestial">
-              <img 
-                src={growthImage} 
-                alt="Jornada de Crescimento Espiritual"
-                className="w-full h-auto"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" />
-            </div>
-            
-            {/* Floating Stats */}
-            <div className="absolute -top-6 -right-6 bg-card p-4 rounded-xl shadow-divine border border-border">
-              <div className="text-3xl font-bold text-primary">365</div>
-              <div className="text-sm text-muted-foreground">Dias de Jornada</div>
-            </div>
-            
-            <div className="absolute -bottom-6 -left-6 bg-card p-4 rounded-xl shadow-divine border border-border">
-              <div className="text-3xl font-bold text-secondary">12</div>
-              <div className="text-sm text-muted-foreground">Níveis Espirituais</div>
-            </div>
+          <div className="space-y-8">
+            {steps.map((step, index) => (
+              <div 
+                key={index}
+                className="flex gap-6 group p-6 rounded-2xl bg-card/50 border border-border/50 hover:shadow-celestial transition-all duration-300"
+              >
+                <div className="flex-shrink-0">
+                  <div className="w-16 h-16 rounded-xl bg-gradient-celestial flex items-center justify-center text-primary-foreground font-bold text-xl group-hover:scale-110 transition-transform">
+                    {step.number}
+                  </div>
+                </div>
+                <div className="pt-1">
+                  <h3 className="text-2xl font-semibold text-foreground mb-3 flex items-center gap-2">
+                    {step.title}
+                    <CheckCircle2 className="w-6 h-6 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </h3>
+                  <p className="text-muted-foreground text-lg">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center p-6 rounded-2xl bg-gradient-peaceful border border-border/50">
+            <p className="text-lg text-muted-foreground">
+              <strong className="text-primary">95% dos usuários</strong> relatam crescimento espiritual real nos primeiros 30 dias
+            </p>
           </div>
         </div>
       </div>

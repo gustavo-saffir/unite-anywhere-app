@@ -19,22 +19,10 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#recursos" className="text-foreground hover:text-primary transition-colors font-medium">
-              Recursos
-            </a>
-            <a href="#como-funciona" className="text-foreground hover:text-primary transition-colors font-medium">
-              Como Funciona
-            </a>
-            <a href="#planos" className="text-foreground hover:text-primary transition-colors font-medium">
-              Planos
-            </a>
-            <Button variant="outline" className="border-primary/30" asChild>
-              <Link to="/auth">Entrar</Link>
-            </Button>
+          <div className="hidden md:flex items-center gap-4">
             <Link to="/auth">
-              <Button className="bg-gradient-celestial hover:opacity-90 shadow-celestial">
-                Começar Grátis
+              <Button className="bg-gradient-celestial hover:opacity-90 shadow-celestial text-base px-6">
+                Cadastrar Grátis
               </Button>
             </Link>
           </div>
@@ -50,26 +38,12 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden py-4 space-y-4 border-t border-border/50">
-            <a href="#recursos" className="block text-foreground hover:text-primary transition-colors font-medium">
-              Recursos
-            </a>
-            <a href="#como-funciona" className="block text-foreground hover:text-primary transition-colors font-medium">
-              Como Funciona
-            </a>
-            <a href="#planos" className="block text-foreground hover:text-primary transition-colors font-medium">
-              Planos
-            </a>
-            <div className="flex flex-col gap-2 pt-2">
-              <Button variant="outline" className="w-full border-primary/30" asChild>
-                <Link to="/auth">Entrar</Link>
+          <div className="md:hidden py-4 border-t border-border/50">
+            <Link to="/auth" className="w-full">
+              <Button className="w-full bg-gradient-celestial hover:opacity-90 shadow-celestial">
+                Cadastrar Grátis
               </Button>
-              <Link to="/auth" className="w-full">
-                <Button className="w-full bg-gradient-celestial hover:opacity-90 shadow-celestial">
-                  Começar Grátis
-                </Button>
-              </Link>
-            </div>
+            </Link>
           </div>
         )}
       </div>

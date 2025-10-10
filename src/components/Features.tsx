@@ -4,33 +4,23 @@ import { Card } from "@/components/ui/card";
 const features = [
   {
     icon: BookOpen,
-    title: "Devocionais Estruturados",
-    description: "Conteúdo diário com versículo, reflexão e aplicação prática para transformação real.",
+    title: "Devocionais Diários Estruturados",
+    description: "Conteúdo pronto todos os dias com versículo, reflexão profunda e aplicação prática. Transformação real em apenas 5-10 minutos.",
   },
   {
     icon: Brain,
-    title: "Mentor Virtual IA",
-    description: "Acompanhamento inteligente com respostas personalizadas às suas dúvidas espirituais.",
-  },
-  {
-    icon: Trophy,
-    title: "Gamificação Espiritual",
-    description: "Sistema de níveis, badges e conquistas que mantém você motivado na jornada.",
+    title: "Mentor Virtual IA 24/7",
+    description: "Tire suas dúvidas espirituais a qualquer hora. Respostas personalizadas e orientação constante para sua jornada.",
   },
   {
     icon: Users,
     title: "Acompanhamento Pastoral",
-    description: "Conecte-se com seu líder espiritual que acompanha seu progresso em tempo real.",
+    description: "Seu líder espiritual vê seu progresso em tempo real e pode te apoiar melhor. Conexão verdadeira entre pastor e discípulo.",
   },
   {
-    icon: BarChart3,
-    title: "Relatórios de Crescimento",
-    description: "Visualize seu progresso espiritual com dados e insights sobre sua jornada.",
-  },
-  {
-    icon: Calendar,
-    title: "Histórico Completo",
-    description: "Calendário visual do seu caminho, celebrando cada dia de compromisso e crescimento.",
+    icon: Trophy,
+    title: "Gamificação Motivadora",
+    description: "Sistema de níveis, XP e conquistas que mantém você engajado. Crescimento espiritual divertido e mensurável.",
   },
 ];
 
@@ -40,14 +30,14 @@ const Features = () => {
       <div className="container mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Discipulado que Transforma
+            Por que Escolher o Caminho Diário?
           </h2>
           <p className="text-lg text-muted-foreground">
-            Combine tecnologia e espiritualidade para um crescimento sistemático e mensurável
+            Tudo que você precisa para um discipulado consistente e transformador
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {features.map((feature, index) => (
             <Card 
               key={index}

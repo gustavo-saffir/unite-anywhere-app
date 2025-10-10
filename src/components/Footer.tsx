@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <footer className="bg-muted/30 border-t border-border/50">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+        <div className="grid md:grid-cols-3 gap-8 mb-8">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -18,31 +18,18 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Product */}
+          {/* Contact */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Produto</h3>
+            <h3 className="font-semibold text-foreground mb-4">Contato</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Recursos</a></li>
-              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Planos</a></li>
-              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Testemunhos</a></li>
+              <li><a href="mailto:contato@caminhodiario.com" className="text-sm text-muted-foreground hover:text-primary transition-colors">contato@caminhodiario.com</a></li>
               <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Central de Ajuda</a></li>
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">Empresa</h3>
-            <ul className="space-y-2">
-              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Sobre</a></li>
-              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Blog</a></li>
-              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Carreiras</a></li>
-              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contato</a></li>
             </ul>
           </div>
 
           {/* Connect */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Conecte-se</h3>
+            <h3 className="font-semibold text-foreground mb-4">Redes Sociais</h3>
             <div className="flex gap-3">
               <a href="#" className="w-10 h-10 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center">
                 <Mail className="w-5 h-5" />
@@ -69,10 +56,7 @@ const Footer = () => {
               Privacidade
             </a>
             <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-              Termos
-            </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-              Cookies
+              Termos de Uso
             </a>
           </div>
         </div>
