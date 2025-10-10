@@ -67,12 +67,17 @@ const ManageUsers = () => {
 
       if (error) throw error;
 
+      // Atualizar o estado local imediatamente
+      setUsers(prevUsers => 
+        prevUsers.map(u => 
+          u.id === userId ? { ...u, pastor_id: pastorId } : u
+        )
+      );
+
       toast({
         title: 'Sucesso!',
         description: 'Pastor vinculado com sucesso.',
       });
-
-      loadData();
     } catch (error) {
       console.error('Error updating pastor:', error);
       toast({
