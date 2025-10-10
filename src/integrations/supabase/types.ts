@@ -133,6 +133,7 @@ export type Database = {
           responded_at: string | null
           response: string | null
           status: string
+          updated_at: string
           user_id: string
         }
         Insert: {
@@ -144,6 +145,7 @@ export type Database = {
           responded_at?: string | null
           response?: string | null
           status?: string
+          updated_at?: string
           user_id: string
         }
         Update: {
@@ -155,6 +157,7 @@ export type Database = {
           responded_at?: string | null
           response?: string | null
           status?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: [
