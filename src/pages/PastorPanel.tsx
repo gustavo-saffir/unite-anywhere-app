@@ -19,7 +19,7 @@ interface PastorMessage {
   status: 'pending' | 'read' | 'responded';
   created_at: string;
   responded_at: string | null;
-  profiles: {
+  profiles?: {
     full_name: string;
   };
   devotionals?: {
@@ -48,18 +48,44 @@ const PastorPanel = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data, error } = await supabase
+      const { data: msgs, error } = await supabase
         .from('pastor_messages')
-        .select(`
-          *,
-          profiles!user_id(full_name),
-          devotionals(verse_reference, date)
-        `)
+        .select('*')
         .eq('pastor_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setMessages((data || []) as any);
+
+      const userIds = Array.from(new Set((msgs || []).map((m: any) => m.user_id).filter(Boolean)));
+      const devoIds = Array.from(new Set((msgs || []).map((m: any) => m.devotional_id).filter(Boolean)));
+
+      // Fetch disciple names (RLS permite ao pastor ver seus discípulos)
+      let profilesMap: Record<string, { full_name: string }> = {};
+      if (userIds.length > 0) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', userIds as string[]);
+        profilesMap = Object.fromEntries((profilesData || []).map((p: any) => [p.id, { full_name: p.full_name }]));
+      }
+
+      // Fetch devotionals meta (público)
+      let devotionalsMap: Record<string, { verse_reference: string; date: string }> = {};
+      if (devoIds.length > 0) {
+        const { data: devos } = await supabase
+          .from('devotionals')
+          .select('id, verse_reference, date')
+          .in('id', devoIds as string[]);
+        devotionalsMap = Object.fromEntries((devos || []).map((d: any) => [d.id, { verse_reference: d.verse_reference, date: d.date }]));
+      }
+
+      const enriched = (msgs || []).map((m: any) => ({
+        ...m,
+        profiles: profilesMap[m.user_id] || { full_name: 'Discípulo' },
+        devotionals: m.devotional_id ? devotionalsMap[m.devotional_id] : undefined,
+      }));
+
+      setMessages(enriched as any);
     } catch (error) {
       console.error('Error loading messages:', error);
       toast({
@@ -282,7 +308,7 @@ const PastorPanel = () => {
                       <User className="w-5 h-5 text-primary" />
                       <div>
                         <h3 className="font-semibold text-foreground">
-                          {selectedMessage.profiles.full_name}
+                          {selectedMessage.profiles?.full_name || 'Discípulo'}
                         </h3>
                         <p className="text-xs text-muted-foreground">
                           {new Date(selectedMessage.created_at).toLocaleString('pt-BR')}
@@ -396,7 +422,7 @@ const MessageCard = ({ message, onSelect, isSelected }: MessageCardProps) => {
         <div className="flex items-center gap-2">
           <User className="w-4 h-4 text-primary" />
           <span className="font-semibold text-foreground">
-            {message.profiles.full_name}
+            {message.profiles?.full_name || 'Discípulo'}
           </span>
         </div>
         {message.status === 'pending' && (
