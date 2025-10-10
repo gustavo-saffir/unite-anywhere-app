@@ -112,11 +112,11 @@ const DailyDevotionalCard = () => {
           </p>
           {isCompleted ? (
             <div>
-              <Button disabled className="bg-muted cursor-not-allowed">
+              <Button disabled className="bg-primary/20 text-foreground cursor-not-allowed border border-primary/30">
                 <CheckCircle2 className="w-4 h-4 mr-2" />
                 Devocional Concluído
               </Button>
-              <p className="text-sm text-muted-foreground mt-2">
+              <p className="text-sm text-foreground/80 mt-2 font-medium">
                 Parabéns! Volte amanhã para um novo devocional.
               </p>
             </div>
