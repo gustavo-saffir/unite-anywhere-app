@@ -92,6 +92,70 @@ export const useUserStats = () => {
     return (xpInCurrentLevel / xpNeeded) * 100;
   };
 
+  const getXPProgressPercentage = (): number => {
+    if (!stats) return 0;
+    return getLevelProgress(stats.total_xp, stats.current_level);
+  };
+
+  const updateStatsAfterDevotional = async (xpGained: number = 50) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || !stats) return { success: false };
+
+      const today = new Date().toISOString().split('T')[0];
+      const lastDate = stats.last_devotional_date;
+      
+      // Calculate streak
+      let newStreak = stats.current_streak;
+      if (lastDate) {
+        const lastDateObj = new Date(lastDate);
+        const todayObj = new Date(today);
+        const diffDays = Math.floor((todayObj.getTime() - lastDateObj.getTime()) / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 1) {
+          newStreak = stats.current_streak + 1;
+        } else if (diffDays === 0) {
+          return { success: false, message: 'Já completou hoje' };
+        } else {
+          newStreak = 1;
+        }
+      } else {
+        newStreak = 1;
+      }
+
+      const newXP = stats.total_xp + xpGained;
+      const newLevel = calculateLevel(newXP);
+      const newLongestStreak = Math.max(newStreak, stats.longest_streak);
+
+      const { error } = await supabase
+        .from('user_stats')
+        .update({
+          total_xp: newXP,
+          current_level: newLevel,
+          current_streak: newStreak,
+          longest_streak: newLongestStreak,
+          last_devotional_date: today,
+          total_devotionals_completed: stats.total_devotionals_completed + 1,
+        })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      await loadStats();
+
+      return { 
+        success: true, 
+        newLevel, 
+        newXP, 
+        newStreak,
+        xpGained 
+      };
+    } catch (err: any) {
+      console.error('Error updating stats:', err);
+      return { success: false, error: err.message };
+    }
+  };
+
   return {
     stats,
     loading,
@@ -99,5 +163,7 @@ export const useUserStats = () => {
     calculateLevel,
     getXPForNextLevel,
     getLevelProgress,
+    getXPProgressPercentage,
+    updateStatsAfterDevotional,
   };
 };

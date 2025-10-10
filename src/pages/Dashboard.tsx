@@ -27,9 +27,9 @@ import { supabase } from "@/integrations/supabase/client";
 const Dashboard = () => {
   const [showMentorChat, setShowMentorChat] = useState(false);
   const { user, signOut, isAdmin } = useAuth();
+  const { stats, loading: statsLoading, getXPProgressPercentage } = useUserStats();
   const navigate = useNavigate();
   const [userPosition, setUserPosition] = useState<string | null>(null);
-  const { stats, loading: statsLoading, getLevelProgress } = useUserStats();
   
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -139,7 +139,7 @@ const Dashboard = () => {
                 </div>
                 <p className="text-sm text-muted-foreground">XP Total</p>
                 <Progress 
-                  value={statsLoading ? 0 : getLevelProgress(stats?.total_xp || 0, stats?.current_level || 1)} 
+                  value={statsLoading ? 0 : getXPProgressPercentage()} 
                   className="mt-2 h-2" 
                 />
               </Card>
@@ -157,7 +157,7 @@ const Dashboard = () => {
                   {statsLoading ? 'Carregando...' : stats?.current_level === 1 ? 'Iniciante' : 'Progredindo'}
                 </p>
                 <Progress 
-                  value={statsLoading ? 0 : getLevelProgress(stats?.total_xp || 0, stats?.current_level || 1)} 
+                  value={statsLoading ? 0 : getXPProgressPercentage()} 
                   className="mt-2 h-2" 
                 />
               </Card>

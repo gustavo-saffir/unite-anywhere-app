@@ -27,7 +27,7 @@ import bibleIcon from "@/assets/bible-icon.jpg";
 const Devotional = () => {
   const { toast } = useToast();
   const { devotional, loading, error, saveProgress } = useDevotional();
-  const { stats, refresh: refreshStats } = useUserStats();
+  const { stats, updateStatsAfterDevotional } = useUserStats();
   const [step, setStep] = useState(1);
   const [reflection, setReflection] = useState("");
   const [application, setApplication] = useState("");
@@ -79,23 +79,39 @@ const Devotional = () => {
     }
 
     setSaving(true);
-    const result = await saveProgress(devotional.id, reflection, application);
-    setSaving(false);
-
-    if (result.success) {
+    const progressResult = await saveProgress(devotional.id, reflection, application);
+    
+    if (progressResult.success && progressResult.isFirstCompletion) {
+      // Only update stats if this is the first completion today
+      const statsResult = await updateStatsAfterDevotional(50);
+      
+      if (statsResult.success) {
+        setCompleted(true);
+        toast({
+          title: "🎉 Devocional Completado!",
+          description: `+50 XP ganhos! Você está no nível ${statsResult.newLevel}`,
+        });
+      } else {
+        toast({
+          title: "Devocional salvo",
+          description: statsResult.message || "Seu progresso foi salvo!",
+        });
+      }
+    } else if (progressResult.success) {
       setCompleted(true);
-      await refreshStats(); // Atualizar estatísticas
       toast({
-        title: "🎉 Devocional Completado!",
-        description: "+50 pontos de experiência. Continue sua jornada!",
+        title: "Devocional atualizado",
+        description: "Suas reflexões foram atualizadas.",
       });
     } else {
       toast({
         title: "Erro ao salvar",
-        description: result.error || "Tente novamente.",
+        description: progressResult.error || "Tente novamente.",
         variant: "destructive",
       });
     }
+    
+    setSaving(false);
   };
 
   const totalSteps = 7;
