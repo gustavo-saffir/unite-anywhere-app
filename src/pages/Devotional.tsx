@@ -39,25 +39,15 @@ const Devotional = () => {
   useEffect(() => {
     const loadPastorPosition = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        const { data, error } = await supabase.rpc('get_my_pastor_info');
+        
+        if (error) {
+          console.error('Error loading pastor position:', error);
+          return;
+        }
 
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('pastor_id')
-          .eq('id', user.id)
-          .single();
-
-        if (profile?.pastor_id) {
-          const { data: pastorData } = await supabase
-            .from('profiles')
-            .select('position')
-            .eq('id', profile.pastor_id)
-            .single();
-
-          if (pastorData) {
-            setPastorPosition(pastorData.position === 'pastor' ? 'Pastor' : 'Líder');
-          }
+        if (data && data.length > 0) {
+          setPastorPosition(data[0].pastor_position === 'pastor' ? 'Pastor' : 'Líder');
         }
       } catch (error) {
         console.error('Error loading pastor position:', error);

@@ -255,6 +255,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_my_pastor_info: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          full_name: string
+          id: string
+          pastor_position: string
+        }[]
+      }
       get_user_pastor: {
         Args: { _user_id: string }
         Returns: string

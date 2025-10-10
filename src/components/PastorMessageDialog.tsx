@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
@@ -18,33 +18,22 @@ const PastorMessageDialog = ({ devotionalId, onClose }: PastorMessageDialogProps
   const { toast } = useToast();
 
   // Buscar informações do pastor/líder ao montar o componente
-  useState(() => {
+  useEffect(() => {
     const loadPastorInfo = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        const { data, error } = await supabase.rpc('get_my_pastor_info');
+        
+        if (error) {
+          console.error('Error loading pastor info:', error);
+          return;
+        }
 
-        // Buscar o pastor_id e informações do pastor
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('pastor_id')
-          .eq('id', user.id)
-          .single();
-
-        if (profile?.pastor_id) {
-          // Buscar informações do pastor/líder
-          const { data: pastorData } = await supabase
-            .from('profiles')
-            .select('full_name, position')
-            .eq('id', profile.pastor_id)
-            .single();
-
-          if (pastorData) {
-            setPastorInfo({
-              name: pastorData.full_name,
-              position: pastorData.position === 'pastor' ? 'Pastor' : 'Líder'
-            });
-          }
+        if (data && data.length > 0) {
+          const pastor = data[0];
+          setPastorInfo({
+            name: pastor.full_name,
+            position: pastor.pastor_position === 'pastor' ? 'Pastor' : 'Líder'
+          });
         }
       } catch (error) {
         console.error('Error loading pastor info:', error);
@@ -52,7 +41,7 @@ const PastorMessageDialog = ({ devotionalId, onClose }: PastorMessageDialogProps
     };
 
     loadPastorInfo();
-  });
+  }, []);
 
   const sendMessage = async () => {
     if (!message.trim() || loading) return;
@@ -62,16 +51,12 @@ const PastorMessageDialog = ({ devotionalId, onClose }: PastorMessageDialogProps
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
 
-      // Buscar o pastor_id do perfil do usuário
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('pastor_id')
-        .eq('id', user.id)
-        .single();
+      // Buscar o pastor_id através da função RPC
+      const { data: pastorData, error: pastorError } = await supabase.rpc('get_my_pastor_info');
 
-      if (profileError) throw profileError;
+      if (pastorError) throw pastorError;
       
-      if (!profile?.pastor_id) {
+      if (!pastorData || pastorData.length === 0) {
         toast({
           title: 'Pastor não configurado',
           description: 'Você ainda não tem um pastor vinculado ao seu perfil. Entre em contato com o administrador.',
@@ -85,7 +70,7 @@ const PastorMessageDialog = ({ devotionalId, onClose }: PastorMessageDialogProps
         .from('pastor_messages')
         .insert({
           user_id: user.id,
-          pastor_id: profile.pastor_id,
+          pastor_id: pastorData[0].id,
           devotional_id: devotionalId,
           message: message.trim(),
           status: 'pending',
