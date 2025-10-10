@@ -22,6 +22,8 @@ export const useUserStats = () => {
         return;
       }
 
+      console.log('Loading user stats for user:', user.id);
+
       // Buscar ou criar estatísticas do usuário
       const { data, error } = await supabase
         .from('user_stats')
@@ -29,10 +31,14 @@ export const useUserStats = () => {
         .eq('user_id', user.id)
         .maybeSingle();
 
+      console.log('Stats data:', data);
+      console.log('Stats error:', error);
+
       if (error && error.code !== 'PGRST116') throw error;
 
       // Se não existir, criar
       if (!data) {
+        console.log('Creating new stats for user');
         const { data: newStats, error: insertError } = await supabase
           .from('user_stats')
           .insert({ user_id: user.id })

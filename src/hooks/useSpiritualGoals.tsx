@@ -23,6 +23,8 @@ export const useSpiritualGoals = () => {
         return;
       }
 
+      console.log('Calculating spiritual goals for user:', user.id);
+
       // Get date 7 days ago
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
@@ -35,12 +37,16 @@ export const useSpiritualGoals = () => {
         .eq('user_id', user.id)
         .gte('completed_at', sevenDaysAgoStr);
 
+      console.log('Devotionals in last 7 days:', devotionals);
+
       // Get user stats for current streak
       const { data: stats } = await supabase
         .from('user_stats')
         .select('current_streak')
         .eq('user_id', user.id)
         .maybeSingle();
+
+      console.log('User stats for goals:', stats);
 
       // Calculate reading goal (devotionals completed / 7)
       const readingProgress = devotionals ? Math.min((devotionals.length / 7) * 100, 100) : 0;
@@ -51,6 +57,12 @@ export const useSpiritualGoals = () => {
       // Calculate memorization goal (validated memorizations / 7)
       const validatedMemorizations = devotionals?.filter(d => d.memorization_validated).length || 0;
       const memorizationProgress = Math.min((validatedMemorizations / 7) * 100, 100);
+
+      console.log('Goals calculated:', {
+        reading: Math.round(readingProgress),
+        prayer: Math.round(prayerProgress),
+        memorization: Math.round(memorizationProgress)
+      });
 
       setGoals({
         reading: Math.round(readingProgress),

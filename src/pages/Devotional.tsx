@@ -135,10 +135,14 @@ const Devotional = () => {
       memorizationValidated
     );
     
+    console.log('Progress Result:', progressResult);
+    
     if (progressResult.success && progressResult.isFirstCompletion) {
       // Calculate XP: 50 base + 25 bonus for validated memorization
       const xpGained = memorizationValidated ? 75 : 50;
+      console.log('Updating stats with XP:', xpGained);
       const statsResult = await updateStatsAfterDevotional(xpGained);
+      console.log('Stats Result:', statsResult);
       
       if (statsResult.success) {
         setCompleted(true);
