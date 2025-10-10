@@ -149,6 +149,7 @@ const ManageUsers = () => {
                   <div className="flex items-center gap-3">
                     <div className="w-64">
                       <Select
+                        key={`${user.id}-${user.pastor_id}`}
                         value={user.pastor_id || 'none'}
                         onValueChange={(value) => handleUpdatePastor(user.id, value === 'none' ? null : value)}
                         disabled={saving || pastors.length === 0}
