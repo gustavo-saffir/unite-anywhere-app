@@ -25,6 +25,7 @@ import WeeklyCalendar from "@/components/WeeklyCalendar";
 import { useUserStats } from "@/hooks/useUserStats";
 import { useSpiritualGoals } from "@/hooks/useSpiritualGoals";
 import { supabase } from "@/integrations/supabase/client";
+import { RecentBadges } from "@/components/RecentBadges";
 
 const Dashboard = () => {
   const [showMentorChat, setShowMentorChat] = useState(false);
@@ -243,16 +244,7 @@ const Dashboard = () => {
             )}
 
             {/* Recent Badges */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Conquistas Recentes</h3>
-              <div className="text-center py-8">
-                <div className="w-16 h-16 rounded-full bg-muted mx-auto flex items-center justify-center mb-3">
-                  <Award className="w-8 h-8 text-muted-foreground" />
-                </div>
-                <p className="text-sm text-muted-foreground">Ainda não há conquistas.</p>
-                <p className="text-xs text-muted-foreground mt-1">Complete devocionais para ganhar medalhas!</p>
-              </div>
-            </Card>
+            <RecentBadges />
           </div>
 
           {/* Seção de Desafios */}
