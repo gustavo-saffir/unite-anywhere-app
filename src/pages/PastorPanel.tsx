@@ -52,7 +52,7 @@ const PastorPanel = () => {
         .from('pastor_messages')
         .select(`
           *,
-          profiles!pastor_messages_user_id_fkey(full_name),
+          profiles!user_id(full_name),
           devotionals(verse_reference, date)
         `)
         .eq('pastor_id', user.id)
