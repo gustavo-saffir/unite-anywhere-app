@@ -689,7 +689,7 @@ const Devotional = () => {
         {step === 8 && (
           <Card className="p-8 shadow-celestial space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-3">🙏 Fechamento</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-3">🙏 Conclusão</h2>
               {devotional.closing_text && (
                 <div className="mb-6">
                   <MarkdownRenderer 
