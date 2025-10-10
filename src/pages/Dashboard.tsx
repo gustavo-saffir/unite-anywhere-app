@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -15,13 +16,34 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
 import DailyDevotionalCard from "@/components/DailyDevotionalCard";
 import PastorNotifications from "@/components/PastorNotifications";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const [userPosition, setUserPosition] = useState<string | null>(null);
   
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!user) return;
+      
+      const { data } = await supabase
+        .from('profiles')
+        .select('position')
+        .eq('id', user.id)
+        .single();
+      
+      if (data) {
+        setUserPosition(data.position);
+      }
+    };
+    
+    fetchUserProfile();
+  }, [user]);
+
   const today = new Date().toLocaleDateString('pt-BR', { 
     weekday: 'long', 
     day: 'numeric', 
@@ -59,12 +81,14 @@ const Dashboard = () => {
                   </Link>
                 </Button>
               )}
-              <Button variant="outline" className="border-primary/30" asChild>
-                <Link to="/pastor-panel">
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  Painel Pastor
-                </Link>
-              </Button>
+              {(userPosition === 'pastor' || userPosition === 'lider') && (
+                <Button variant="outline" className="border-primary/30" asChild>
+                  <Link to="/pastor-panel">
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Painel Pastor
+                  </Link>
+                </Button>
+              )}
               <Button variant="outline" className="border-primary/30" onClick={handleSignOut}>
                 <LogOut className="w-4 h-4 mr-2" />
                 Sair
