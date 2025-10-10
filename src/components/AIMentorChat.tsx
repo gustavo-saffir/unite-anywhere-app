@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Bot, Send, Loader2, X } from 'lucide-react';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -140,7 +141,14 @@ const AIMentorChat = ({ devotionalId, devotionalContext, onClose }: AIMentorChat
                     : 'bg-muted text-foreground'
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                {message.role === 'user' ? (
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                ) : (
+                  <MarkdownRenderer 
+                    content={message.content} 
+                    className="text-sm"
+                  />
+                )}
               </div>
             </div>
           ))}
