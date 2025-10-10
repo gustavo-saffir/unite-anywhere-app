@@ -230,11 +230,11 @@ const Dashboard = () => {
                 Acesse a Bíblia completa em NVI. Leia, pesquise e aprofunde-se na Palavra de Deus.
               </p>
               <Button 
-                className="w-full bg-gradient-peaceful hover:opacity-90"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                 asChild
               >
                 <Link to="/bible">
-                  Ler a Bíblia
+                  📖 Ler a Bíblia
                 </Link>
               </Button>
             </Card>
