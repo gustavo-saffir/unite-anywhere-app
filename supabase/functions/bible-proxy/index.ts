@@ -4,7 +4,7 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Content-Type": "application/json; charset=utf-8",
 };
 
@@ -25,20 +25,25 @@ serve(async (req) => {
     return new Response(null, { headers: CORS_HEADERS });
   }
 
-  if (url.pathname !== "/") {
-    return new Response(JSON.stringify({ error: "Not found" }), { status: 404, headers: CORS_HEADERS });
-  }
+  // Accept GET with query params or POST with JSON body
+  let book = "";
+  let chapter = 0;
 
-  if (url.searchParams.get("path") === "health") {
-    return new Response(JSON.stringify({ ok: true }), { headers: CORS_HEADERS });
+  try {
+    if (req.method === "POST") {
+      const body = await req.json().catch(() => ({}));
+      book = (body.book || "").toLowerCase();
+      chapter = parseInt(String(body.chapter || ""), 10);
+    } else {
+      book = (url.searchParams.get("book") || "").toLowerCase();
+      chapter = parseInt(url.searchParams.get("chapter") || "", 10);
+    }
+  } catch (_e) {
+    // ignore
   }
-
-  const book = (url.searchParams.get("book") || "").toLowerCase();
-  const chapterStr = url.searchParams.get("chapter") || "";
-  const chapter = parseInt(chapterStr, 10);
 
   if (!book || isNaN(chapter) || chapter <= 0) {
-    return new Response(JSON.stringify({ error: "Parâmetros inválidos. Use ?book=gn&chapter=1" }), {
+    return new Response(JSON.stringify({ error: "Parâmetros inválidos. Use { book: 'gn', chapter: 1 }" }), {
       status: 400,
       headers: CORS_HEADERS,
     });
@@ -69,15 +74,12 @@ serve(async (req) => {
     const abiblia = await fetch(`https://www.abibliadigital.com.br/api/verses/nvi/${book}/${chapter}`);
     if (abiblia.ok) {
       const payload = await abiblia.json();
-      // payload.verses: [{ number, text }]
       const verses = payload.verses?.map((v: any) => ({ number: v.number, text: v.text })) || [];
       return new Response(JSON.stringify({ book: { abbrev: book }, chapter: { number: chapter, verses: verses.length }, verses }), {
         headers: CORS_HEADERS,
       });
     }
-  } catch (_e) {
-    // ignore
-  }
+  } catch (_e) {}
 
   return new Response(JSON.stringify({ error: "Falha ao obter capítulo de provedores" }), { status: 502, headers: CORS_HEADERS });
 });

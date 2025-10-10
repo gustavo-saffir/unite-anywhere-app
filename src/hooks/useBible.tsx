@@ -1,8 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { bibleBooks } from '@/data/bibleBooks';
-
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
-const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+import { supabase } from '@/integrations/supabase/client';
 
 interface Verse {
   number: number;
@@ -28,20 +26,14 @@ export const useBibleChapter = (bookAbbrev: string, chapterNumber: number) => {
       const book = bibleBooks.find(b => b.abbrev === bookAbbrev);
       if (!book) throw new Error('Livro não encontrado');
 
-      const url = `${SUPABASE_URL}/functions/v1/bible-proxy?book=${bookAbbrev}&chapter=${chapterNumber}`;
-      const response = await fetch(url, {
-        headers: {
-          apikey: SUPABASE_ANON,
-          Authorization: `Bearer ${SUPABASE_ANON}`,
-        },
+      const { data, error } = await supabase.functions.invoke('bible-proxy', {
+        body: { book: bookAbbrev, chapter: chapterNumber },
       });
 
-      if (!response.ok) {
-        const err = await response.text().catch(() => '');
-        throw new Error(err || 'Falha ao carregar capítulo');
+      if (error) {
+        throw new Error(error.message || 'Falha ao carregar capítulo');
       }
 
-      const data = await response.json();
       const verses: Verse[] = (data.verses || []).map((v: any) => ({ number: v.number, text: v.text }));
 
       return {

@@ -5,3 +5,7 @@ verify_jwt = true
 
 [functions.validate-memorization]
 verify_jwt = true
+
+[functions.bible-proxy]
+# Público para permitir leitura bíblica sem exigir login/headers especiais
+verify_jwt = false
