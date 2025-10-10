@@ -137,7 +137,7 @@ const Devotional = () => {
     
     console.log('Progress Result:', progressResult);
     
-    if (progressResult.success && progressResult.isFirstCompletion) {
+    if (progressResult.success) {
       // Calculate XP: 50 base + 25 bonus for validated memorization
       const xpGained = memorizationValidated ? 75 : 50;
       console.log('Updating stats with XP:', xpGained);
@@ -152,17 +152,13 @@ const Devotional = () => {
           description: `+${xpGained} XP ganhos! Você está no nível ${statsResult.newLevel}${bonusText}`,
         });
       } else {
+        // Já completou hoje ou outro erro - ainda marca como concluído
+        setCompleted(true);
         toast({
           title: "Devocional salvo",
           description: statsResult.message || "Seu progresso foi salvo!",
         });
       }
-    } else if (progressResult.success) {
-      setCompleted(true);
-      toast({
-        title: "Devocional atualizado",
-        description: "Suas reflexões foram atualizadas.",
-      });
     } else {
       toast({
         title: "Erro ao salvar",
