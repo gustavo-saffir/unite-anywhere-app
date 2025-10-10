@@ -14,8 +14,8 @@ import {
   Shield
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import bibleIcon from "@/assets/bible-icon.jpg";
 import { useAuth } from "@/hooks/useAuth";
+import DailyDevotionalCard from "@/components/DailyDevotionalCard";
 
 const Dashboard = () => {
   const { user, signOut, isAdmin } = useAuth();
@@ -72,33 +72,7 @@ const Dashboard = () => {
           {/* Main Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Today's Devotional Card */}
-            <Card className="p-6 shadow-celestial border-primary/20 bg-card/90 backdrop-blur-sm">
-              <div className="flex items-start gap-4">
-                <img 
-                  src={bibleIcon} 
-                  alt="Devocional" 
-                  className="w-16 h-16 rounded-xl shadow-glow"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Sparkles className="w-5 h-5 text-accent" />
-                    <span className="text-sm font-semibold text-accent">Devocional de Hoje</span>
-                  </div>
-                  <h2 className="text-2xl font-bold text-foreground mb-2">
-                    A Fé que Move Montanhas
-                  </h2>
-                  <p className="text-muted-foreground mb-4">
-                    "Se você tiver fé do tamanho de um grão de mostarda..." - Mateus 17:20
-                  </p>
-                  <Link to="/devotional">
-                    <Button className="bg-gradient-celestial hover:opacity-90 shadow-celestial">
-                      <BookOpen className="w-4 h-4 mr-2" />
-                      Iniciar Devocional
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </Card>
+            <DailyDevotionalCard />
 
             {/* Progress Overview */}
             <div className="grid md:grid-cols-3 gap-4">

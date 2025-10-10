@@ -77,6 +77,41 @@ export type Database = {
         }
         Relationships: []
       }
+      user_devotionals: {
+        Row: {
+          application: string | null
+          completed_at: string
+          devotional_id: string
+          id: string
+          reflection: string | null
+          user_id: string
+        }
+        Insert: {
+          application?: string | null
+          completed_at?: string
+          devotional_id: string
+          id?: string
+          reflection?: string | null
+          user_id: string
+        }
+        Update: {
+          application?: string | null
+          completed_at?: string
+          devotional_id?: string
+          id?: string
+          reflection?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_devotionals_devotional_id_fkey"
+            columns: ["devotional_id"]
+            isOneToOne: false
+            referencedRelation: "devotionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string

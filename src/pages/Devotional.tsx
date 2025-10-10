@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,18 +12,73 @@ import {
   Sparkles,
   MessageCircle
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import bibleIcon from "@/assets/bible-icon.jpg";
+
+interface DevotionalData {
+  id: string;
+  date: string;
+  verse_reference: string;
+  verse_text: string;
+  reflection_question: string;
+  application_question: string;
+}
 
 const Devotional = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [reflection, setReflection] = useState("");
   const [application, setApplication] = useState("");
   const [completed, setCompleted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [devotional, setDevotional] = useState<DevotionalData | null>(null);
 
-  const handleComplete = () => {
+  useEffect(() => {
+    loadTodayDevotional();
+  }, []);
+
+  const loadTodayDevotional = async () => {
+    setLoading(true);
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      
+      const { data, error } = await supabase
+        .from('devotionals')
+        .select('*')
+        .eq('date', today)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (!data) {
+        toast({
+          title: "Devocional não disponível",
+          description: "Ainda não há devocional para hoje. Voltando ao dashboard...",
+          variant: "destructive",
+        });
+        setTimeout(() => navigate('/dashboard'), 2000);
+        return;
+      }
+
+      setDevotional(data);
+    } catch (error: any) {
+      toast({
+        title: "Erro ao carregar devocional",
+        description: error.message,
+        variant: "destructive",
+      });
+      setTimeout(() => navigate('/dashboard'), 2000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleComplete = async () => {
     if (!reflection || !application) {
       toast({
         title: "Campos incompletos",
@@ -33,15 +88,51 @@ const Devotional = () => {
       return;
     }
 
-    setCompleted(true);
-    toast({
-      title: "🎉 Devocional Completado!",
-      description: "+50 pontos de experiência. Continue sua jornada!",
-    });
+    if (!user || !devotional) return;
+
+    try {
+      const { error } = await supabase
+        .from('user_devotionals')
+        .insert({
+          user_id: user.id,
+          devotional_id: devotional.id,
+          reflection,
+          application,
+        });
+
+      if (error) throw error;
+
+      setCompleted(true);
+      toast({
+        title: "🎉 Devocional Completado!",
+        description: "+50 pontos de experiência. Continue sua jornada!",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro ao salvar progresso",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="text-muted-foreground">Carregando devocional do dia...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!devotional) {
+    return null;
+  }
 
   if (completed) {
     return (
@@ -122,15 +213,15 @@ const Devotional = () => {
                   <Sparkles className="w-4 h-4 text-accent" />
                   <span className="text-sm font-semibold text-accent">Versículo do Dia</span>
                 </div>
-                <h1 className="text-2xl font-bold text-foreground">A Fé que Move Montanhas</h1>
+                <h1 className="text-2xl font-bold text-foreground">{devotional.verse_reference}</h1>
               </div>
             </div>
 
             <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl p-6 border border-primary/10">
               <p className="text-lg text-foreground leading-relaxed italic mb-2">
-                "Se vocês tiverem fé do tamanho de um grão de mostarda, poderão dizer a este monte: 'Vá daqui para lá', e ele irá. Nada lhes será impossível."
+                "{devotional.verse_text}"
               </p>
-              <p className="text-sm text-muted-foreground font-medium">— Mateus 17:20</p>
+              <p className="text-sm text-muted-foreground font-medium">— {devotional.verse_reference}</p>
             </div>
 
             <Button 
@@ -148,30 +239,7 @@ const Devotional = () => {
           <Card className="p-8 shadow-celestial space-y-6">
             <div>
               <h2 className="text-2xl font-bold text-foreground mb-3">Reflexão Guiada</h2>
-              <p className="text-muted-foreground">
-                A fé não é sobre a quantidade, mas sobre em quem depositamos nossa confiança. Jesus usa a imagem do grão de mostarda - minúsculo, mas com potencial imenso - para ensinar que até a menor fé genuína em Deus pode realizar o impossível.
-              </p>
-            </div>
-
-            <div className="bg-muted/30 rounded-xl p-6 space-y-3">
-              <h3 className="font-semibold text-foreground flex items-center gap-2">
-                <MessageCircle className="w-5 h-5 text-primary" />
-                Pontos para Reflexão:
-              </h3>
-              <ul className="space-y-2 text-muted-foreground">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span>Quais "montes" (desafios) você está enfrentando hoje?</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span>Como sua fé tem sido testada recentemente?</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span>O que impede você de confiar plenamente em Deus?</span>
-                </li>
-              </ul>
+              <p className="text-muted-foreground">{devotional.reflection_question}</p>
             </div>
 
             <div className="space-y-2">
@@ -217,9 +285,7 @@ const Devotional = () => {
 
             <div className="bg-gradient-to-br from-accent/5 to-accent/10 rounded-xl p-6 border border-accent/20">
               <h3 className="font-semibold text-foreground mb-3">Desafio do Dia:</h3>
-              <p className="text-muted-foreground">
-                Identifique UM desafio específico que você está enfrentando e faça uma oração de entrega, confiando que Deus tem o controle. Depois, dê um passo de fé em direção à solução.
-              </p>
+              <p className="text-muted-foreground">{devotional.application_question}</p>
             </div>
 
             <div className="space-y-2">
