@@ -11,12 +11,15 @@ import {
   ArrowLeft,
   Sparkles,
   MessageCircle,
-  AlertCircle
+  AlertCircle,
+  Bot
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useDevotional } from "@/hooks/useDevotional";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import AIMentorChat from "@/components/AIMentorChat";
+import PastorMessageDialog from "@/components/PastorMessageDialog";
 import bibleIcon from "@/assets/bible-icon.jpg";
 
 const Devotional = () => {
@@ -27,6 +30,8 @@ const Devotional = () => {
   const [application, setApplication] = useState("");
   const [completed, setCompleted] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showAIChat, setShowAIChat] = useState(false);
+  const [showPastorDialog, setShowPastorDialog] = useState(false);
 
   const handleComplete = async () => {
     if (!reflection || !application) {
@@ -459,12 +464,62 @@ const Devotional = () => {
         )}
 
         {/* Help Section */}
-        <div className="mt-6 text-center">
-          <Button variant="outline" className="border-primary/30">
+        <div className="mt-6 text-center space-y-3">
+          <Button 
+            variant="outline" 
+            className="border-primary/30 mr-3"
+            onClick={() => setShowAIChat(true)}
+          >
+            <Bot className="w-4 h-4 mr-2" />
+            Perguntar ao Mentor IA
+          </Button>
+          <Button 
+            variant="outline" 
+            className="border-primary/30"
+            onClick={() => setShowPastorDialog(true)}
+          >
             <MessageCircle className="w-4 h-4 mr-2" />
-            Conversar com Mentor IA
+            Perguntar ao Pastor Gustavo
           </Button>
         </div>
+
+        {/* AI Mentor Chat */}
+        {showAIChat && devotional && (
+          <AIMentorChat
+            devotionalId={devotional.id}
+            devotionalContext={`
+**Devocional de Hoje (${new Date(devotional.date).toLocaleDateString('pt-BR')})**
+
+${devotional.opening_text || ''}
+
+**Versículo: ${devotional.verse_reference}**
+"${devotional.verse_text}"
+
+**Contexto:**
+${devotional.context || ''}
+
+**Reflexão Central:**
+${devotional.central_insight || ''}
+
+**Reflexão:**
+${devotional.reflection_question || ''}
+
+**Aplicação Prática:**
+${devotional.application_question || ''}
+
+${devotional.closing_text || ''}
+            `.trim()}
+            onClose={() => setShowAIChat(false)}
+          />
+        )}
+
+        {/* Pastor Message Dialog */}
+        {showPastorDialog && devotional && (
+          <PastorMessageDialog
+            devotionalId={devotional.id}
+            onClose={() => setShowPastorDialog(false)}
+          />
+        )}
       </main>
     </div>
   );

@@ -14,6 +14,67 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_mentor_conversations: {
+        Row: {
+          created_at: string
+          devotional_id: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          devotional_id?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          devotional_id?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_mentor_conversations_devotional_id_fkey"
+            columns: ["devotional_id"]
+            isOneToOne: false
+            referencedRelation: "devotionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_mentor_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          role: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          role: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_mentor_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_mentor_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       devotionals: {
         Row: {
           application_question: string
@@ -61,6 +122,50 @@ export type Database = {
           verse_text?: string
         }
         Relationships: []
+      }
+      pastor_messages: {
+        Row: {
+          created_at: string
+          devotional_id: string | null
+          id: string
+          message: string
+          pastor_id: string
+          responded_at: string | null
+          response: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          devotional_id?: string | null
+          id?: string
+          message: string
+          pastor_id: string
+          responded_at?: string | null
+          response?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          devotional_id?: string | null
+          id?: string
+          message?: string
+          pastor_id?: string
+          responded_at?: string | null
+          response?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pastor_messages_devotional_id_fkey"
+            columns: ["devotional_id"]
+            isOneToOne: false
+            referencedRelation: "devotionals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

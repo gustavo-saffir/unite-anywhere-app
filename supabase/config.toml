@@ -1,1 +1,4 @@
 project_id = "kxlgecrhypiozlvjkoon"
+
+[functions.ai-mentor-chat]
+verify_jwt = true
