@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Devotional from "./pages/Devotional";
+import Bible from "./pages/Bible";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import PastorPanel from "./pages/PastorPanel";
@@ -43,7 +44,15 @@ const App = () => (
             } 
           />
           <Route 
-            path="/admin" 
+            path="/bible" 
+            element={
+              <ProtectedRoute>
+                <Bible />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin"
             element={
               <ProtectedRoute requireAdmin>
                 <Admin />

@@ -220,6 +220,25 @@ const Dashboard = () => {
               </Button>
             </Card>
 
+            {/* Bible Access */}
+            <Card className="p-6 bg-gradient-to-br from-accent/5 to-primary/5 border-accent/20">
+              <div className="flex items-center gap-2 mb-3">
+                <BookOpen className="w-5 h-5 text-accent" />
+                <h3 className="text-lg font-semibold text-foreground">Bíblia Online</h3>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Acesse a Bíblia completa em NVI. Leia, pesquise e aprofunde-se na Palavra de Deus.
+              </p>
+              <Button 
+                className="w-full bg-gradient-peaceful hover:opacity-90"
+                asChild
+              >
+                <Link to="/bible">
+                  Ler a Bíblia
+                </Link>
+              </Button>
+            </Card>
+
             {/* Mensagens do Pastor/Líder */}
             {userPosition === 'discipulo' && (
               <Card className="p-6 bg-gradient-to-br from-secondary/5 to-accent/5 border-secondary/20">
