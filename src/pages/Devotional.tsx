@@ -18,6 +18,7 @@ import {
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useDevotional } from "@/hooks/useDevotional";
+import { useUserStats } from "@/hooks/useUserStats";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import AIMentorChat from "@/components/AIMentorChat";
 import PastorMessageDialog from "@/components/PastorMessageDialog";
@@ -26,6 +27,7 @@ import bibleIcon from "@/assets/bible-icon.jpg";
 const Devotional = () => {
   const { toast } = useToast();
   const { devotional, loading, error, saveProgress } = useDevotional();
+  const { stats, refresh: refreshStats } = useUserStats();
   const [step, setStep] = useState(1);
   const [reflection, setReflection] = useState("");
   const [application, setApplication] = useState("");
@@ -82,6 +84,7 @@ const Devotional = () => {
 
     if (result.success) {
       setCompleted(true);
+      await refreshStats(); // Atualizar estatísticas
       toast({
         title: "🎉 Devocional Completado!",
         description: "+50 pontos de experiência. Continue sua jornada!",
@@ -234,11 +237,11 @@ const Devotional = () => {
               <div className="text-sm text-muted-foreground">XP Ganho</div>
             </div>
             <div className="p-4 rounded-lg bg-secondary/10">
-              <div className="text-2xl font-bold text-secondary">1</div>
+              <div className="text-2xl font-bold text-secondary">{stats?.current_streak || 1}</div>
               <div className="text-sm text-muted-foreground">Dias Seguidos</div>
             </div>
             <div className="p-4 rounded-lg bg-accent/10">
-              <div className="text-2xl font-bold text-accent">Nível 1</div>
+              <div className="text-2xl font-bold text-accent">Nível {stats?.current_level || 1}</div>
               <div className="text-sm text-muted-foreground">Seu Nível</div>
             </div>
           </div>

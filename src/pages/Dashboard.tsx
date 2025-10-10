@@ -21,6 +21,7 @@ import DailyDevotionalCard from "@/components/DailyDevotionalCard";
 import PastorNotifications from "@/components/PastorNotifications";
 import GeneralMentorChat from "@/components/GeneralMentorChat";
 import ChallengesList from "@/components/ChallengesList";
+import { useUserStats } from "@/hooks/useUserStats";
 import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
@@ -28,6 +29,7 @@ const Dashboard = () => {
   const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [userPosition, setUserPosition] = useState<string | null>(null);
+  const { stats, loading: statsLoading, getLevelProgress } = useUserStats();
   
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -115,10 +117,15 @@ const Dashboard = () => {
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Calendar className="w-5 h-5 text-primary" />
                   </div>
-                  <span className="text-2xl font-bold text-primary">0</span>
+                  <span className="text-2xl font-bold text-primary">
+                    {statsLoading ? '-' : stats?.current_streak || 0}
+                  </span>
                 </div>
                 <p className="text-sm text-muted-foreground">Dias Consecutivos</p>
-                <Progress value={0} className="mt-2 h-2" />
+                <Progress 
+                  value={statsLoading ? 0 : Math.min(((stats?.current_streak || 0) / 7) * 100, 100)} 
+                  className="mt-2 h-2" 
+                />
               </Card>
 
               <Card className="p-4 hover:shadow-celestial transition-all">
@@ -126,10 +133,15 @@ const Dashboard = () => {
                   <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
                     <Award className="w-5 h-5 text-secondary" />
                   </div>
-                  <span className="text-2xl font-bold text-secondary">0</span>
+                  <span className="text-2xl font-bold text-secondary">
+                    {statsLoading ? '-' : stats?.total_xp || 0}
+                  </span>
                 </div>
-                <p className="text-sm text-muted-foreground">Medalhas Conquistadas</p>
-                <Progress value={0} className="mt-2 h-2" />
+                <p className="text-sm text-muted-foreground">XP Total</p>
+                <Progress 
+                  value={statsLoading ? 0 : getLevelProgress(stats?.total_xp || 0, stats?.current_level || 1)} 
+                  className="mt-2 h-2" 
+                />
               </Card>
 
               <Card className="p-4 hover:shadow-celestial transition-all">
@@ -137,10 +149,17 @@ const Dashboard = () => {
                   <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
                     <TrendingUp className="w-5 h-5 text-accent" />
                   </div>
-                  <span className="text-2xl font-bold text-accent">Nível 1</span>
+                  <span className="text-2xl font-bold text-accent">
+                    {statsLoading ? '-' : `Nível ${stats?.current_level || 1}`}
+                  </span>
                 </div>
-                <p className="text-sm text-muted-foreground">Iniciante</p>
-                <Progress value={0} className="mt-2 h-2" />
+                <p className="text-sm text-muted-foreground">
+                  {statsLoading ? 'Carregando...' : stats?.current_level === 1 ? 'Iniciante' : 'Progredindo'}
+                </p>
+                <Progress 
+                  value={statsLoading ? 0 : getLevelProgress(stats?.total_xp || 0, stats?.current_level || 1)} 
+                  className="mt-2 h-2" 
+                />
               </Card>
             </div>
 
