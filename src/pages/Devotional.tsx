@@ -98,6 +98,88 @@ const Devotional = () => {
   const totalSteps = 7;
   const progress = (step / totalSteps) * 100;
 
+  const handleShare = async () => {
+    const shareText = `🙏 Completei meu devocional diário!\n\n📖 ${devotional?.verse_reference}\n"${devotional?.verse_text}"\n\n✨ Continue sua jornada espiritual conosco!`;
+    const shareUrl = window.location.origin;
+
+    // Tentar usar a Web Share API (funciona em mobile)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Devocional Completado',
+          text: shareText,
+          url: shareUrl,
+        });
+        toast({
+          title: "Compartilhado!",
+          description: "Obrigado por compartilhar sua jornada.",
+        });
+        return;
+      } catch (error) {
+        // Se o usuário cancelar, não fazer nada
+        if ((error as Error).name !== 'AbortError') {
+          console.error('Error sharing:', error);
+        }
+      }
+    }
+
+    // Fallback: mostrar opções de compartilhamento
+    const encodedText = encodeURIComponent(shareText);
+    const encodedUrl = encodeURIComponent(shareUrl);
+    
+    // WhatsApp
+    const whatsappUrl = `https://wa.me/?text=${encodedText}%20${encodedUrl}`;
+    
+    // Facebook
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`;
+    
+    // Twitter/X
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
+    
+    // Para Instagram, copiar para clipboard (Instagram não tem API web)
+    const options = [
+      { name: 'WhatsApp', url: whatsappUrl, icon: '💬' },
+      { name: 'Facebook', url: facebookUrl, icon: '📘' },
+      { name: 'Twitter/X', url: twitterUrl, icon: '🐦' },
+      { name: 'Copiar para Instagram', action: 'copy', icon: '📋' },
+    ];
+
+    // Criar um menu simples
+    const choice = window.confirm(
+      `Escolha onde compartilhar:\n\n` +
+      `1️⃣ WhatsApp\n` +
+      `2️⃣ Facebook\n` +
+      `3️⃣ Twitter/X\n` +
+      `4️⃣ Copiar texto (para Instagram)\n\n` +
+      `Pressione OK para WhatsApp ou Cancelar para mais opções`
+    );
+
+    if (choice) {
+      window.open(whatsappUrl, '_blank');
+    } else {
+      // Copiar para clipboard
+      try {
+        await navigator.clipboard.writeText(shareText);
+        toast({
+          title: "Texto copiado!",
+          description: "Cole no Instagram ou em qualquer rede social.",
+        });
+      } catch (error) {
+        // Fallback para copiar
+        const textarea = document.createElement('textarea');
+        textarea.value = shareText;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        toast({
+          title: "Texto copiado!",
+          description: "Cole no Instagram ou em qualquer rede social.",
+        });
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center">
@@ -167,7 +249,11 @@ const Devotional = () => {
                 Voltar ao Dashboard
               </Button>
             </Link>
-            <Button variant="outline" className="flex-1 border-primary/30">
+            <Button 
+              variant="outline" 
+              className="flex-1 border-primary/30"
+              onClick={handleShare}
+            >
               <Share2 className="w-4 h-4 mr-2" />
               Compartilhar
             </Button>
