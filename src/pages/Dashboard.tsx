@@ -14,7 +14,8 @@ import {
   MessageCircle,
   LogOut,
   Shield,
-  Menu
+  Menu,
+  History
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -258,6 +259,26 @@ const Dashboard = () => {
                 onClick={() => setShowMentorChat(true)}
               >
                 Iniciar Conversa
+              </Button>
+            </Card>
+
+            {/* Histórico de Devocionais */}
+            <Card className="p-6 bg-gradient-to-br from-accent/5 to-primary/5 border-accent/20">
+              <div className="flex items-center gap-2 mb-3">
+                <History className="w-5 h-5 text-accent" />
+                <h3 className="text-lg font-semibold text-foreground">Histórico</h3>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Revise seus devocionais anteriores e veja sua evolução espiritual ao longo do tempo.
+              </p>
+              <Button 
+                variant="outline" 
+                className="w-full border-accent/30"
+                asChild
+              >
+                <Link to="/devotional-history">
+                  Ver Histórico
+                </Link>
               </Button>
             </Card>
 
