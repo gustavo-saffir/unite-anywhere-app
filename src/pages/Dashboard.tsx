@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { 
   BookOpen, 
   Target, 
@@ -12,7 +13,8 @@ import {
   Sparkles,
   MessageCircle,
   LogOut,
-  Shield
+  Shield,
+  Menu
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -71,17 +73,22 @@ const Dashboard = () => {
       {/* Header */}
       <header className="border-b border-border/50 bg-background/80 backdrop-blur-lg sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-gradient-celestial flex items-center justify-center shadow-glow">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className="w-10 h-10 rounded-lg bg-gradient-celestial flex items-center justify-center shadow-glow flex-shrink-0">
                 <BookOpen className="w-6 h-6 text-primary-foreground" />
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-foreground">Bem-vindo de volta, {userName}!</h1>
-                <p className="text-sm text-muted-foreground">{today}</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-base sm:text-xl font-bold text-foreground truncate">
+                  Bem-vindo, <span className="hidden sm:inline">{userName}</span>
+                  <span className="sm:hidden">{userName.split(' ')[0]}</span>!
+                </h1>
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">{today}</p>
               </div>
             </div>
-            <div className="flex gap-2">
+            
+            {/* Desktop Menu */}
+            <div className="hidden md:flex gap-2 flex-shrink-0">
               {isAdmin && (
                 <Button variant="outline" className="border-primary/30" asChild>
                   <Link to="/admin">
@@ -103,6 +110,39 @@ const Dashboard = () => {
                 Sair
               </Button>
             </div>
+
+            {/* Mobile Menu */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon" className="md:hidden flex-shrink-0">
+                  <Menu className="w-5 h-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <div className="flex flex-col gap-4 mt-8">
+                  {isAdmin && (
+                    <Button variant="outline" className="w-full justify-start" asChild>
+                      <Link to="/admin">
+                        <Shield className="w-4 h-4 mr-2" />
+                        Admin
+                      </Link>
+                    </Button>
+                  )}
+                  {(userPosition === 'pastor' || userPosition === 'lider') && (
+                    <Button variant="outline" className="w-full justify-start" asChild>
+                      <Link to="/pastor-panel">
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        Painel Pastor
+                      </Link>
+                    </Button>
+                  )}
+                  <Button variant="outline" className="w-full justify-start" onClick={handleSignOut}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sair
+                  </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
