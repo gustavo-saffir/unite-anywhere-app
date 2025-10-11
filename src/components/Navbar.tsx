@@ -20,7 +20,12 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-4">
-            <Link to="/auth">
+            <Link to="/auth?mode=login">
+              <Button variant="ghost" className="text-base">
+                Login
+              </Button>
+            </Link>
+            <Link to="/auth?mode=signup">
               <Button className="bg-gradient-celestial hover:opacity-90 shadow-celestial text-base px-6">
                 Criar Conta
               </Button>
@@ -38,8 +43,13 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-border/50">
-            <Link to="/auth" className="w-full">
+          <div className="md:hidden py-4 border-t border-border/50 space-y-2">
+            <Link to="/auth?mode=login" className="w-full">
+              <Button variant="ghost" className="w-full">
+                Login
+              </Button>
+            </Link>
+            <Link to="/auth?mode=signup" className="w-full">
               <Button className="w-full bg-gradient-celestial hover:opacity-90 shadow-celestial">
                 Criar Conta
               </Button>
