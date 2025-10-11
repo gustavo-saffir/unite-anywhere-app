@@ -5,6 +5,7 @@ import { ArrowLeft, BookOpen, Calendar, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useDevotionalHistory } from '@/hooks/useDevotionalHistory';
 import { Skeleton } from '@/components/ui/skeleton';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 import {
   Accordion,
   AccordionContent,
@@ -180,13 +181,15 @@ const DevotionalHistory = () => {
                           <h4 className="font-semibold text-sm text-foreground mb-2">
                             Sua Reflexão:
                           </h4>
-                          <p className="text-sm text-muted-foreground mb-2 italic">
-                            "{devotional.reflection_question}"
-                          </p>
+                          <MarkdownRenderer 
+                            content={devotional.reflection_question} 
+                            className="text-sm text-muted-foreground mb-2 italic"
+                          />
                           <div className="p-4 bg-secondary/5 rounded-lg border border-secondary/20">
-                            <p className="text-sm text-foreground whitespace-pre-wrap">
-                              {item.reflection}
-                            </p>
+                            <MarkdownRenderer 
+                              content={item.reflection} 
+                              className="text-sm text-foreground"
+                            />
                           </div>
                         </div>
                       )}
@@ -197,13 +200,15 @@ const DevotionalHistory = () => {
                           <h4 className="font-semibold text-sm text-foreground mb-2">
                             Sua Aplicação:
                           </h4>
-                          <p className="text-sm text-muted-foreground mb-2 italic">
-                            "{devotional.application_question}"
-                          </p>
+                          <MarkdownRenderer 
+                            content={devotional.application_question} 
+                            className="text-sm text-muted-foreground mb-2 italic"
+                          />
                           <div className="p-4 bg-accent/5 rounded-lg border border-accent/20">
-                            <p className="text-sm text-foreground whitespace-pre-wrap">
-                              {item.application}
-                            </p>
+                            <MarkdownRenderer 
+                              content={item.application} 
+                              className="text-sm text-foreground"
+                            />
                           </div>
                         </div>
                       )}
