@@ -12,6 +12,7 @@ import Admin from "./pages/Admin";
 import PastorPanel from "./pages/PastorPanel";
 import ManageUsers from "./pages/ManageUsers";
 import ManageChallenges from "./pages/ManageChallenges";
+import CreateDevotional from "./pages/CreateDevotional";
 import MyMessages from "./pages/MyMessages";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -75,8 +76,16 @@ const App = () => (
                 </ProtectedRoute>
               } 
             />
+            <Route 
+              path="/create-devotional" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <CreateDevotional />
+                </ProtectedRoute>
+              } 
+            />
           <Route 
-            path="/pastor-panel" 
+            path="/pastor-panel"
             element={
               <ProtectedRoute>
                 <PastorPanel />

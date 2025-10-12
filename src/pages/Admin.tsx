@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
-import { Settings, Users, BookOpen, MessageSquare, LogOut, Target } from 'lucide-react';
+import { Settings, Users, BookOpen, LogOut, Target } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Admin = () => {
@@ -58,7 +58,7 @@ const Admin = () => {
               </Card>
             </Link>
 
-            <Link to="/pastor-panel">
+            <Link to="/create-devotional">
               <Card className="p-6 hover:shadow-lg transition-all cursor-pointer">
                 <BookOpen className="w-12 h-12 mb-4 text-primary" />
                 <h3 className="text-xl font-semibold mb-2">Criar Devocionais</h3>
@@ -74,16 +74,6 @@ const Admin = () => {
                 <h3 className="text-xl font-semibold mb-2">Gerenciar Desafios</h3>
                 <p className="text-muted-foreground">
                   Crie e gerencie desafios espirituais
-                </p>
-              </Card>
-            </Link>
-
-            <Link to="/my-messages">
-              <Card className="p-6 hover:shadow-lg transition-all cursor-pointer">
-                <MessageSquare className="w-12 h-12 mb-4 text-primary" />
-                <h3 className="text-xl font-semibold mb-2">Mensagens</h3>
-                <p className="text-muted-foreground">
-                  Veja as mensagens dos discípulos
                 </p>
               </Card>
             </Link>
