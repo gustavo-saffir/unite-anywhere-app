@@ -59,7 +59,6 @@ export const useAuth = () => {
   const signUp = async (email: string, password: string, metadata: {
     full_name: string;
     church_denomination: string;
-    position: 'pastor' | 'lider' | 'discipulo';
   }) => {
     const redirectUrl = `${window.location.origin}/dashboard`;
     

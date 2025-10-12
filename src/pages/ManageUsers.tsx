@@ -41,7 +41,7 @@ const ManageUsers = () => {
 
       // Separar pastores dos demais usuários
       const pastorsList = allUsers?.filter(u => u.position === 'pastor' || u.position === 'lider') || [];
-      const usersList = allUsers?.filter(u => u.position === 'discipulo') || [];
+      const usersList = allUsers || [];
 
       setPastors(pastorsList);
       setUsers(usersList);
@@ -90,6 +90,48 @@ const ManageUsers = () => {
     }
   };
 
+  const handleUpdatePosition = async (userId: string, newPosition: string) => {
+    setSaving(true);
+    try {
+      const updates: any = { position: newPosition };
+      
+      // Se está mudando para discípulo e não tem pastor, atribuir o pastor padrão
+      if (newPosition === 'discipulo') {
+        const user = users.find(u => u.id === userId);
+        if (!user?.pastor_id) {
+          updates.pastor_id = 'e745ff89-8b97-48d9-afc3-b7f6d7a86492'; // Gustavo Saffir
+        }
+      } else {
+        // Se está mudando para pastor ou líder, remover o pastor_id
+        updates.pastor_id = null;
+      }
+
+      const { error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', userId);
+
+      if (error) throw error;
+
+      // Recarregar os dados para atualizar as listas
+      await loadData();
+
+      toast({
+        title: 'Sucesso!',
+        description: 'Cargo atualizado com sucesso.',
+      });
+    } catch (error) {
+      console.error('Error updating position:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível atualizar o cargo.',
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center">
@@ -123,50 +165,63 @@ const ManageUsers = () => {
       <main className="container mx-auto px-4 py-8">
         <Card className="p-6 shadow-celestial">
           <div className="mb-6">
-            <h2 className="text-xl font-bold text-foreground mb-2">Vincular Discípulos aos Pastores</h2>
+            <h2 className="text-xl font-bold text-foreground mb-2">Gerenciar Usuários</h2>
             <p className="text-sm text-muted-foreground">
-              Selecione um pastor/líder para cada discípulo. Isso permitirá que o discípulo envie mensagens diretas.
+              Edite o cargo dos usuários e vincule discípulos aos pastores/líderes.
             </p>
           </div>
-
-          {pastors.length === 0 && (
-            <div className="bg-yellow-500/10 border border-yellow-500/50 rounded-lg p-4 mb-6">
-              <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                ⚠️ Não há pastores ou líderes cadastrados. Atualize o perfil dos pastores para position="pastor" ou "lider" primeiro.
-              </p>
-            </div>
-          )}
 
           <div className="space-y-4">
             {users.map((user) => (
               <Card key={user.id} className="p-4">
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex-1">
                     <h3 className="font-semibold text-foreground">{user.full_name}</h3>
                     <p className="text-sm text-muted-foreground">{user.church_denomination}</p>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <div className="w-64">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <div className="w-full sm:w-48">
+                      <Label className="text-xs text-muted-foreground mb-1 block">Cargo</Label>
                       <Select
-                        key={`${user.id}-${user.pastor_id}`}
-                        value={user.pastor_id || 'none'}
-                        onValueChange={(value) => handleUpdatePastor(user.id, value === 'none' ? null : value)}
-                        disabled={saving || pastors.length === 0}
+                        value={user.position}
+                        onValueChange={(value) => handleUpdatePosition(user.id, value)}
+                        disabled={saving}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione um pastor" />
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="none">Nenhum pastor</SelectItem>
-                          {pastors.map((pastor) => (
-                            <SelectItem key={pastor.id} value={pastor.id}>
-                              {pastor.full_name} ({pastor.position})
-                            </SelectItem>
-                          ))}
+                          <SelectItem value="discipulo">Discípulo</SelectItem>
+                          <SelectItem value="lider">Líder</SelectItem>
+                          <SelectItem value="pastor">Pastor</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
+
+                    {user.position === 'discipulo' && (
+                      <div className="w-full sm:w-64">
+                        <Label className="text-xs text-muted-foreground mb-1 block">Pastor/Líder</Label>
+                        <Select
+                          key={`${user.id}-${user.pastor_id}`}
+                          value={user.pastor_id || 'none'}
+                          onValueChange={(value) => handleUpdatePastor(user.id, value === 'none' ? null : value)}
+                          disabled={saving || pastors.length === 0}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Nenhum</SelectItem>
+                            {pastors.map((pastor) => (
+                              <SelectItem key={pastor.id} value={pastor.id}>
+                                {pastor.full_name} ({pastor.position})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                   </div>
                 </div>
               </Card>
@@ -176,7 +231,7 @@ const ManageUsers = () => {
           {users.length === 0 && (
             <div className="text-center py-12">
               <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">Nenhum discípulo cadastrado ainda.</p>
+              <p className="text-muted-foreground">Nenhum usuário cadastrado ainda.</p>
             </div>
           )}
         </Card>

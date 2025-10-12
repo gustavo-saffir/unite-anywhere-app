@@ -15,7 +15,6 @@ const signUpSchema = z.object({
   password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
   full_name: z.string().min(2, 'Nome deve ter no mínimo 2 caracteres'),
   church_denomination: z.string().min(2, 'Denominação é obrigatória'),
-  position: z.enum(['pastor', 'lider', 'discipulo']),
 });
 
 const signInSchema = z.object({
@@ -31,7 +30,6 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [churchDenomination, setChurchDenomination] = useState('');
-  const [position, setPosition] = useState<'pastor' | 'lider' | 'discipulo'>('discipulo');
   const [loading, setLoading] = useState(false);
   
   const { user, signUp, signIn } = useAuth();
@@ -73,13 +71,11 @@ const Auth = () => {
           password,
           full_name: fullName,
           church_denomination: churchDenomination,
-          position,
         });
         
         const { error } = await signUp(validated.email, validated.password, {
           full_name: validated.full_name,
           church_denomination: validated.church_denomination,
-          position: validated.position,
         });
         
         if (error) {
@@ -149,20 +145,6 @@ const Auth = () => {
                   onChange={(e) => setChurchDenomination(e.target.value)}
                   required
                 />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="position">Cargo</Label>
-                <Select value={position} onValueChange={(value: any) => setPosition(value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pastor">Pastor</SelectItem>
-                    <SelectItem value="lider">Líder</SelectItem>
-                    <SelectItem value="discipulo">Discípulo</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
             </>
           )}
