@@ -32,6 +32,26 @@ const ChallengesList = () => {
 
   useEffect(() => {
     loadChallenges();
+
+    // Assinar atualizações em tempo real
+    const channel = supabase
+      .channel('user_challenges_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_challenges',
+        },
+        () => {
+          loadChallenges();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const loadChallenges = async () => {

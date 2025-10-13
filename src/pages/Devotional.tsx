@@ -20,6 +20,7 @@ import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useDevotional } from "@/hooks/useDevotional";
 import { useUserStats } from "@/hooks/useUserStats";
+import { useUpdateChallengeProgress } from "@/hooks/useUpdateChallengeProgress";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import AIMentorChat from "@/components/AIMentorChat";
 import PastorMessageDialog from "@/components/PastorMessageDialog";
@@ -29,6 +30,7 @@ const Devotional = () => {
   const { toast } = useToast();
   const { devotional, loading, error, saveProgress } = useDevotional();
   const { stats, updateStatsAfterDevotional } = useUserStats();
+  const { updateChallengeProgress } = useUpdateChallengeProgress();
   const [step, setStep] = useState(1);
   const [reflection, setReflection] = useState("");
   const [application, setApplication] = useState("");
@@ -143,6 +145,9 @@ const Devotional = () => {
       console.log('Updating stats with XP:', xpGained);
       const statsResult = await updateStatsAfterDevotional(xpGained);
       console.log('Stats Result:', statsResult);
+      
+      // Atualizar progresso dos desafios
+      await updateChallengeProgress();
       
       if (statsResult.success) {
         setCompleted(true);
