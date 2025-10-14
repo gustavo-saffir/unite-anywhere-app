@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { MessageCircle, Send, Clock, CheckCheck, User, BookOpen, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { PushNotificationToggle } from '@/components/PushNotificationToggle';
 
 interface PastorMessage {
   id: string;
@@ -242,6 +243,11 @@ const PastorPanel = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
+        {/* Push Notifications Toggle */}
+        <div className="mb-6">
+          <PushNotificationToggle />
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Lista de Mensagens */}
           <div className="space-y-4">

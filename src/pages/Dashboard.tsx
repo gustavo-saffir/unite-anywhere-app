@@ -29,6 +29,7 @@ import { useUserStats } from "@/hooks/useUserStats";
 import { useSpiritualGoals } from "@/hooks/useSpiritualGoals";
 import { supabase } from "@/integrations/supabase/client";
 import { RecentBadges } from "@/components/RecentBadges";
+import { PushNotificationToggle } from "@/components/PushNotificationToggle";
 
 const Dashboard = () => {
   const [showMentorChat, setShowMentorChat] = useState(false);
@@ -303,6 +304,9 @@ const Dashboard = () => {
                 </Button>
               </Card>
             )}
+
+            {/* Push Notifications Toggle */}
+            <PushNotificationToggle />
 
             {/* Recent Badges */}
             <RecentBadges />
