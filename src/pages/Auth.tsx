@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from "@/hooks/useAuth.tsx";
 import { useToast } from '@/hooks/use-toast';
 import { BookOpen } from 'lucide-react';
 import { z } from 'zod';
