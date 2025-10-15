@@ -56,17 +56,20 @@ export const useAuth = () => {
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', userId)
-        .maybeSingle();
+        .eq('user_id', userId);
       
       if (error) {
         console.error('Erro ao verificar role:', error);
         return;
       }
 
-      const role = data?.role || 'disciple';
-      setUserRole(role);
-      setIsAdmin(role === 'admin');
+      // Check if user has admin role among their roles
+      const roles = data?.map(r => r.role) || [];
+      const hasAdminRole = roles.includes('admin');
+      const primaryRole = hasAdminRole ? 'admin' : (roles[0] || 'disciple');
+      
+      setUserRole(primaryRole);
+      setIsAdmin(hasAdminRole);
     } catch (err) {
       console.error('Erro inesperado ao verificar role:', err);
     }
