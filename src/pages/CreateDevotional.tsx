@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { TextEditor } from '@/components/TextEditor';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -132,44 +133,44 @@ const CreateDevotional = () => {
 
               <div>
                 <Label htmlFor="opening_text">Texto de Abertura</Label>
-                <Textarea
+                <TextEditor
                   id="opening_text"
                   placeholder="Introdução do devocional"
                   value={formData.opening_text}
-                  onChange={(e) => setFormData({ ...formData, opening_text: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, opening_text: value })}
                   rows={4}
                 />
               </div>
 
               <div>
                 <Label htmlFor="context">Contexto</Label>
-                <Textarea
+                <TextEditor
                   id="context"
                   placeholder="Contexto histórico e cultural"
                   value={formData.context}
-                  onChange={(e) => setFormData({ ...formData, context: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, context: value })}
                   rows={4}
                 />
               </div>
 
               <div>
                 <Label htmlFor="central_insight">Insight Central</Label>
-                <Textarea
+                <TextEditor
                   id="central_insight"
                   placeholder="Mensagem principal do devocional"
                   value={formData.central_insight}
-                  onChange={(e) => setFormData({ ...formData, central_insight: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, central_insight: value })}
                   rows={4}
                 />
               </div>
 
               <div>
                 <Label htmlFor="closing_text">Texto de Encerramento</Label>
-                <Textarea
+                <TextEditor
                   id="closing_text"
                   placeholder="Conclusão e encorajamento final"
                   value={formData.closing_text}
-                  onChange={(e) => setFormData({ ...formData, closing_text: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, closing_text: value })}
                   rows={4}
                 />
               </div>
