@@ -195,6 +195,45 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          recipient_id: string
+          replied_at: string | null
+          replied_by: string | null
+          reply: string | null
+          sender_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          recipient_id: string
+          replied_at?: string | null
+          replied_by?: string | null
+          reply?: string | null
+          sender_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          recipient_id?: string
+          replied_at?: string | null
+          replied_by?: string | null
+          reply?: string | null
+          sender_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pastor_messages: {
         Row: {
           created_at: string
