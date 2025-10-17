@@ -78,6 +78,24 @@ const PastorMessageDialog = ({ devotionalId, onClose }: PastorMessageDialogProps
 
       if (error) throw error;
 
+      // Notificar o pastor também via função (fallback além do gatilho do banco)
+      try {
+        const { error: pushError } = await supabase.functions.invoke('push-notifications', {
+          body: {
+            action: 'send-notification',
+            userId: pastorData[0].id,
+            title: 'Nova mensagem recebida',
+            body: 'Um discípulo enviou uma mensagem',
+            url: '/pastor-panel',
+          },
+        });
+        if (pushError) {
+          console.error('Erro ao enviar push para o pastor:', pushError);
+        }
+      } catch (e) {
+        console.error('Falha ao chamar função de push (pastor):', e);
+      }
+
       toast({
         title: 'Mensagem enviada!',
         description: 'Seu pastor será notificado e responderá em breve.',

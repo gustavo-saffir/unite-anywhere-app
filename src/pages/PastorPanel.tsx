@@ -171,6 +171,24 @@ const PastorPanel = () => {
         throw error;
       }
 
+      // Enviar push ao discípulo (fallback além do gatilho do banco)
+      try {
+        const { error: pushError } = await supabase.functions.invoke('push-notifications', {
+          body: {
+            action: 'send-notification',
+            userId: selectedMessage.user_id,
+            title: 'Resposta recebida',
+            body: 'Seu líder respondeu sua mensagem',
+            url: '/my-messages',
+          },
+        });
+        if (pushError) {
+          console.error('Erro ao enviar push via função:', pushError);
+        }
+      } catch (e) {
+        console.error('Falha ao chamar função de push:', e);
+      }
+
       toast({
         title: 'Resposta enviada!',
         description: 'O discípulo será notificado.',
