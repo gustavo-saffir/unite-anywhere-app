@@ -121,20 +121,26 @@ serve(async (req) => {
       }
 
       // Get user's subscriptions
+      console.log('[push-notifications] send-notification for userId:', userId);
       const { data: subscriptions, error: subError } = await supabase
         .from('push_subscriptions')
         .select('*')
         .eq('user_id', userId);
 
-      if (subError) throw subError;
+      if (subError) {
+        console.error('[push-notifications] DB error fetching subscriptions:', subError);
+        throw subError;
+      }
 
       if (!subscriptions || subscriptions.length === 0) {
-        console.log(`No push subscriptions found for user ${userId}`);
+        console.log(`[push-notifications] No subscriptions found for user ${userId}`);
         return new Response(
           JSON.stringify({ success: true, message: 'No subscriptions' }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
+
+      console.log(`[push-notifications] Found ${subscriptions.length} subscription(s) for user ${userId}`);
 
       // Send notification to all user's devices
       const webpush = await import('https://esm.sh/web-push@3.6.6');
@@ -167,16 +173,16 @@ serve(async (req) => {
             },
             payload
           );
-          console.log(`Notification sent to ${sub.endpoint}`);
+          console.log(`[push-notifications] Notification sent to ${sub.endpoint}`);
         } catch (error: any) {
-          console.error(`Failed to send notification to ${sub.endpoint}:`, error);
-          
+          console.error(`[push-notifications] Failed to send notification to ${sub.endpoint}:`, error);
           // If subscription is invalid, remove it
           if (error.statusCode === 410 || error.statusCode === 404) {
             await supabase
               .from('push_subscriptions')
               .delete()
               .eq('endpoint', sub.endpoint);
+            console.log(`[push-notifications] Removed invalid subscription ${sub.endpoint}`);
           }
         }
       });
