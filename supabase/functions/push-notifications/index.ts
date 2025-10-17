@@ -23,16 +23,20 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get authenticated user
-    const authHeader = req.headers.get('Authorization')!;
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    // Parse request body early to determine action
+    const { action, subscription, endpoint, userId, title, body, url } = await req.json().catch(() => ({} as any));
 
-    if (userError || !user) {
-      throw new Error('Unauthorized');
+    // Only require user auth for client-initiated actions
+    let user: any = null;
+    if (action !== 'send-notification') {
+      const authHeader = req.headers.get('Authorization') || '';
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user: authUser }, error: userError } = await supabase.auth.getUser(token);
+      if (userError || !authUser) {
+        throw new Error('Unauthorized');
+      }
+      user = authUser;
     }
-
-    const { action, subscription, endpoint, userId, title, body, url } = await req.json();
 
     // Get VAPID public key
     if (action === 'get-vapid-key') {
