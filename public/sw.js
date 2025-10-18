@@ -1,4 +1,4 @@
-const CACHE_NAME = 'caminho-diario-v2';
+const CACHE_NAME = 'caminho-diario-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -45,7 +45,7 @@ self.addEventListener('fetch', event => {
 
 // Push notification event handler
 self.addEventListener('push', event => {
-  console.log('Push notification received:', event);
+  console.log('[SW] Push notification received:', event);
   
   let notificationData = {
     title: 'Caminho Diário',
@@ -58,6 +58,7 @@ self.addEventListener('push', event => {
   if (event.data) {
     try {
       const data = event.data.json();
+      console.log('[SW] Push data:', data);
       notificationData = {
         title: data.title || notificationData.title,
         body: data.body || notificationData.body,
@@ -68,33 +69,42 @@ self.addEventListener('push', event => {
         requireInteraction: data.requireInteraction || false
       };
     } catch (e) {
+      console.error('[SW] Error parsing push data:', e);
       notificationData.body = event.data.text();
     }
   }
 
-  // Notify all clients that a push was received
+  console.log('[SW] Showing notification:', notificationData.title);
+
+  // ALWAYS show notification in system tray, regardless of app state
   event.waitUntil(
-    Promise.all([
-      self.registration.showNotification(notificationData.title, {
-        body: notificationData.body,
-        icon: notificationData.icon,
-        badge: notificationData.badge,
-        data: notificationData.data,
-        tag: notificationData.tag,
-        requireInteraction: notificationData.requireInteraction,
-        vibrate: [200, 100, 200]
-      }),
-      // Post message to all clients
-      clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(clients => {
-        clients.forEach(client => {
+    self.registration.showNotification(notificationData.title, {
+      body: notificationData.body,
+      icon: notificationData.icon,
+      badge: notificationData.badge,
+      data: notificationData.data,
+      tag: notificationData.tag,
+      requireInteraction: notificationData.requireInteraction,
+      vibrate: [200, 100, 200],
+      // Additional options for better Android support
+      silent: false,
+      renotify: true,
+      timestamp: Date.now()
+    }).then(() => {
+      console.log('[SW] Notification shown successfully');
+      // Post message to all clients AFTER showing notification
+      return clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(clientList => {
+        clientList.forEach(client => {
           client.postMessage({
             type: 'PUSH_RECEIVED',
             data: notificationData,
             timestamp: new Date().toISOString()
           });
         });
-      })
-    ])
+      });
+    }).catch(err => {
+      console.error('[SW] Error showing notification:', err);
+    })
   );
 });
 
