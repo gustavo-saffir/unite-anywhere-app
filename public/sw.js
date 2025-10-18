@@ -1,4 +1,4 @@
-const CACHE_NAME = 'caminho-diario-v1';
+const CACHE_NAME = 'caminho-diario-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -17,7 +17,22 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  event.waitUntil(clients.claim());
+  event.waitUntil(
+    Promise.all([
+      clients.claim(),
+      // Remove old caches
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            if (cacheName !== CACHE_NAME) {
+              console.log('Removing old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+    ])
+  );
 });
 
 self.addEventListener('fetch', event => {
@@ -57,16 +72,29 @@ self.addEventListener('push', event => {
     }
   }
 
+  // Notify all clients that a push was received
   event.waitUntil(
-    self.registration.showNotification(notificationData.title, {
-      body: notificationData.body,
-      icon: notificationData.icon,
-      badge: notificationData.badge,
-      data: notificationData.data,
-      tag: notificationData.tag,
-      requireInteraction: notificationData.requireInteraction,
-      vibrate: [200, 100, 200]
-    })
+    Promise.all([
+      self.registration.showNotification(notificationData.title, {
+        body: notificationData.body,
+        icon: notificationData.icon,
+        badge: notificationData.badge,
+        data: notificationData.data,
+        tag: notificationData.tag,
+        requireInteraction: notificationData.requireInteraction,
+        vibrate: [200, 100, 200]
+      }),
+      // Post message to all clients
+      clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(clients => {
+        clients.forEach(client => {
+          client.postMessage({
+            type: 'PUSH_RECEIVED',
+            data: notificationData,
+            timestamp: new Date().toISOString()
+          });
+        });
+      })
+    ])
   );
 });
 

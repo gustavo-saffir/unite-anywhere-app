@@ -135,7 +135,13 @@ serve(async (req) => {
       if (!subscriptions || subscriptions.length === 0) {
         console.log(`[push-notifications] No subscriptions found for user ${userId}`);
         return new Response(
-          JSON.stringify({ success: true, message: 'No subscriptions' }),
+          JSON.stringify({ 
+            success: true, 
+            targeted: 0,
+            sentOk: 0,
+            removedInvalid: 0,
+            message: 'No subscriptions found for this user'
+          }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
@@ -161,6 +167,9 @@ serve(async (req) => {
         requireInteraction: true
       });
 
+      let sentOk = 0;
+      let removedInvalid = 0;
+
       const sendPromises = subscriptions.map(async (sub: PushSubscription) => {
         try {
           await webpush.sendNotification(
@@ -173,24 +182,33 @@ serve(async (req) => {
             },
             payload
           );
-          console.log(`[push-notifications] Notification sent to ${sub.endpoint}`);
+          console.log(`[push-notifications] ✅ Notification sent to ${sub.endpoint.substring(0, 50)}...`);
+          sentOk++;
         } catch (error: any) {
-          console.error(`[push-notifications] Failed to send notification to ${sub.endpoint}:`, error);
+          console.error(`[push-notifications] ❌ Failed to send to ${sub.endpoint.substring(0, 50)}...:`, error.message, error.statusCode);
           // If subscription is invalid, remove it
           if (error.statusCode === 410 || error.statusCode === 404) {
             await supabase
               .from('push_subscriptions')
               .delete()
               .eq('endpoint', sub.endpoint);
-            console.log(`[push-notifications] Removed invalid subscription ${sub.endpoint}`);
+            console.log(`[push-notifications] 🗑️ Removed invalid subscription ${sub.endpoint.substring(0, 50)}...`);
+            removedInvalid++;
           }
         }
       });
 
       await Promise.all(sendPromises);
 
+      console.log(`[push-notifications] Summary: targeted=${subscriptions.length}, sentOk=${sentOk}, removedInvalid=${removedInvalid}`);
+
       return new Response(
-        JSON.stringify({ success: true }),
+        JSON.stringify({ 
+          success: true,
+          targeted: subscriptions.length,
+          sentOk,
+          removedInvalid
+        }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }

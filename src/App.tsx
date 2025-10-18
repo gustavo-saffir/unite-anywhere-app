@@ -14,6 +14,7 @@ import ManageUsers from "./pages/ManageUsers";
 import ManageChallenges from "./pages/ManageChallenges";
 import CreateDevotional from "./pages/CreateDevotional";
 import MyMessages from "./pages/MyMessages";
+import PushDebug from "./pages/PushDebug";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -97,6 +98,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <MyMessages />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/push-debug" 
+            element={
+              <ProtectedRoute>
+                <PushDebug />
               </ProtectedRoute>
             } 
           />
