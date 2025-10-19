@@ -148,8 +148,8 @@ serve(async (req) => {
 
       console.log(`[push-notifications] Found ${subscriptions.length} subscription(s) for user ${userId}`);
 
-      // Send notification to all user's devices using npm: import for better compatibility
-      const webpush = await import('npm:web-push@3.6.7');
+      // Send notification to all user's devices
+      const webpush = await import('https://esm.sh/web-push@3.6.7');
       
       webpush.setVapidDetails(
         vapidSubject,
