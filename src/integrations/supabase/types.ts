@@ -147,6 +147,50 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_readings: {
+        Row: {
+          book: string
+          chapter: number
+          chapter_text: string
+          created_at: string
+          created_by: string | null
+          date: string
+          devotional_id: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          book: string
+          chapter: number
+          chapter_text: string
+          created_at?: string
+          created_by?: string | null
+          date: string
+          devotional_id?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          book?: string
+          chapter?: number
+          chapter_text?: string
+          created_at?: string
+          created_by?: string | null
+          date?: string
+          devotional_id?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_readings_devotional_id_fkey"
+            columns: ["devotional_id"]
+            isOneToOne: false
+            referencedRelation: "devotionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       devotionals: {
         Row: {
           application_question: string
@@ -404,6 +448,38 @@ export type Database = {
             columns: ["challenge_id"]
             isOneToOne: false
             referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_daily_readings: {
+        Row: {
+          completed_at: string
+          daily_reading_id: string
+          id: string
+          reading_time_seconds: number | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          daily_reading_id: string
+          id?: string
+          reading_time_seconds?: number | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          daily_reading_id?: string
+          id?: string
+          reading_time_seconds?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_daily_readings_daily_reading_id_fkey"
+            columns: ["daily_reading_id"]
+            isOneToOne: false
+            referencedRelation: "daily_readings"
             referencedColumns: ["id"]
           },
         ]

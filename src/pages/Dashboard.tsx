@@ -21,6 +21,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import DailyDevotionalCard from "@/components/DailyDevotionalCard";
+import { DailyReadingCard } from "@/components/DailyReadingCard";
 import PastorNotifications from "@/components/PastorNotifications";
 import GeneralMentorChat from "@/components/GeneralMentorChat";
 import ChallengesList from "@/components/ChallengesList";
@@ -155,6 +156,9 @@ const Dashboard = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Today's Devotional Card */}
             <DailyDevotionalCard />
+
+            {/* Daily Bible Reading Card */}
+            <DailyReadingCard />
 
             {/* Progress Overview */}
             <div className="grid md:grid-cols-3 gap-4">
