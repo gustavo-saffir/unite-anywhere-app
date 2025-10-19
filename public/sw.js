@@ -1,4 +1,4 @@
-const CACHE_NAME = 'caminho-diario-v3';
+const CACHE_NAME = 'caminho-diario-v4';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -110,25 +110,44 @@ self.addEventListener('push', event => {
 
 // Notification click handler
 self.addEventListener('notificationclick', event => {
-  console.log('Notification clicked:', event.notification);
+  console.log('[SW] Notification clicked:', event.notification);
   
   event.notification.close();
 
   const urlToOpen = event.notification.data?.url || '/';
+  const fullUrl = new URL(urlToOpen, self.location.origin).href;
+  
+  console.log('[SW] Opening URL:', fullUrl);
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then(windowClients => {
-        // Check if there's already a window/tab open
+        // Check if there's already a window/tab open with this URL
         for (let client of windowClients) {
-          if (client.url === urlToOpen && 'focus' in client) {
+          const clientUrl = new URL(client.url);
+          const targetUrl = new URL(fullUrl);
+          
+          // Compare pathname to see if it's the same route
+          if (clientUrl.pathname === targetUrl.pathname && 'focus' in client) {
+            console.log('[SW] Focusing existing client');
             return client.focus();
           }
         }
+        
+        // Check if there's any window open that we can navigate
+        if (windowClients.length > 0 && 'navigate' in windowClients[0]) {
+          console.log('[SW] Navigating existing client');
+          return windowClients[0].focus().then(client => client.navigate(fullUrl));
+        }
+        
         // If not, open a new window
         if (clients.openWindow) {
-          return clients.openWindow(urlToOpen);
+          console.log('[SW] Opening new window');
+          return clients.openWindow(fullUrl);
         }
+      })
+      .catch(err => {
+        console.error('[SW] Error handling notification click:', err);
       })
   );
 });

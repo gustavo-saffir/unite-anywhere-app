@@ -275,6 +275,42 @@ export default function PushDebug() {
             </ul>
           </CardContent>
         </Card>
+
+        <Card className="border-red-500 bg-red-500/5">
+          <CardHeader>
+            <CardTitle className="text-red-600 dark:text-red-400 flex items-center gap-2">
+              <AlertCircle className="w-5 h-5" />
+              Limitações do iOS para Push Web
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm space-y-3">
+            <div className="bg-red-100 dark:bg-red-950 p-3 rounded">
+              <p className="font-semibold mb-2">⚠️ Push Notifications Web no iOS têm limitações severas:</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li><strong>Requer iOS 16.4 ou superior</strong></li>
+                <li><strong>Só funciona em Safari</strong> (não no Chrome iOS)</li>
+                <li><strong>O PWA DEVE estar instalado na tela inicial</strong> (não funciona no browser)</li>
+                <li><strong>Erros 403 da Apple são comuns</strong> e podem indicar problemas com VAPID keys ou configuração</li>
+              </ul>
+            </div>
+            
+            <div className="space-y-2">
+              <p className="font-semibold">Para fazer funcionar no iOS:</p>
+              <ol className="list-decimal list-inside space-y-1 ml-2">
+                <li>Abra o app no <strong>Safari</strong> (não Chrome)</li>
+                <li>Toque no botão de compartilhar</li>
+                <li>Selecione "Adicionar à Tela de Início"</li>
+                <li>Abra o app pela <strong>tela inicial</strong> (não pelo Safari)</li>
+                <li>Ative as notificações quando solicitado</li>
+                <li>Vá em Ajustes → Notificações → [Nome do App] e verifique que está tudo habilitado</li>
+              </ol>
+            </div>
+
+            <div className="bg-amber-100 dark:bg-amber-950 p-2 rounded text-xs">
+              <strong>Nota:</strong> Mesmo seguindo todos os passos, o iOS pode ainda retornar erro 403. Isso é uma limitação conhecida da plataforma Apple para PWAs.
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

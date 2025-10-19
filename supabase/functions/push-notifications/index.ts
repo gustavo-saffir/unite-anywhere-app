@@ -185,7 +185,21 @@ serve(async (req) => {
           console.log(`[push-notifications] ✅ Notification sent to ${sub.endpoint.substring(0, 50)}...`);
           sentOk++;
         } catch (error: any) {
-          console.error(`[push-notifications] ❌ Failed to send to ${sub.endpoint.substring(0, 50)}...:`, error.message, error.statusCode);
+          const isApple = sub.endpoint.includes('web.push.apple.com');
+          const errorPrefix = isApple ? '[iOS/Apple]' : '[Android/Other]';
+          
+          console.error(`[push-notifications] ❌ ${errorPrefix} Failed to send to ${sub.endpoint.substring(0, 50)}...:`, error.message, error.statusCode);
+          
+          // Special handling for Apple 403 errors
+          if (isApple && error.statusCode === 403) {
+            console.warn(`[push-notifications] ⚠️ Apple returned 403 - Common causes:
+              1. Invalid VAPID keys for iOS
+              2. PWA not properly installed on iOS device
+              3. iOS version < 16.4
+              4. App not opened from home screen
+              5. Notification permissions not properly granted`);
+          }
+          
           // If subscription is invalid, remove it
           if (error.statusCode === 410 || error.statusCode === 404) {
             await supabase
