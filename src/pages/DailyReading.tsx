@@ -1,15 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, BookOpen, CheckCircle2, Clock } from 'lucide-react';
+import { ArrowLeft, BookOpen, CheckCircle2, Clock, Bot, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDailyReading } from '@/hooks/useDailyReading';
 import { toast } from 'sonner';
+import DailyReadingAIMentor from '@/components/DailyReadingAIMentor';
+import DailyReadingPastorMessage from '@/components/DailyReadingPastorMessage';
 
 export default function DailyReading() {
   const { dailyReading, loading, error, hasCompleted, markAsCompleted } = useDailyReading();
   const [startTime, setStartTime] = useState<number>(Date.now());
   const [isMarking, setIsMarking] = useState(false);
+  const [showAIMentor, setShowAIMentor] = useState(false);
+  const [showPastorMessage, setShowPastorMessage] = useState(false);
 
   useEffect(() => {
     setStartTime(Date.now());
@@ -139,6 +143,30 @@ export default function DailyReading() {
               </div>
             )}
 
+            <div className="pt-4 border-t">
+              <p className="text-sm text-muted-foreground mb-3">
+                Precisa de ajuda para entender melhor esta leitura?
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => setShowAIMentor(true)}
+                >
+                  <Bot className="mr-2 h-4 w-4" />
+                  Mentor IA
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => setShowPastorMessage(true)}
+                >
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Falar com Pastor
+                </Button>
+              </div>
+            </div>
+
             {dailyReading.devotional_id && (
               <div className="pt-4 border-t">
                 <p className="text-sm text-muted-foreground mb-3">
@@ -153,6 +181,22 @@ export default function DailyReading() {
             )}
           </CardContent>
         </Card>
+
+        {showAIMentor && dailyReading && (
+          <DailyReadingAIMentor
+            readingId={dailyReading.id}
+            readingContext={`Leitura bíblica de hoje: ${dailyReading.book} - Capítulo ${dailyReading.chapter}\n\n${dailyReading.chapter_text}`}
+            onClose={() => setShowAIMentor(false)}
+          />
+        )}
+
+        {showPastorMessage && dailyReading && (
+          <DailyReadingPastorMessage
+            readingId={dailyReading.id}
+            readingReference={`${dailyReading.book} - Capítulo ${dailyReading.chapter}`}
+            onClose={() => setShowPastorMessage(false)}
+          />
+        )}
       </div>
     </div>
   );
