@@ -36,7 +36,7 @@ export default function ManageDailyReadings() {
     book: '',
     chapter: 1,
     chapter_text: '',
-    devotional_id: '',
+    devotional_id: 'none',
   });
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export default function ManageDailyReadings() {
         book: formData.book,
         chapter: formData.chapter,
         chapter_text: formData.chapter_text,
-        devotional_id: formData.devotional_id || null,
+        devotional_id: formData.devotional_id === 'none' ? null : formData.devotional_id,
       };
 
       if (editingId) {
@@ -117,7 +117,7 @@ export default function ManageDailyReadings() {
       book: reading.book,
       chapter: reading.chapter,
       chapter_text: reading.chapter_text,
-      devotional_id: reading.devotional_id || '',
+      devotional_id: reading.devotional_id || 'none',
     });
   };
 
@@ -145,7 +145,7 @@ export default function ManageDailyReadings() {
       book: '',
       chapter: 1,
       chapter_text: '',
-      devotional_id: '',
+      devotional_id: 'none',
     });
   };
 
@@ -224,7 +224,7 @@ export default function ManageDailyReadings() {
                       <SelectValue placeholder="Selecione um devocional" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Nenhum</SelectItem>
+                      <SelectItem value="none">Nenhum</SelectItem>
                       {devotionals.map((dev) => (
                         <SelectItem key={dev.id} value={dev.id}>
                           {new Date(dev.date).toLocaleDateString('pt-BR')} - {dev.verse_reference}
