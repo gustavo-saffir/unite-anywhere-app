@@ -37,7 +37,15 @@ export const useSpiritualGoals = () => {
         .eq('user_id', user.id)
         .gte('completed_at', sevenDaysAgoStr);
 
+      // Get daily readings completed in last 7 days
+      const { data: dailyReadings } = await supabase
+        .from('user_daily_readings')
+        .select('*')
+        .eq('user_id', user.id)
+        .gte('completed_at', sevenDaysAgoStr);
+
       console.log('Devotionals in last 7 days:', devotionals);
+      console.log('Daily readings in last 7 days:', dailyReadings);
 
       // Get user stats for current streak
       const { data: stats } = await supabase
@@ -48,8 +56,9 @@ export const useSpiritualGoals = () => {
 
       console.log('User stats for goals:', stats);
 
-      // Calculate reading goal (devotionals completed / 7)
-      const readingProgress = devotionals ? Math.min((devotionals.length / 7) * 100, 100) : 0;
+      // Calculate reading goal (devotionals + daily readings completed / 7)
+      const totalReadings = (devotionals?.length || 0) + (dailyReadings?.length || 0);
+      const readingProgress = Math.min((totalReadings / 7) * 100, 100);
 
       // Calculate prayer goal (current streak / 7, max 100%)
       const prayerProgress = stats?.current_streak ? Math.min((stats.current_streak / 7) * 100, 100) : 0;
@@ -79,7 +88,7 @@ export const useSpiritualGoals = () => {
   useEffect(() => {
     calculateGoals();
 
-    // Subscribe to changes in user_devotionals and user_stats
+    // Subscribe to changes in user_devotionals, user_daily_readings and user_stats
     const channel = supabase
       .channel('spiritual_goals_changes')
       .on(
@@ -88,6 +97,17 @@ export const useSpiritualGoals = () => {
           event: '*',
           schema: 'public',
           table: 'user_devotionals',
+        },
+        () => {
+          calculateGoals();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_daily_readings',
         },
         () => {
           calculateGoals();
