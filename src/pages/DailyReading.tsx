@@ -85,7 +85,7 @@ export default function DailyReading() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <BookOpen className="h-5 w-5" />
-                  <span className="text-sm font-medium">Leitura Diária</span>
+                  <span className="text-sm font-medium">Leitura Diária - A Bíblia em 1 Ano</span>
                 </div>
                 <CardTitle className="text-3xl">
                   {dailyReading.book} - Capítulo {dailyReading.chapter}

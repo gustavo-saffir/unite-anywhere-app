@@ -27,7 +27,7 @@ export const DailyReadingCard = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BookOpen className="h-5 w-5" />
-            Leitura Bíblica Diária
+            Leitura Diária - A Bíblia em 1 Ano
           </CardTitle>
           <CardDescription>
             Não há leitura disponível para hoje
@@ -44,7 +44,7 @@ export const DailyReadingCard = () => {
           <div className="space-y-2">
             <CardTitle className="flex items-center gap-2">
               <BookOpen className="h-5 w-5 text-primary" />
-              Leitura Bíblica Diária
+              Leitura Diária - A Bíblia em 1 Ano
             </CardTitle>
             <CardDescription>
               {dailyReading.book} - Capítulo {dailyReading.chapter}
