@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
-import { Settings, Users, BookOpen, LogOut, Target, Book } from 'lucide-react';
+import { Settings, Users, BookOpen, LogOut, Target, Book, Video } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Admin = () => {
@@ -84,6 +84,16 @@ const Admin = () => {
                 <h3 className="text-xl font-semibold mb-2">Gerenciar Leituras Diárias</h3>
                 <p className="text-muted-foreground">
                   Crie e gerencie as leituras bíblicas diárias
+                </p>
+              </Card>
+            </Link>
+
+            <Link to="/manage-bible-videos">
+              <Card className="p-6 hover:shadow-lg transition-all cursor-pointer">
+                <Video className="w-12 h-12 mb-4 text-primary" />
+                <h3 className="text-xl font-semibold mb-2">Gerenciar Vídeos Bíblicos</h3>
+                <p className="text-muted-foreground">
+                  Adicione resumos em vídeo dos livros da Bíblia
                 </p>
               </Card>
             </Link>

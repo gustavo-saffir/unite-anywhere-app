@@ -15,7 +15,8 @@ import {
   LogOut,
   Shield,
   Menu,
-  History
+  History,
+  Video
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -283,6 +284,26 @@ const Dashboard = () => {
               >
                 <Link to="/devotional-history">
                   Ver Histórico
+                </Link>
+              </Button>
+            </Card>
+
+            {/* Vídeos Bíblicos */}
+            <Card className="p-6 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
+              <div className="flex items-center gap-2 mb-3">
+                <Video className="w-5 h-5 text-primary" />
+                <h3 className="text-lg font-semibold text-foreground">Resumos Bíblicos</h3>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Assista vídeos de 5 minutos com resumos de cada livro da Bíblia.
+              </p>
+              <Button 
+                variant="outline" 
+                className="w-full border-primary/30"
+                asChild
+              >
+                <Link to="/bible-videos">
+                  Ver Vídeos
                 </Link>
               </Button>
             </Card>

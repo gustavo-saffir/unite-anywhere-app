@@ -108,6 +108,48 @@ export type Database = {
         }
         Relationships: []
       }
+      bible_videos: {
+        Row: {
+          book_name: string
+          book_order: number
+          created_at: string
+          created_by: string | null
+          description: string | null
+          duration_minutes: number
+          id: string
+          testament: string
+          thumbnail_url: string | null
+          updated_at: string
+          video_url: string
+        }
+        Insert: {
+          book_name: string
+          book_order: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          testament: string
+          thumbnail_url?: string | null
+          updated_at?: string
+          video_url: string
+        }
+        Update: {
+          book_name?: string
+          book_order?: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          testament?: string
+          thumbnail_url?: string | null
+          updated_at?: string
+          video_url?: string
+        }
+        Relationships: []
+      }
       challenges: {
         Row: {
           category: string

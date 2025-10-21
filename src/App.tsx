@@ -17,6 +17,8 @@ import ManageDailyReadings from "./pages/ManageDailyReadings";
 import CreateDevotional from "./pages/CreateDevotional";
 import MyMessages from "./pages/MyMessages";
 import PushDebug from "./pages/PushDebug";
+import BibleVideos from "./pages/BibleVideos";
+import ManageBibleVideos from "./pages/ManageBibleVideos";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -124,6 +126,22 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <PushDebug />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/bible-videos" 
+            element={
+              <ProtectedRoute>
+                <BibleVideos />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/manage-bible-videos" 
+            element={
+              <ProtectedRoute requireAdmin>
+                <ManageBibleVideos />
               </ProtectedRoute>
             } 
           />
