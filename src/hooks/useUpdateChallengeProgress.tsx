@@ -64,6 +64,23 @@ export const useUpdateChallengeProgress = () => {
           completedCount = devotionalsSinceStart?.length || 0;
           newProgress = Math.min((completedCount / challenge.duration_days) * 100, 100);
           console.log(`Devotional challenge "${challenge.title}": ${completedCount}/${challenge.duration_days} = ${newProgress}%`);
+        } else {
+          // Fallback: se a categoria não for reconhecida, calcular pelo número de devocionais desde o início
+          const startDate = new Date(userChallenge.started_at);
+          const { data: devotionalsSinceStart, error: devError } = await supabase
+            .from('user_devotionals')
+            .select('id')
+            .eq('user_id', user.id)
+            .gte('completed_at', startDate.toISOString());
+
+          if (devError) {
+            console.error('Error fetching devotionals (fallback):', devError);
+            continue;
+          }
+
+          completedCount = devotionalsSinceStart?.length || 0;
+          newProgress = Math.min((completedCount / challenge.duration_days) * 100, 100);
+          console.log(`Fallback (devotionals) for "${challenge.title}": ${completedCount}/${challenge.duration_days} = ${newProgress}%`);
         }
 
         // Determinar novo status
