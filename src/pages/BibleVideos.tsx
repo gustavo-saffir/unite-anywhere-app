@@ -100,17 +100,25 @@ const BibleVideos = () => {
         <Dialog open={!!selectedVideo} onOpenChange={() => setSelectedVideo(null)}>
           <DialogContent className="max-w-4xl">
             <DialogHeader>
-              <DialogTitle>{selectedVideo?.book_name}</DialogTitle>
-              <DialogDescription>
-                Resumo bíblico de {selectedVideo?.duration_minutes} minutos
-              </DialogDescription>
+              <div className="flex items-center gap-4">
+                <Button variant="ghost" size="icon" onClick={() => setSelectedVideo(null)}>
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+                <div>
+                  <DialogTitle>{selectedVideo?.book_name}</DialogTitle>
+                  <DialogDescription>
+                    Resumo bíblico de {selectedVideo?.duration_minutes} minutos
+                  </DialogDescription>
+                </div>
+              </div>
             </DialogHeader>
             <div className="aspect-video w-full">
               <iframe
-                src={selectedVideo?.video_url}
+                src={`${selectedVideo?.video_url}?modestbranding=1&rel=0&showinfo=0`}
                 className="w-full h-full rounded-md"
                 allowFullScreen
                 title={selectedVideo?.book_name}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               />
             </div>
             {selectedVideo?.description && (
