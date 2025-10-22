@@ -112,17 +112,14 @@ const BibleVideos = () => {
                 </div>
               </div>
             </DialogHeader>
-            <div className="aspect-video w-full relative">
+            <div className="aspect-video w-full">
               <iframe
-                src={`${selectedVideo?.video_url}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${selectedVideo?.video_url.split('/').pop()?.split('?')[0]}`}
+                src={`${selectedVideo?.video_url}?controls=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`}
                 className="w-full h-full rounded-md"
                 allowFullScreen
                 title={selectedVideo?.book_name}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-white">
-                <p className="text-sm">Clique no vídeo para interagir</p>
-              </div>
             </div>
             {selectedVideo?.description && (
               <p className="text-sm text-muted-foreground mt-4">{selectedVideo.description}</p>
