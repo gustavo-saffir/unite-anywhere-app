@@ -100,10 +100,28 @@ const ManageBibleVideos = () => {
     setEditingVideo(null);
   };
 
+  const convertToEmbedUrl = (url: string): string => {
+    // Se já é uma URL embed, retorna como está
+    if (url.includes('/embed/')) {
+      return url;
+    }
+    
+    // Converte URLs do YouTube para formato embed
+    const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = url.match(youtubeRegex);
+    
+    if (match && match[1]) {
+      return `https://www.youtube.com/embed/${match[1]}`;
+    }
+    
+    return url;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const data = {
       ...formData,
+      video_url: convertToEmbedUrl(formData.video_url),
       book_order: parseInt(formData.book_order),
       duration_minutes: parseInt(formData.duration_minutes),
     };
@@ -197,15 +215,18 @@ const ManageBibleVideos = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="video_url">URL do Vídeo (YouTube embed ou similar) *</Label>
+                  <Label htmlFor="video_url">URL do Vídeo (YouTube) *</Label>
                   <Input
                     id="video_url"
                     type="url"
                     value={formData.video_url}
                     onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
-                    placeholder="https://www.youtube.com/embed/..."
+                    placeholder="https://www.youtube.com/watch?v=... ou https://youtu.be/..."
                     required
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Cole qualquer URL do YouTube - será convertida automaticamente para embed
+                  </p>
                 </div>
 
                 <div>
