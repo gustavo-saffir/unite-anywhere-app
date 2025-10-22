@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const BibleVideos = () => {
   const navigate = useNavigate();
@@ -101,6 +101,9 @@ const BibleVideos = () => {
           <DialogContent className="max-w-4xl">
             <DialogHeader>
               <DialogTitle>{selectedVideo?.book_name}</DialogTitle>
+              <DialogDescription>
+                Resumo bíblico de {selectedVideo?.duration_minutes} minutos
+              </DialogDescription>
             </DialogHeader>
             <div className="aspect-video w-full">
               <iframe
