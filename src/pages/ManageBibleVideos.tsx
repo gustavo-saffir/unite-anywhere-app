@@ -230,13 +230,17 @@ const ManageBibleVideos = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="thumbnail_url">URL da Miniatura (opcional)</Label>
+                  <Label htmlFor="thumbnail_url">URL da Imagem de Capa (opcional)</Label>
                   <Input
                     id="thumbnail_url"
                     type="url"
                     value={formData.thumbnail_url}
                     onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
+                    placeholder="https://exemplo.com/imagem-capa.jpg"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    URL de uma imagem que será exibida como prévia do vídeo na lista
+                  </p>
                 </div>
 
                 <div>
