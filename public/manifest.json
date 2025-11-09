@@ -2,11 +2,11 @@
   "name": "Caminho Diário",
   "short_name": "Caminho Diário",
   "description": "Devocionais diários, acompanhamento espiritual e crescimento mensurável, um dia por vez.",
-  "start_url": "/?source=pwa",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "background_color": "#0F172A",
+  "theme_color": "#6366F1",
   "orientation": "portrait-primary",
   "icons": [
     {
@@ -34,17 +34,5 @@
       "purpose": "maskable"
     }
   ],
-  "categories": ["productivity", "lifestyle"],
-  "screenshots": [
-    {
-      "src": "/screenshot1.png",
-      "sizes": "540x720",
-      "type": "image/png"
-    },
-    {
-      "src": "/screenshot2.png",
-      "sizes": "540x720",
-      "type": "image/png"
-    }
-  ]
+  "categories": ["productivity", "lifestyle"]
 }

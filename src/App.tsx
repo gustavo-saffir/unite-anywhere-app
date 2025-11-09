@@ -19,6 +19,7 @@ import MyMessages from "./pages/MyMessages";
 import PushDebug from "./pages/PushDebug";
 import BibleVideos from "./pages/BibleVideos";
 import ManageBibleVideos from "./pages/ManageBibleVideos";
+import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -33,6 +34,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/install" element={<Install />} />
           <Route 
             path="/dashboard" 
             element={

@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Smartphone, Apple, Share, MoreVertical, Download, Home } from 'lucide-react';
+import { Smartphone, Apple, Share, MoreVertical, Download, Home, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function InstallSection() {
   const [platform, setPlatform] = useState<'android' | 'ios'>('android');
@@ -17,9 +18,16 @@ export default function InstallSection() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Instale o App na Tela Inicial
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
             Adicione o Caminho Diário à tela inicial do seu celular para ter acesso rápido e uma experiência completa como um aplicativo nativo.
           </p>
+          <Link to="/install">
+            <Button size="lg" variant="outline" className="gap-2">
+              <Download className="w-5 h-5" />
+              Ir para Página de Instalação
+              <ExternalLink className="w-4 h-4" />
+            </Button>
+          </Link>
         </div>
 
         <Tabs value={platform} onValueChange={(v) => setPlatform(v as 'android' | 'ios')} className="w-full">
