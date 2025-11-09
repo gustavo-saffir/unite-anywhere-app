@@ -1,4 +1,4 @@
-const CACHE_NAME = 'caminho-diario-v5';
+const CACHE_NAME = 'caminho-diario-v6';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -37,11 +37,30 @@ self.addEventListener('activate', event => {
   );
 });
 
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+
+  // For SPA navigations, try network first, then fall back to cached index.html
+  if (req.mode === 'navigate') {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          // Optionally cache a fresh copy of index
+          const resClone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put('/', resClone));
+          return res;
+        })
+        .catch(async () => {
+          const cache = await caches.open(CACHE_NAME);
+          return (await cache.match('/index.html')) || (await cache.match('/'));
+        })
+    );
+    return;
+  }
+
+  // Static/assets: cache-first
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+    caches.match(req).then((cached) => cached || fetch(req))
   );
 });
 
