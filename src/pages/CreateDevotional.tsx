@@ -9,13 +9,18 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, BookOpen } from 'lucide-react';
+import { ArrowLeft, BookOpen, Eye } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import bibleIcon from '@/assets/bible-icon.jpg';
 
 const CreateDevotional = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
@@ -29,8 +34,12 @@ const CreateDevotional = () => {
     application_question: ''
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handlePreview = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowPreview(true);
+  };
+
+  const handleConfirmCreate = async () => {
     setLoading(true);
 
     try {
@@ -48,6 +57,8 @@ const CreateDevotional = () => {
         description: 'O devocional foi adicionado à plataforma.',
       });
 
+      setShowPreview(false);
+      
       // Reset form
       setFormData({
         date: new Date().toISOString().split('T')[0],
@@ -96,7 +107,7 @@ const CreateDevotional = () => {
             <CardTitle>Novo Devocional Diário</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handlePreview} className="space-y-6">
               <div>
                 <Label htmlFor="date">Data</Label>
                 <Input
@@ -200,12 +211,133 @@ const CreateDevotional = () => {
               </div>
 
               <Button type="submit" disabled={loading} className="w-full">
-                {loading ? 'Criando...' : 'Criar Devocional'}
+                <Eye className="w-4 h-4 mr-2" />
+                Visualizar Preview
               </Button>
             </form>
           </CardContent>
         </Card>
       </main>
+
+      {/* Preview Dialog */}
+      <Dialog open={showPreview} onOpenChange={setShowPreview}>
+        <DialogContent className="max-w-4xl max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-primary" />
+              Preview do Devocional
+            </DialogTitle>
+          </DialogHeader>
+          
+          <ScrollArea className="h-[60vh] pr-4">
+            <div className="space-y-6">
+              {/* Abertura */}
+              <Card className="p-6 shadow-celestial border-primary/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <img src={bibleIcon} alt="Bíblia" className="w-12 h-12 rounded-xl shadow-glow" />
+                  <div>
+                    <div className="text-sm font-semibold text-accent">Devocional do Dia</div>
+                    <h2 className="text-xl font-bold text-foreground">📖 Abertura</h2>
+                  </div>
+                </div>
+                {formData.opening_text ? (
+                  <MarkdownRenderer 
+                    content={formData.opening_text} 
+                    className="text-foreground leading-relaxed"
+                  />
+                ) : (
+                  <p className="text-muted-foreground">Texto de abertura não preenchido.</p>
+                )}
+              </Card>
+
+              {/* Versículo */}
+              <Card className="p-6 shadow-celestial border-primary/20">
+                <h2 className="text-xl font-bold text-foreground mb-4">📖 Versículo do Dia</h2>
+                <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl p-6 border border-primary/10">
+                  <h3 className="text-lg font-semibold text-primary mb-4">
+                    {formData.verse_reference || 'Referência não preenchida'}
+                  </h3>
+                  <p className="text-lg text-foreground leading-relaxed italic">
+                    "{formData.verse_text || 'Texto do versículo não preenchido'}"
+                  </p>
+                </div>
+              </Card>
+
+              {/* Contexto */}
+              <Card className="p-6 shadow-celestial">
+                <h2 className="text-xl font-bold text-foreground mb-4">📜 Contexto Rápido</h2>
+                {formData.context ? (
+                  <MarkdownRenderer 
+                    content={formData.context} 
+                    className="text-foreground leading-relaxed"
+                  />
+                ) : (
+                  <p className="text-muted-foreground">Contexto não preenchido.</p>
+                )}
+              </Card>
+
+              {/* Insight Central */}
+              <Card className="p-6 shadow-celestial">
+                <h2 className="text-xl font-bold text-foreground mb-4">💡 Reflexão Central</h2>
+                <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
+                  {formData.central_insight ? (
+                    <MarkdownRenderer 
+                      content={formData.central_insight} 
+                      className="text-foreground leading-relaxed"
+                    />
+                  ) : (
+                    <p className="text-muted-foreground">Insight central não preenchido.</p>
+                  )}
+                </div>
+              </Card>
+
+              {/* Encerramento */}
+              <Card className="p-6 shadow-celestial">
+                <h2 className="text-xl font-bold text-foreground mb-4">🙏 Encerramento</h2>
+                {formData.closing_text ? (
+                  <MarkdownRenderer 
+                    content={formData.closing_text} 
+                    className="text-foreground leading-relaxed"
+                  />
+                ) : (
+                  <p className="text-muted-foreground">Texto de encerramento não preenchido.</p>
+                )}
+              </Card>
+
+              {/* Perguntas */}
+              <Card className="p-6 shadow-celestial">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-2">🤔 Pergunta de Reflexão</h3>
+                    <p className="text-foreground">{formData.reflection_question || 'Não preenchida'}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-2">✨ Pergunta de Aplicação</h3>
+                    <p className="text-foreground">{formData.application_question || 'Não preenchida'}</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </ScrollArea>
+
+          <DialogFooter className="gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowPreview(false)}
+              disabled={loading}
+            >
+              Voltar para Editar
+            </Button>
+            <Button 
+              onClick={handleConfirmCreate}
+              disabled={loading}
+              className="bg-gradient-celestial hover:opacity-90"
+            >
+              {loading ? 'Criando...' : 'Confirmar e Criar Devocional'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
