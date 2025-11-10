@@ -14,7 +14,10 @@ import {
   MessageCircle,
   AlertCircle,
   Bot,
-  Loader2
+  Loader2,
+  Type,
+  Sun,
+  Moon
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -43,6 +46,8 @@ const Devotional = () => {
   const [memorizationValidated, setMemorizationValidated] = useState(false);
   const [memorizationScore, setMemorizationScore] = useState(0);
   const [validatingMemorization, setValidatingMemorization] = useState(false);
+  const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Buscar informações do pastor/líder
   useEffect(() => {
@@ -343,31 +348,83 @@ const Devotional = () => {
     );
   }
 
+  const fontSizeClasses = {
+    small: 'text-sm',
+    medium: 'text-base',
+    large: 'text-lg'
+  };
+
+  const increaseFontSize = () => {
+    if (fontSize === 'small') setFontSize('medium');
+    else if (fontSize === 'medium') setFontSize('large');
+  };
+
+  const decreaseFontSize = () => {
+    if (fontSize === 'large') setFontSize('medium');
+    else if (fontSize === 'medium') setFontSize('small');
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-peaceful">
+    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gradient-peaceful'}`}>
       {/* Header */}
-      <header className="border-b border-border/50 bg-background/80 backdrop-blur-lg sticky top-0 z-40">
+      <header className={`border-b border-border/50 backdrop-blur-lg sticky top-0 z-40 ${isDarkMode ? 'bg-gray-800/80' : 'bg-background/80'}`}>
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/dashboard" className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
+            <Link to="/dashboard" className={`flex items-center gap-2 transition-colors ${isDarkMode ? 'text-gray-100 hover:text-primary' : 'text-foreground hover:text-primary'}`}>
               <ArrowLeft className="w-5 h-5" />
               <span className="font-medium">Voltar</span>
             </Link>
-            <div className="flex items-center gap-3">
-              <div className="text-sm text-muted-foreground">Progresso</div>
-              <div className="w-32">
-                <Progress value={progress} className="h-2" />
+            <div className="flex items-center gap-4">
+              {/* Controles de Acessibilidade */}
+              <div className="flex items-center gap-2 border-r border-border/50 pr-4">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={decreaseFontSize}
+                  disabled={fontSize === 'small'}
+                  className="h-8 w-8"
+                  title="Diminuir fonte"
+                >
+                  <Type className="w-4 h-4" />
+                </Button>
+                <span className={`text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>A</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={increaseFontSize}
+                  disabled={fontSize === 'large'}
+                  className="h-8 w-8"
+                  title="Aumentar fonte"
+                >
+                  <Type className="w-5 h-5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="h-8 w-8"
+                  title={isDarkMode ? "Modo claro" : "Modo escuro"}
+                >
+                  {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                </Button>
               </div>
-              <div className="text-sm font-semibold text-foreground">{step}/{totalSteps}</div>
+              {/* Progresso */}
+              <div className="flex items-center gap-3">
+                <div className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>Progresso</div>
+                <div className="w-32">
+                  <Progress value={progress} className="h-2" />
+                </div>
+                <div className={`text-sm font-semibold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>{step}/{totalSteps}</div>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className={`container mx-auto px-4 py-8 max-w-4xl ${fontSizeClasses[fontSize]}`}>
         {/* Step 1: Abertura */}
         {step === 1 && (
-          <Card className="p-8 shadow-celestial border-primary/20 space-y-6">
+          <Card className={`p-8 shadow-celestial border-primary/20 space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div className="flex items-center gap-3">
               <img src={bibleIcon} alt="Bíblia" className="w-16 h-16 rounded-xl shadow-glow" />
               <div>
@@ -380,14 +437,14 @@ const Devotional = () => {
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-foreground">📖 Abertura</h2>
+              <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>📖 Abertura</h2>
               {devotional.opening_text ? (
                 <MarkdownRenderer 
                   content={devotional.opening_text} 
-                  className="text-foreground leading-relaxed"
+                  className={isDarkMode ? 'text-gray-200 leading-relaxed' : 'text-foreground leading-relaxed'}
                 />
               ) : (
-                <p className="text-muted-foreground">Preparando seu coração para o estudo de hoje...</p>
+                <p className={isDarkMode ? 'text-gray-400' : 'text-muted-foreground'}>Preparando seu coração para o estudo de hoje...</p>
               )}
             </div>
 
@@ -403,15 +460,15 @@ const Devotional = () => {
 
         {/* Step 2: Versículo */}
         {step === 2 && (
-          <Card className="p-8 shadow-celestial border-primary/20 space-y-6">
+          <Card className={`p-8 shadow-celestial border-primary/20 space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div className="flex items-center gap-3 mb-4">
               <BookOpen className="w-8 h-8 text-primary" />
-              <h2 className="text-2xl font-bold text-foreground">Versículo do Dia</h2>
+              <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>Versículo do Dia</h2>
             </div>
 
-            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl p-6 border border-primary/10">
+            <div className={`rounded-xl p-6 border ${isDarkMode ? 'bg-gray-700/50 border-gray-600' : 'bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/10'}`}>
               <h3 className="text-lg font-semibold text-primary mb-4">{devotional.verse_reference}</h3>
-              <p className="text-lg text-foreground leading-relaxed italic">
+              <p className={`text-lg leading-relaxed italic ${isDarkMode ? 'text-gray-200' : 'text-foreground'}`}>
                 "{devotional.verse_text}"
               </p>
             </div>
@@ -436,16 +493,16 @@ const Devotional = () => {
 
         {/* Step 3: Contexto */}
         {step === 3 && (
-          <Card className="p-8 shadow-celestial space-y-6">
+          <Card className={`p-8 shadow-celestial space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-4">📜 Contexto Rápido</h2>
+              <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>📜 Contexto Rápido</h2>
               {devotional.context ? (
                 <MarkdownRenderer 
                   content={devotional.context} 
-                  className="text-foreground leading-relaxed"
+                  className={isDarkMode ? 'text-gray-200 leading-relaxed' : 'text-foreground leading-relaxed'}
                 />
               ) : (
-                <p className="text-muted-foreground">Entendendo o contexto do versículo...</p>
+                <p className={isDarkMode ? 'text-gray-400' : 'text-muted-foreground'}>Entendendo o contexto do versículo...</p>
               )}
             </div>
 
@@ -469,17 +526,17 @@ const Devotional = () => {
 
         {/* Step 4: Insight Central */}
         {step === 4 && (
-          <Card className="p-8 shadow-celestial space-y-6">
+          <Card className={`p-8 shadow-celestial space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-4">💡 Reflexão Central</h2>
-              <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
+              <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>💡 Reflexão Central</h2>
+              <div className={`rounded-xl p-6 border ${isDarkMode ? 'bg-gray-700/50 border-gray-600' : 'bg-primary/5 border-primary/20'}`}>
                 {devotional.central_insight ? (
                   <MarkdownRenderer 
                     content={devotional.central_insight} 
-                    className="text-foreground leading-relaxed"
+                    className={isDarkMode ? 'text-gray-200 leading-relaxed' : 'text-foreground leading-relaxed'}
                   />
                 ) : (
-                  <p className="text-muted-foreground">O ensinamento principal de hoje...</p>
+                  <p className={isDarkMode ? 'text-gray-400' : 'text-muted-foreground'}>O ensinamento principal de hoje...</p>
                 )}
               </div>
             </div>
@@ -504,26 +561,26 @@ const Devotional = () => {
 
         {/* Step 5: Reflexão */}
         {step === 5 && (
-          <Card className="p-8 shadow-celestial space-y-6">
+          <Card className={`p-8 shadow-celestial space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-3">💭 Reflexão Guiada</h2>
+              <h2 className={`text-2xl font-bold mb-3 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>💭 Reflexão Guiada</h2>
               {devotional.reflection_question && (
                 <MarkdownRenderer 
                   content={devotional.reflection_question} 
-                  className="text-muted-foreground mb-4"
+                  className={isDarkMode ? 'text-gray-400 mb-4' : 'text-muted-foreground mb-4'}
                 />
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">
+              <label className={`text-sm font-semibold ${isDarkMode ? 'text-gray-200' : 'text-foreground'}`}>
                 Escreva sua reflexão pessoal:
               </label>
               <Textarea 
                 placeholder="De que forma este versículo se aplica à sua vida neste momento? Quais verdades ou ensinamentos Deus está revelando a você por meio dele?"
                 value={reflection}
                 onChange={(e) => setReflection(e.target.value)}
-                className="min-h-[150px]"
+                className={`min-h-[150px] ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100' : ''}`}
               />
             </div>
 
@@ -548,26 +605,26 @@ const Devotional = () => {
 
         {/* Step 6: Aplicação */}
         {step === 6 && (
-          <Card className="p-8 shadow-celestial space-y-6">
+          <Card className={`p-8 shadow-celestial space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-3">✨ Aplicação Prática</h2>
+              <h2 className={`text-2xl font-bold mb-3 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>✨ Aplicação Prática</h2>
               {devotional.application_question && (
                 <MarkdownRenderer 
                   content={devotional.application_question} 
-                  className="text-muted-foreground mb-4"
+                  className={isDarkMode ? 'text-gray-400 mb-4' : 'text-muted-foreground mb-4'}
                 />
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">
+              <label className={`text-sm font-semibold ${isDarkMode ? 'text-gray-200' : 'text-foreground'}`}>
                 Como você vai aplicar isso hoje?
               </label>
               <Textarea 
                 placeholder="Seja específico: Que ação concreta você vai tomar hoje para exercitar sua fé?"
                 value={application}
                 onChange={(e) => setApplication(e.target.value)}
-                className="min-h-[150px]"
+                className={`min-h-[150px] ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100' : ''}`}
               />
             </div>
 
@@ -592,34 +649,34 @@ const Devotional = () => {
 
         {/* Step 7: Memorização */}
         {step === 7 && (
-          <Card className="p-8 shadow-celestial space-y-6">
+          <Card className={`p-8 shadow-celestial space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-3">
+              <h2 className={`text-2xl font-bold mb-3 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>
                 🧠 Desafio de Memorização
               </h2>
-              <p className="text-muted-foreground mb-4">
+              <p className={isDarkMode ? 'text-gray-400 mb-4' : 'text-muted-foreground mb-4'}>
                 Escreva o versículo de hoje de memória. Não precisa ser palavra por palavra, 
                 mas tente capturar a essência e o sentido do versículo.
               </p>
-              <div className="bg-primary/5 rounded-lg p-4 mb-4 border border-primary/10">
-                <p className="text-sm text-muted-foreground mb-1">
+              <div className={`rounded-lg p-4 mb-4 border ${isDarkMode ? 'bg-gray-700/50 border-gray-600' : 'bg-primary/5 border-primary/10'}`}>
+                <p className={`text-sm mb-1 ${isDarkMode ? 'text-gray-400' : 'text-muted-foreground'}`}>
                   Versículo de hoje:
                 </p>
-                <p className="font-semibold text-foreground">
+                <p className={`font-semibold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>
                   {devotional.verse_reference}
                 </p>
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">
+              <label className={`text-sm font-semibold ${isDarkMode ? 'text-gray-200' : 'text-foreground'}`}>
                 Escreva o versículo de memória:
               </label>
               <Textarea 
                 placeholder="Escreva o versículo aqui..."
                 value={memorization}
                 onChange={(e) => setMemorization(e.target.value)}
-                className="min-h-[120px]"
+                className={`min-h-[120px] ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100' : ''}`}
                 disabled={memorizationValidated}
               />
             </div>
@@ -692,42 +749,42 @@ const Devotional = () => {
 
         {/* Step 8: Fechamento e Revisão */}
         {step === 8 && (
-          <Card className="p-8 shadow-celestial space-y-6">
+          <Card className={`p-8 shadow-celestial space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-3">🙏 Conclusão</h2>
+              <h2 className={`text-2xl font-bold mb-3 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>🙏 Conclusão</h2>
               {devotional.closing_text && (
                 <div className="mb-6">
                   <MarkdownRenderer 
                     content={devotional.closing_text} 
-                    className="text-foreground leading-relaxed"
+                    className={isDarkMode ? 'text-gray-200 leading-relaxed' : 'text-foreground leading-relaxed'}
                   />
                 </div>
               )}
-              <p className="text-muted-foreground">
+              <p className={isDarkMode ? 'text-gray-400' : 'text-muted-foreground'}>
                 Revise suas anotações antes de finalizar o devocional de hoje.
               </p>
             </div>
 
             <div className="space-y-4">
-              <div className="bg-muted/30 rounded-xl p-6 space-y-3">
-                <h3 className="font-semibold text-foreground flex items-center gap-2">
+              <div className={`rounded-xl p-6 space-y-3 ${isDarkMode ? 'bg-gray-700/50' : 'bg-muted/30'}`}>
+                <h3 className={`font-semibold flex items-center gap-2 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>
                   <Heart className="w-5 h-5 text-secondary" />
                   Sua Reflexão:
                 </h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">{reflection}</p>
+                <p className={`whitespace-pre-wrap ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>{reflection}</p>
               </div>
 
-              <div className="bg-accent/10 rounded-xl p-6 space-y-3">
-                <h3 className="font-semibold text-foreground flex items-center gap-2">
+              <div className={`rounded-xl p-6 space-y-3 ${isDarkMode ? 'bg-gray-700/50' : 'bg-accent/10'}`}>
+                <h3 className={`font-semibold flex items-center gap-2 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>
                   <CheckCircle2 className="w-5 h-5 text-accent" />
                   Sua Aplicação Prática:
                 </h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">{application}</p>
+                <p className={`whitespace-pre-wrap ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>{application}</p>
               </div>
             </div>
 
-            <div className="bg-primary/5 rounded-xl p-4 border border-primary/10">
-              <p className="text-sm text-muted-foreground text-center">
+            <div className={`rounded-xl p-4 border ${isDarkMode ? 'bg-gray-700/50 border-gray-600' : 'bg-primary/5 border-primary/10'}`}>
+              <p className={`text-sm text-center ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>
                 💡 Lembre-se: O crescimento espiritual acontece quando transformamos conhecimento em ação
               </p>
             </div>
