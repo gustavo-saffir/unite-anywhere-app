@@ -307,11 +307,25 @@ const CreateDevotional = () => {
                 <div className="space-y-4">
                   <div>
                     <h3 className="font-semibold text-foreground mb-2">🤔 Pergunta de Reflexão</h3>
-                    <p className="text-foreground">{formData.reflection_question || 'Não preenchida'}</p>
+                    {formData.reflection_question ? (
+                      <MarkdownRenderer 
+                        content={formData.reflection_question} 
+                        className="text-foreground leading-relaxed"
+                      />
+                    ) : (
+                      <p className="text-muted-foreground">Não preenchida</p>
+                    )}
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground mb-2">✨ Pergunta de Aplicação</h3>
-                    <p className="text-foreground">{formData.application_question || 'Não preenchida'}</p>
+                    {formData.application_question ? (
+                      <MarkdownRenderer 
+                        content={formData.application_question} 
+                        className="text-foreground leading-relaxed"
+                      />
+                    ) : (
+                      <p className="text-muted-foreground">Não preenchida</p>
+                    )}
                   </div>
                 </div>
               </Card>
