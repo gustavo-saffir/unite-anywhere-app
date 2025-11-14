@@ -188,24 +188,22 @@ const CreateDevotional = () => {
 
               <div>
                 <Label htmlFor="reflection_question">Pergunta de Reflexão</Label>
-                <Textarea
+                <TextEditor
                   id="reflection_question"
                   placeholder="Pergunta para reflexão pessoal"
                   value={formData.reflection_question}
-                  onChange={(e) => setFormData({ ...formData, reflection_question: e.target.value })}
-                  required
+                  onChange={(value) => setFormData({ ...formData, reflection_question: value })}
                   rows={2}
                 />
               </div>
 
               <div>
                 <Label htmlFor="application_question">Pergunta de Aplicação</Label>
-                <Textarea
+                <TextEditor
                   id="application_question"
                   placeholder="Pergunta para aplicação prática"
                   value={formData.application_question}
-                  onChange={(e) => setFormData({ ...formData, application_question: e.target.value })}
-                  required
+                  onChange={(value) => setFormData({ ...formData, application_question: value })}
                   rows={2}
                 />
               </div>
