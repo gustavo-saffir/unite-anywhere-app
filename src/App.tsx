@@ -14,6 +14,7 @@ import PastorPanel from "./pages/PastorPanel";
 import ManageUsers from "./pages/ManageUsers";
 import ManageChallenges from "./pages/ManageChallenges";
 import ManageDailyReadings from "./pages/ManageDailyReadings";
+import ManageDevotionals from "./pages/ManageDevotionals";
 import CreateDevotional from "./pages/CreateDevotional";
 import MyMessages from "./pages/MyMessages";
 import PushDebug from "./pages/PushDebug";
@@ -96,6 +97,14 @@ const App = () => (
               element={
                 <ProtectedRoute requireAdmin>
                   <ManageDailyReadings />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/manage-devotionals" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <ManageDevotionals />
                 </ProtectedRoute>
               } 
             />

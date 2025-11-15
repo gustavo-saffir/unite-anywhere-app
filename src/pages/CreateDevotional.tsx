@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { TextEditor } from '@/components/TextEditor';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, BookOpen, Eye } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { MarkdownRenderer } from '@/components/MarkdownRenderer';
@@ -19,8 +19,11 @@ const CreateDevotional = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
@@ -34,6 +37,25 @@ const CreateDevotional = () => {
     application_question: ''
   });
 
+  useEffect(() => {
+    if (location.state?.devotional) {
+      const devotional = location.state.devotional;
+      setIsEditing(true);
+      setEditingId(devotional.id);
+      setFormData({
+        date: devotional.date,
+        verse_reference: devotional.verse_reference,
+        verse_text: devotional.verse_text,
+        opening_text: devotional.opening_text || '',
+        context: devotional.context || '',
+        central_insight: devotional.central_insight || '',
+        closing_text: devotional.closing_text || '',
+        reflection_question: devotional.reflection_question,
+        application_question: devotional.application_question
+      });
+    }
+  }, [location.state]);
+
   const handlePreview = (e: React.FormEvent) => {
     e.preventDefault();
     setShowPreview(true);
@@ -43,37 +65,41 @@ const CreateDevotional = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase
-        .from('devotionals')
-        .insert([{
-          ...formData,
-          created_by: user?.id
-        }]);
+      if (isEditing && editingId) {
+        const { error } = await supabase
+          .from('devotionals')
+          .update({
+            ...formData,
+          })
+          .eq('id', editingId);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      toast({
-        title: 'Devocional criado com sucesso!',
-        description: 'O devocional foi adicionado à plataforma.',
-      });
+        toast({
+          title: 'Devocional atualizado!',
+          description: 'O devocional foi atualizado com sucesso.',
+        });
+      } else {
+        const { error } = await supabase
+          .from('devotionals')
+          .insert([{
+            ...formData,
+            created_by: user?.id
+          }]);
+
+        if (error) throw error;
+
+        toast({
+          title: 'Devocional criado com sucesso!',
+          description: 'O devocional foi adicionado à plataforma.',
+        });
+      }
 
       setShowPreview(false);
-      
-      // Reset form
-      setFormData({
-        date: new Date().toISOString().split('T')[0],
-        verse_reference: '',
-        verse_text: '',
-        opening_text: '',
-        context: '',
-        central_insight: '',
-        closing_text: '',
-        reflection_question: '',
-        application_question: ''
-      });
+      navigate('/manage-devotionals');
     } catch (error: any) {
       toast({
-        title: 'Erro ao criar devocional',
+        title: isEditing ? 'Erro ao atualizar devocional' : 'Erro ao criar devocional',
         description: error.message,
         variant: 'destructive',
       });
@@ -91,9 +117,11 @@ const CreateDevotional = () => {
               <div className="w-10 h-10 rounded-lg bg-gradient-celestial flex items-center justify-center shadow-glow">
                 <BookOpen className="w-6 h-6 text-primary-foreground" />
               </div>
-              <h1 className="text-xl font-bold text-foreground">Criar Devocional</h1>
+              <h1 className="text-xl font-bold text-foreground">
+                {isEditing ? 'Editar Devocional' : 'Criar Devocional'}
+              </h1>
             </div>
-            <Button variant="outline" onClick={() => navigate('/admin')}>
+            <Button variant="outline" onClick={() => navigate('/manage-devotionals')}>
               <ArrowLeft className="w-4 h-4 mr-2" />
               Voltar
             </Button>
@@ -104,7 +132,7 @@ const CreateDevotional = () => {
       <main className="container mx-auto px-4 py-8">
         <Card>
           <CardHeader>
-            <CardTitle>Novo Devocional Diário</CardTitle>
+            <CardTitle>{isEditing ? 'Editar Devocional' : 'Novo Devocional Diário'}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handlePreview} className="space-y-6">
@@ -345,7 +373,10 @@ const CreateDevotional = () => {
               disabled={loading}
               className="bg-gradient-celestial hover:opacity-90"
             >
-              {loading ? 'Criando...' : 'Confirmar e Criar Devocional'}
+              {loading 
+                ? (isEditing ? 'Atualizando...' : 'Criando...') 
+                : (isEditing ? 'Confirmar e Atualizar' : 'Confirmar e Criar Devocional')
+              }
             </Button>
           </DialogFooter>
         </DialogContent>
