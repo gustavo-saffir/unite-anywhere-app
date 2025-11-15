@@ -58,12 +58,12 @@ const Admin = () => {
               </Card>
             </Link>
 
-            <Link to="/create-devotional">
+            <Link to="/manage-devotionals">
               <Card className="p-6 hover:shadow-lg transition-all cursor-pointer">
                 <BookOpen className="w-12 h-12 mb-4 text-primary" />
-                <h3 className="text-xl font-semibold mb-2">Criar Devocionais</h3>
+                <h3 className="text-xl font-semibold mb-2">Gerenciar Devocionais</h3>
                 <p className="text-muted-foreground">
-                  Crie e gerencie os devocionais diários
+                  Visualize, edite e gerencie os devocionais diários
                 </p>
               </Card>
             </Link>
