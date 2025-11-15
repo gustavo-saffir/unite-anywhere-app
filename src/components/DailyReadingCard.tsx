@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useDailyReading } from '@/hooks/useDailyReading';
 
 export const DailyReadingCard = () => {
-  const { dailyReading, loading, hasCompleted } = useDailyReading();
+  const { dailyReadings, loading, hasCompleted } = useDailyReading();
 
   if (loading) {
     return (
@@ -21,7 +21,7 @@ export const DailyReadingCard = () => {
     );
   }
 
-  if (!dailyReading) {
+  if (!dailyReadings || dailyReadings.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -37,6 +37,8 @@ export const DailyReadingCard = () => {
     );
   }
 
+  const firstReading = dailyReadings[0];
+
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>
@@ -47,7 +49,7 @@ export const DailyReadingCard = () => {
               Leitura Diária - A Bíblia em 1 Ano
             </CardTitle>
             <CardDescription>
-              {dailyReading.book} - Capítulo {dailyReading.chapter}
+              {firstReading.book} - {dailyReadings.length} {dailyReadings.length === 1 ? 'Capítulo' : 'Capítulos'}
             </CardDescription>
           </div>
           
@@ -66,13 +68,22 @@ export const DailyReadingCard = () => {
       </CardHeader>
       
       <CardContent>
-        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-          {dailyReading.chapter_text.substring(0, 150)}...
-        </p>
+        <div className="space-y-2 mb-4">
+          {dailyReadings.slice(0, 2).map((reading) => (
+            <p key={reading.id} className="text-sm text-muted-foreground line-clamp-1">
+              Cap. {reading.chapter}: {reading.chapter_text.substring(0, 80)}...
+            </p>
+          ))}
+          {dailyReadings.length > 2 && (
+            <p className="text-xs text-muted-foreground">
+              + {dailyReadings.length - 2} {dailyReadings.length - 2 === 1 ? 'capítulo' : 'capítulos'}
+            </p>
+          )}
+        </div>
         
         <Link to="/daily-reading">
           <Button className="w-full" variant={hasCompleted ? "outline" : "default"}>
-            {hasCompleted ? 'Reler capítulo' : 'Ler agora'}
+            {hasCompleted ? 'Reler capítulos' : 'Ler agora'}
           </Button>
         </Link>
       </CardContent>

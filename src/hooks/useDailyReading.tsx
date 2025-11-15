@@ -11,6 +11,7 @@ interface DailyReading {
 }
 
 export const useDailyReading = () => {
+  const [dailyReadings, setDailyReadings] = useState<DailyReading[]>([]);
   const [dailyReading, setDailyReading] = useState<DailyReading | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,30 +29,33 @@ export const useDailyReading = () => {
         .from('daily_readings')
         .select('*')
         .eq('date', today)
-        .maybeSingle();
+        .order('chapter', { ascending: true });
 
       if (error) throw error;
       
-      setDailyReading(data);
+      setDailyReadings(data || []);
+      setDailyReading(data && data.length > 0 ? data[0] : null);
       
-      // Check if user has completed this reading
-      if (data) {
+      // Check if user has completed ALL chapters for today
+      if (data && data.length > 0) {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
+          const readingIds = data.map(r => r.id);
           const { data: progressData } = await supabase
             .from('user_daily_readings')
-            .select('*')
+            .select('daily_reading_id')
             .eq('user_id', user.id)
-            .eq('daily_reading_id', data.id)
-            .maybeSingle();
+            .in('daily_reading_id', readingIds);
           
-          setHasCompleted(!!progressData);
+          // User completed if they completed all chapters
+          setHasCompleted(progressData?.length === data.length);
         }
       }
       
       setError(null);
     } catch (err: any) {
       setError(err.message);
+      setDailyReadings([]);
       setDailyReading(null);
     } finally {
       setLoading(false);
@@ -76,12 +80,12 @@ export const useDailyReading = () => {
 
       if (error) throw error;
       
-      setHasCompleted(true);
+      await loadTodayReading();
       return { success: true };
     } catch (err: any) {
       return { success: false, error: err.message };
     }
   };
 
-  return { dailyReading, loading, error, hasCompleted, markAsCompleted, loadTodayReading };
+  return { dailyReadings, dailyReading, loading, error, hasCompleted, markAsCompleted, loadTodayReading };
 };

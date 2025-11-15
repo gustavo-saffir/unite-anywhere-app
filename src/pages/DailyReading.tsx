@@ -9,28 +9,28 @@ import DailyReadingAIMentor from '@/components/DailyReadingAIMentor';
 import DailyReadingPastorMessage from '@/components/DailyReadingPastorMessage';
 
 export default function DailyReading() {
-  const { dailyReading, loading, error, hasCompleted, markAsCompleted } = useDailyReading();
+  const { dailyReadings, loading, error, hasCompleted, markAsCompleted } = useDailyReading();
   const [startTime, setStartTime] = useState<number>(Date.now());
   const [isMarking, setIsMarking] = useState(false);
   const [showAIMentor, setShowAIMentor] = useState(false);
   const [showPastorMessage, setShowPastorMessage] = useState(false);
+  const [completedChapters, setCompletedChapters] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setStartTime(Date.now());
   }, []);
 
-  const handleMarkAsCompleted = async () => {
-    if (!dailyReading) return;
-    
+  const handleMarkAsCompleted = async (readingId: string) => {
     setIsMarking(true);
     const readingTime = Math.floor((Date.now() - startTime) / 1000);
     
-    const result = await markAsCompleted(dailyReading.id, readingTime);
+    const result = await markAsCompleted(readingId, readingTime);
     
     if (result.success) {
-      toast.success('Leitura concluída!');
+      setCompletedChapters(prev => new Set(prev).add(readingId));
+      toast.success('Capítulo marcado como concluído!');
     } else {
-      toast.error('Erro ao marcar leitura como concluída');
+      toast.error('Erro ao marcar capítulo como concluído');
     }
     
     setIsMarking(false);
@@ -49,7 +49,7 @@ export default function DailyReading() {
     );
   }
 
-  if (error || !dailyReading) {
+  if (error || !dailyReadings || dailyReadings.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
         <div className="container max-w-4xl mx-auto px-4 py-8">
@@ -73,6 +73,11 @@ export default function DailyReading() {
     );
   }
 
+  const firstReading = dailyReadings[0];
+  // Format date without timezone issues
+  const [year, month, day] = firstReading.date.split('-');
+  const dateFormatted = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container max-w-4xl mx-auto px-4 py-8">
@@ -83,67 +88,81 @@ export default function DailyReading() {
           </Button>
         </Link>
 
-        <Card className="border-primary/20 shadow-lg">
-          <CardHeader className="space-y-4">
-            <div className="flex items-start justify-between">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <BookOpen className="h-5 w-5" />
-                  <span className="text-sm font-medium">Leitura Diária - A Bíblia em 1 Ano</span>
+        <div className="space-y-6">
+          {/* Header Card */}
+          <Card className="border-primary/20 shadow-lg">
+            <CardHeader className="space-y-4">
+              <div className="flex items-start justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <BookOpen className="h-5 w-5" />
+                    <span className="text-sm font-medium">Leitura Diária - A Bíblia em 1 Ano</span>
+                  </div>
+                  <CardTitle className="text-3xl">
+                    {firstReading.book} - {dailyReadings.length} {dailyReadings.length === 1 ? 'Capítulo' : 'Capítulos'}
+                  </CardTitle>
+                  <CardDescription>
+                    {dateFormatted.toLocaleDateString('pt-BR', {
+                      weekday: 'long',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </CardDescription>
                 </div>
-                <CardTitle className="text-3xl">
-                  {dailyReading.book} - Capítulo {dailyReading.chapter}
-                </CardTitle>
-                <CardDescription>
-                  {new Date(dailyReading.date).toLocaleDateString('pt-BR', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </CardDescription>
+
+                {hasCompleted && (
+                  <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                    <CheckCircle2 className="h-5 w-5" />
+                    <span className="text-sm font-medium">Todos Concluídos</span>
+                  </div>
+                )}
               </div>
-              
-              {hasCompleted && (
-                <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
-                  <CheckCircle2 className="h-5 w-5" />
-                  <span className="text-sm font-medium">Concluída</span>
+            </CardHeader>
+          </Card>
+
+          {/* Chapter Cards */}
+          {dailyReadings.map((reading, index) => (
+            <Card key={reading.id} className="border-primary/20 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-2xl">Capítulo {reading.chapter}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="prose prose-lg dark:prose-invert max-w-none">
+                  <div className="whitespace-pre-wrap leading-relaxed text-foreground">
+                    {reading.chapter_text}
+                  </div>
                 </div>
-              )}
-            </div>
-          </CardHeader>
 
-          <CardContent className="space-y-6">
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <div className="whitespace-pre-wrap leading-relaxed text-foreground">
-                {dailyReading.chapter_text}
-              </div>
-            </div>
+                {!completedChapters.has(reading.id) && (
+                  <div className="pt-6 border-t">
+                    <Button 
+                      onClick={() => handleMarkAsCompleted(reading.id)}
+                      disabled={isMarking}
+                      className="w-full"
+                      size="lg"
+                    >
+                      {isMarking ? (
+                        <>
+                          <Clock className="mr-2 h-4 w-4 animate-spin" />
+                          Marcando como concluído...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="mr-2 h-4 w-4" />
+                          Marcar Capítulo {reading.chapter} como concluído
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
 
-            {!hasCompleted && (
-              <div className="pt-6 border-t">
-                <Button 
-                  onClick={handleMarkAsCompleted}
-                  disabled={isMarking}
-                  className="w-full"
-                  size="lg"
-                >
-                  {isMarking ? (
-                    <>
-                      <Clock className="mr-2 h-4 w-4 animate-spin" />
-                      Marcando como concluída...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Marcar como concluída
-                    </>
-                  )}
-                </Button>
-              </div>
-            )}
-
-            <div className="pt-4 border-t">
+          {/* Help Card */}
+          <Card className="border-primary/20 shadow-lg">
+            <CardContent className="pt-6">
               <p className="text-sm text-muted-foreground mb-3">
                 Precisa de ajuda para entender melhor esta leitura?
               </p>
@@ -165,35 +184,35 @@ export default function DailyReading() {
                   Falar com Pastor
                 </Button>
               </div>
-            </div>
 
-            {dailyReading.devotional_id && (
-              <div className="pt-4 border-t">
-                <p className="text-sm text-muted-foreground mb-3">
-                  Esta leitura está conectada ao devocional de hoje:
-                </p>
-                <Link to="/devotional">
-                  <Button variant="outline" className="w-full">
-                    Ver Devocional do Dia
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              {firstReading.devotional_id && (
+                <div className="pt-4 mt-4 border-t">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Esta leitura está conectada ao devocional de hoje:
+                  </p>
+                  <Link to="/devotional">
+                    <Button variant="outline" className="w-full">
+                      Ver Devocional do Dia
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
-        {showAIMentor && dailyReading && (
+        {showAIMentor && firstReading && (
           <DailyReadingAIMentor
-            readingId={dailyReading.id}
-            readingContext={`Leitura bíblica de hoje: ${dailyReading.book} - Capítulo ${dailyReading.chapter}\n\n${dailyReading.chapter_text}`}
+            readingId={firstReading.id}
+            readingContext={`Leitura bíblica de hoje: ${firstReading.book}\n\n${dailyReadings.map(r => `Capítulo ${r.chapter}:\n${r.chapter_text}`).join('\n\n')}`}
             onClose={() => setShowAIMentor(false)}
           />
         )}
 
-        {showPastorMessage && dailyReading && (
+        {showPastorMessage && firstReading && (
           <DailyReadingPastorMessage
-            readingId={dailyReading.id}
-            readingReference={`${dailyReading.book} - Capítulo ${dailyReading.chapter}`}
+            readingId={firstReading.id}
+            readingReference={`${firstReading.book} - Capítulos ${dailyReadings.map(r => r.chapter).join(', ')}`}
             onClose={() => setShowPastorMessage(false)}
           />
         )}
