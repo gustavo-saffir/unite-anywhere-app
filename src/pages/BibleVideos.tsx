@@ -60,7 +60,7 @@ const BibleVideos = () => {
           </Button>
           <div>
             <h1 className="text-3xl font-bold">Resumos Bíblicos</h1>
-            <p className="text-muted-foreground">Vídeos de 5 minutos sobre cada livro da Bíblia</p>
+            <p className="text-muted-foreground">Venha aprender conosco de forma bem divertida!</p>
           </div>
         </div>
 
