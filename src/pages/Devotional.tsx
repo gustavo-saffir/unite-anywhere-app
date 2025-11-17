@@ -51,7 +51,7 @@ const Devotional = () => {
 
   // Scroll automático para o topo quando muda de step
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   }, [step]);
 
   // Buscar informações do pastor/líder
