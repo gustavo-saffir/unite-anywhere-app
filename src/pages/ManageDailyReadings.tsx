@@ -21,10 +21,10 @@ interface DailyReading {
 
 interface DailyReadingGroup {
   date: string;
-  book: string;
   devotional_id: string | null;
-  chapters: {
+  readings: {
     id: string;
+    book: string;
     chapter: number;
     chapter_text: string;
   }[];
@@ -44,12 +44,11 @@ export default function ManageDailyReadings() {
   const [editingDate, setEditingDate] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
-    book: '',
-    chapters: [
-      { chapter: 1, chapter_text: '' },
-      { chapter: 2, chapter_text: '' },
-      { chapter: 3, chapter_text: '' },
-      { chapter: 4, chapter_text: '' },
+    readings: [
+      { book: '', chapter: 1, chapter_text: '' },
+      { book: '', chapter: 1, chapter_text: '' },
+      { book: '', chapter: 1, chapter_text: '' },
+      { book: '', chapter: 1, chapter_text: '' },
     ],
     devotional_id: 'none',
   });
@@ -74,20 +73,21 @@ export default function ManageDailyReadings() {
       const readingsData = data || [];
       
       readingsData.forEach((reading) => {
-        const existingGroup = grouped.find(g => g.date === reading.date && g.book === reading.book);
+        const existingGroup = grouped.find(g => g.date === reading.date);
         if (existingGroup) {
-          existingGroup.chapters.push({
+          existingGroup.readings.push({
             id: reading.id,
+            book: reading.book,
             chapter: reading.chapter,
             chapter_text: reading.chapter_text,
           });
         } else {
           grouped.push({
             date: reading.date,
-            book: reading.book,
             devotional_id: reading.devotional_id,
-            chapters: [{
+            readings: [{
               id: reading.id,
+              book: reading.book,
               chapter: reading.chapter,
               chapter_text: reading.chapter_text,
             }],
@@ -123,11 +123,11 @@ export default function ManageDailyReadings() {
     try {
       const devotionalId = formData.devotional_id === 'none' ? null : formData.devotional_id;
       
-      // Filter out empty chapters
-      const validChapters = formData.chapters.filter(ch => ch.chapter_text.trim() !== '');
+      // Filter out empty readings
+      const validReadings = formData.readings.filter(r => r.book.trim() !== '' && r.chapter_text.trim() !== '');
       
-      if (validChapters.length === 0) {
-        toast.error('Preencha pelo menos um capítulo');
+      if (validReadings.length === 0) {
+        toast.error('Preencha pelo menos uma leitura');
         return;
       }
 
@@ -136,18 +136,17 @@ export default function ManageDailyReadings() {
         const { error: deleteError } = await supabase
           .from('daily_readings')
           .delete()
-          .eq('date', editingDate)
-          .eq('book', formData.book);
+          .eq('date', editingDate);
 
         if (deleteError) throw deleteError;
       }
 
-      // Insert all chapters
-      const inserts = validChapters.map((ch, index) => ({
+      // Insert all readings
+      const inserts = validReadings.map((reading) => ({
         date: formData.date,
-        book: formData.book,
-        chapter: ch.chapter,
-        chapter_text: ch.chapter_text,
+        book: reading.book,
+        chapter: reading.chapter,
+        chapter_text: reading.chapter_text,
         devotional_id: devotionalId,
       }));
 
@@ -157,7 +156,7 @@ export default function ManageDailyReadings() {
 
       if (error) throw error;
       
-      toast.success(editingDate ? 'Leitura atualizada com sucesso!' : 'Leitura criada com sucesso!');
+      toast.success(editingDate ? 'Leituras atualizadas com sucesso!' : 'Leituras criadas com sucesso!');
       resetForm();
       loadReadings();
     } catch (error: any) {
@@ -168,42 +167,41 @@ export default function ManageDailyReadings() {
   const handleEdit = (group: DailyReadingGroup) => {
     setEditingDate(group.date);
     
-    const chapters = [
-      { chapter: 1, chapter_text: '' },
-      { chapter: 2, chapter_text: '' },
-      { chapter: 3, chapter_text: '' },
-      { chapter: 4, chapter_text: '' },
+    const readings = [
+      { book: '', chapter: 1, chapter_text: '' },
+      { book: '', chapter: 1, chapter_text: '' },
+      { book: '', chapter: 1, chapter_text: '' },
+      { book: '', chapter: 1, chapter_text: '' },
     ];
     
-    group.chapters.forEach((ch, index) => {
+    group.readings.forEach((reading, index) => {
       if (index < 4) {
-        chapters[index] = {
-          chapter: ch.chapter,
-          chapter_text: ch.chapter_text,
+        readings[index] = {
+          book: reading.book,
+          chapter: reading.chapter,
+          chapter_text: reading.chapter_text,
         };
       }
     });
     
     setFormData({
       date: group.date,
-      book: group.book,
-      chapters: chapters,
+      readings: readings,
       devotional_id: group.devotional_id || 'none',
     });
   };
 
   const handleDelete = async (group: DailyReadingGroup) => {
-    if (!confirm('Tem certeza que deseja excluir esta leitura (todos os capítulos)?')) return;
+    if (!confirm('Tem certeza que deseja excluir todas as leituras desta data?')) return;
 
     try {
       const { error } = await supabase
         .from('daily_readings')
         .delete()
-        .eq('date', group.date)
-        .eq('book', group.book);
+        .eq('date', group.date);
 
       if (error) throw error;
-      toast.success('Leitura excluída com sucesso!');
+      toast.success('Leituras excluídas com sucesso!');
       loadReadings();
     } catch (error: any) {
       toast.error(error.message);
@@ -214,12 +212,11 @@ export default function ManageDailyReadings() {
     setEditingDate(null);
     setFormData({
       date: new Date().toISOString().split('T')[0],
-      book: '',
-      chapters: [
-        { chapter: 1, chapter_text: '' },
-        { chapter: 2, chapter_text: '' },
-        { chapter: 3, chapter_text: '' },
-        { chapter: 4, chapter_text: '' },
+      readings: [
+        { book: '', chapter: 1, chapter_text: '' },
+        { book: '', chapter: 1, chapter_text: '' },
+        { book: '', chapter: 1, chapter_text: '' },
+        { book: '', chapter: 1, chapter_text: '' },
       ],
       devotional_id: 'none',
     });
@@ -249,9 +246,9 @@ export default function ManageDailyReadings() {
           {/* Form */}
           <Card>
             <CardHeader>
-              <CardTitle>{editingDate ? 'Editar Leitura' : 'Nova Leitura Diária'}</CardTitle>
+              <CardTitle>{editingDate ? 'Editar Leituras' : 'Novas Leituras Diárias'}</CardTitle>
               <CardDescription>
-                {editingDate ? 'Atualize os dados da leitura diária (até 4 capítulos)' : 'Crie uma nova leitura diária (até 4 capítulos)'}
+                {editingDate ? 'Atualize as leituras do dia (até 4 leituras de livros diferentes)' : 'Crie novas leituras para o dia (até 4 leituras de livros diferentes)'}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -263,17 +260,6 @@ export default function ManageDailyReadings() {
                     type="date"
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="book">Livro</Label>
-                  <Input
-                    id="book"
-                    value={formData.book}
-                    onChange={(e) => setFormData({ ...formData, book: e.target.value })}
-                    placeholder="Ex: Gênesis"
                     required
                   />
                 </div>
@@ -299,23 +285,38 @@ export default function ManageDailyReadings() {
                 </div>
 
                 <div className="space-y-4">
-                  {formData.chapters.map((chapter, index) => (
+                  {formData.readings.map((reading, index) => (
                     <div key={index} className="space-y-2 p-4 border border-border rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
-                        <Label className="text-sm font-semibold">Capítulo {index + 1}</Label>
+                        <Label className="text-sm font-semibold">Leitura {index + 1}</Label>
                       </div>
                       
+                      <div>
+                        <Label htmlFor={`book-${index}`}>Livro</Label>
+                        <Input
+                          id={`book-${index}`}
+                          value={reading.book}
+                          onChange={(e) => {
+                            const newReadings = [...formData.readings];
+                            newReadings[index].book = e.target.value;
+                            setFormData({ ...formData, readings: newReadings });
+                          }}
+                          placeholder="Ex: Gênesis"
+                          required={index === 0}
+                        />
+                      </div>
+
                       <div>
                         <Label htmlFor={`chapter-${index}`}>Número do Capítulo</Label>
                         <Input
                           id={`chapter-${index}`}
                           type="number"
                           min="1"
-                          value={chapter.chapter}
+                          value={reading.chapter}
                           onChange={(e) => {
-                            const newChapters = [...formData.chapters];
-                            newChapters[index].chapter = parseInt(e.target.value) || 1;
-                            setFormData({ ...formData, chapters: newChapters });
+                            const newReadings = [...formData.readings];
+                            newReadings[index].chapter = parseInt(e.target.value) || 1;
+                            setFormData({ ...formData, readings: newReadings });
                           }}
                           required={index === 0}
                         />
@@ -325,13 +326,13 @@ export default function ManageDailyReadings() {
                         <Label htmlFor={`text-${index}`}>Texto do Capítulo</Label>
                         <Textarea
                           id={`text-${index}`}
-                          value={chapter.chapter_text}
+                          value={reading.chapter_text}
                           onChange={(e) => {
-                            const newChapters = [...formData.chapters];
-                            newChapters[index].chapter_text = e.target.value;
-                            setFormData({ ...formData, chapters: newChapters });
+                            const newReadings = [...formData.readings];
+                            newReadings[index].chapter_text = e.target.value;
+                            setFormData({ ...formData, readings: newReadings });
                           }}
-                          placeholder={`Cole aqui o texto do capítulo ${index + 1}...`}
+                          placeholder={`Cole aqui o texto completo do capítulo ${index + 1}...`}
                           rows={6}
                           required={index === 0}
                         />
@@ -378,20 +379,20 @@ export default function ManageDailyReadings() {
                 const dateFormatted = `${day}/${month}/${year}`;
                 
                 return (
-                  <Card key={`${group.date}-${group.book}-${idx}`}>
+                  <Card key={`${group.date}-${idx}`}>
                     <CardContent className="pt-6">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="font-semibold text-lg">
-                            {group.book} - {group.chapters.length} {group.chapters.length === 1 ? 'Capítulo' : 'Capítulos'}
+                            Leituras do Dia - {group.readings.length} {group.readings.length === 1 ? 'Leitura' : 'Leituras'}
                           </h3>
                           <p className="text-sm text-muted-foreground mb-2">
                             {dateFormatted}
                           </p>
                           <div className="space-y-1">
-                            {group.chapters.map((ch) => (
-                              <p key={ch.id} className="text-sm text-muted-foreground">
-                                Cap. {ch.chapter}: {ch.chapter_text.substring(0, 80)}...
+                            {group.readings.map((reading) => (
+                              <p key={reading.id} className="text-sm text-muted-foreground">
+                                {reading.book} - Cap. {reading.chapter}: {reading.chapter_text.substring(0, 60)}...
                               </p>
                             ))}
                           </div>
