@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Target, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-path.jpg";
+import InstallPWAButton from "./InstallPWAButton";
 
 const Hero = () => {
   return (
@@ -29,7 +30,7 @@ const Hero = () => {
             Devocionais estruturados, mentor IA disponível 24/7 e acompanhamento pastoral. Tudo em um só lugar para seu crescimento espiritual real.
           </p>
 
-          <div className="flex justify-center pt-6">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
             <Link to="/auth">
               <Button 
                 size="lg" 
@@ -39,6 +40,7 @@ const Hero = () => {
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
+            <InstallPWAButton />
           </div>
 
           {/* Feature Pills */}
