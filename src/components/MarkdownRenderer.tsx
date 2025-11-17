@@ -9,15 +9,15 @@ export const MarkdownRenderer = ({ content, className = '' }: MarkdownRendererPr
   // Simple markdown parser
   const parseMarkdown = (text: string) => {
     // Bold
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>');
     // Italic
-    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    text = text.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
     // Underline
-    text = text.replace(/__(.*?)__/g, '<u>$1</u>');
+    text = text.replace(/__(.*?)__/g, '<u class="underline">$1</u>');
     // Bullet points
-    text = text.replace(/^• (.+)$/gm, '<li>$1</li>');
+    text = text.replace(/^• (.+)$/gm, '<li class="text-inherit">$1</li>');
     // Wrap consecutive <li> in <ul>
-    text = text.replace(/(<li>.*<\/li>\n?)+/g, '<ul class="list-disc list-inside space-y-1 my-2">$&</ul>');
+    text = text.replace(/(<li.*?<\/li>\n?)+/g, '<ul class="list-disc list-inside space-y-1 my-2 text-inherit">$&</ul>');
     // Line breaks
     text = text.replace(/\n/g, '<br />');
     
@@ -26,7 +26,7 @@ export const MarkdownRenderer = ({ content, className = '' }: MarkdownRendererPr
 
   return (
     <div
-      className={className}
+      className={`break-words ${className}`}
       dangerouslySetInnerHTML={{ __html: parseMarkdown(content) }}
     />
   );

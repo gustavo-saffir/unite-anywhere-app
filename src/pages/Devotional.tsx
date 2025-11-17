@@ -49,6 +49,11 @@ const Devotional = () => {
   const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  // Scroll automático para o topo quando muda de step
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [step]);
+
   // Buscar informações do pastor/líder
   useEffect(() => {
     const loadPastorPosition = async () => {
@@ -421,7 +426,7 @@ const Devotional = () => {
         </div>
       </header>
 
-      <main className={`container mx-auto px-4 py-8 max-w-4xl ${fontSizeClasses[fontSize]}`}>
+      <main className={`container mx-auto px-4 py-8 max-w-4xl ${fontSizeClasses[fontSize]} overflow-x-hidden`}>
         {/* Step 1: Abertura */}
         {step === 1 && (
           <Card className={`p-8 shadow-celestial border-primary/20 space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
