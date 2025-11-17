@@ -295,7 +295,7 @@ const Dashboard = () => {
                 <h3 className="text-lg font-semibold text-foreground">Resumos Bíblicos</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
-                Assista vídeos de 5 minutos com resumos de cada livro da Bíblia.
+                Vídeos curtos e animados sobre a Bíblia. Aprenda de forma simples cada livro da Bíblia. Divirta-se Apendendo!
               </p>
               <Button 
                 variant="outline" 
