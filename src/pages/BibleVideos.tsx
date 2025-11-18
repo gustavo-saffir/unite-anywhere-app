@@ -222,11 +222,12 @@ const BibleVideos = () => {
             </DialogHeader>
             <div className="aspect-video w-full">
               <iframe
-                src={`${selectedVideo?.video_url}?controls=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`}
+                src={`${selectedVideo?.video_url}?controls=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&fs=1&disablekb=0&enablejsapi=1`}
                 className="w-full h-full rounded-md"
                 allowFullScreen
                 title={selectedVideo?.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                frameBorder="0"
               />
             </div>
             {selectedVideo?.description && (
