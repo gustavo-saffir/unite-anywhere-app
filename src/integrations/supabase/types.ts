@@ -110,41 +110,47 @@ export type Database = {
       }
       bible_videos: {
         Row: {
-          book_name: string
-          book_order: number
+          category: string
+          category_image_url: string | null
           created_at: string
           created_by: string | null
           description: string | null
           duration_minutes: number
           id: string
-          testament: string
+          subcategory: string
+          subcategory_image_url: string | null
           thumbnail_url: string | null
+          title: string
           updated_at: string
           video_url: string
         }
         Insert: {
-          book_name: string
-          book_order: number
+          category?: string
+          category_image_url?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
           duration_minutes?: number
           id?: string
-          testament: string
+          subcategory?: string
+          subcategory_image_url?: string | null
           thumbnail_url?: string | null
+          title?: string
           updated_at?: string
           video_url: string
         }
         Update: {
-          book_name?: string
-          book_order?: number
+          category?: string
+          category_image_url?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
           duration_minutes?: number
           id?: string
-          testament?: string
+          subcategory?: string
+          subcategory_image_url?: string | null
           thumbnail_url?: string | null
+          title?: string
           updated_at?: string
           video_url?: string
         }
