@@ -107,5 +107,26 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    /* Previne zoom acidental em mobile */
+    touch-action: pan-x pan-y;
+    /* Previne overflow horizontal */
+    overflow-x: hidden;
+  }
+
+  /* Previne overflow horizontal em todos os elementos */
+  html, body, #root {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  /* Melhora o scroll em mobile */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Previne problemas de layout com imagens */
+  img {
+    max-width: 100%;
+    height: auto;
   }
 }

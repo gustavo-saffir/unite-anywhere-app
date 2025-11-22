@@ -66,7 +66,7 @@ const Devotional = () => {
 
   // Scroll automático para o topo quando muda de step
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [step]);
 
   // Buscar informações do pastor/líder
@@ -289,10 +289,10 @@ const Devotional = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground">Carregando devocional do dia...</p>
+      <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center p-3 sm:p-4">
+        <div className="text-center space-y-3 sm:space-y-4">
+          <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="text-sm sm:text-base text-muted-foreground">Carregando devocional do dia...</p>
         </div>
       </div>
     );
@@ -300,17 +300,17 @@ const Devotional = () => {
 
   if (error || !devotional) {
     return (
-      <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center p-4">
-        <Card className="max-w-md w-full p-8 text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-muted mx-auto flex items-center justify-center">
-            <AlertCircle className="w-8 h-8 text-muted-foreground" />
+      <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center p-3 sm:p-4">
+        <Card className="max-w-md w-full p-4 sm:p-8 text-center space-y-3 sm:space-y-4">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-muted mx-auto flex items-center justify-center">
+            <AlertCircle className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground">Devocional Não Disponível</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground">Devocional Não Disponível</h2>
+          <p className="text-sm sm:text-base text-muted-foreground">
             {error || "Ainda não há um devocional cadastrado para hoje. Entre em contato com o administrador."}
           </p>
           <Link to="/dashboard">
-            <Button className="w-full bg-gradient-celestial hover:opacity-90">
+            <Button className="w-full bg-gradient-celestial hover:opacity-90 text-sm sm:text-base">
               Fechar Devocional
             </Button>
           </Link>
@@ -321,44 +321,44 @@ const Devotional = () => {
 
   if (completed) {
     return (
-      <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center p-4">
-        <Card className="max-w-2xl w-full p-8 text-center space-y-6 shadow-celestial">
-          <div className="w-20 h-20 rounded-full bg-gradient-celestial mx-auto flex items-center justify-center shadow-glow">
-            <CheckCircle2 className="w-10 h-10 text-primary-foreground" />
+      <div className="min-h-screen bg-gradient-peaceful flex items-center justify-center p-3 sm:p-4">
+        <Card className="max-w-2xl w-full p-4 sm:p-8 text-center space-y-4 sm:space-y-6 shadow-celestial">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-celestial mx-auto flex items-center justify-center shadow-glow">
+            <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 text-primary-foreground" />
           </div>
           
-          <h1 className="text-3xl font-bold text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
             Devocional Completado! 🎉
           </h1>
           
-          <p className="text-lg text-muted-foreground">
+          <p className="text-base sm:text-lg text-muted-foreground px-2">
             Parabéns por dedicar tempo ao seu crescimento espiritual hoje. Continue firme em sua jornada!
           </p>
 
-          <div className="grid md:grid-cols-3 gap-4 pt-4">
-            <div className="p-4 rounded-lg bg-primary/10">
-              <div className="text-2xl font-bold text-primary">+{memorizationValidated ? 75 : 50}</div>
-              <div className="text-sm text-muted-foreground">XP Ganho</div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2 sm:pt-4">
+            <div className="p-3 sm:p-4 rounded-lg bg-primary/10">
+              <div className="text-xl sm:text-2xl font-bold text-primary">+{memorizationValidated ? 75 : 50}</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">XP Ganho</div>
             </div>
-            <div className="p-4 rounded-lg bg-secondary/10">
-              <div className="text-2xl font-bold text-secondary">{stats?.current_streak || 1}</div>
-              <div className="text-sm text-muted-foreground">Dias Seguidos</div>
+            <div className="p-3 sm:p-4 rounded-lg bg-secondary/10">
+              <div className="text-xl sm:text-2xl font-bold text-secondary">{stats?.current_streak || 1}</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Dias Seguidos</div>
             </div>
-            <div className="p-4 rounded-lg bg-accent/10">
-              <div className="text-2xl font-bold text-accent">Nível {stats?.current_level || 1}</div>
-              <div className="text-sm text-muted-foreground">Seu Nível</div>
+            <div className="p-3 sm:p-4 rounded-lg bg-accent/10">
+              <div className="text-xl sm:text-2xl font-bold text-accent">Nível {stats?.current_level || 1}</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Seu Nível</div>
             </div>
           </div>
 
-          <div className="flex gap-3 pt-4">
-            <Link to="/dashboard" className="flex-1">
-              <Button className="w-full bg-gradient-celestial hover:opacity-90">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2 sm:pt-4">
+            <Link to="/dashboard" className="flex-1 w-full">
+              <Button className="w-full bg-gradient-celestial hover:opacity-90 text-sm sm:text-base">
                 Fechar Devocional
               </Button>
             </Link>
             <Button 
               variant="outline" 
-              className="flex-1 border-primary/30"
+              className="flex-1 border-primary/30 text-sm sm:text-base"
               onClick={handleShare}
             >
               <Share2 className="w-4 h-4 mr-2" />
@@ -390,76 +390,76 @@ const Devotional = () => {
     <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gradient-peaceful'}`}>
       {/* Header */}
       <header className={`border-b border-border/50 backdrop-blur-lg sticky top-0 z-40 ${isDarkMode ? 'bg-gray-800/80' : 'bg-background/80'}`}>
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/dashboard" className={`flex items-center gap-2 transition-colors ${isDarkMode ? 'text-gray-100 hover:text-primary' : 'text-foreground hover:text-primary'}`}>
-              <ArrowLeft className="w-5 h-5" />
-              <span className="font-medium">Voltar</span>
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
+            <Link to="/dashboard" className={`flex items-center gap-1.5 sm:gap-2 transition-colors ${isDarkMode ? 'text-gray-100 hover:text-primary' : 'text-foreground hover:text-primary'}`}>
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-sm sm:text-base font-medium">Voltar</span>
             </Link>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               {/* Controles de Acessibilidade */}
-              <div className="flex items-center gap-2 border-r border-border/50 pr-4">
+              <div className="flex items-center gap-1 sm:gap-2 border-r border-border/50 pr-2 sm:pr-4">
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={decreaseFontSize}
                   disabled={fontSize === 'small'}
-                  className="h-8 w-8"
+                  className="h-7 w-7 sm:h-8 sm:w-8"
                   title="Diminuir fonte"
                 >
-                  <Type className="w-4 h-4" />
+                  <Type className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </Button>
-                <span className={`text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>A</span>
+                <span className={`text-xs font-medium hidden sm:inline ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>A</span>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={increaseFontSize}
                   disabled={fontSize === 'large'}
-                  className="h-8 w-8"
+                  className="h-7 w-7 sm:h-8 sm:w-8"
                   title="Aumentar fonte"
                 >
-                  <Type className="w-5 h-5" />
+                  <Type className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsDarkMode(!isDarkMode)}
-                  className="h-8 w-8"
+                  className="h-7 w-7 sm:h-8 sm:w-8"
                   title={isDarkMode ? "Modo claro" : "Modo escuro"}
                 >
-                  {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                  {isDarkMode ? <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
                 </Button>
               </div>
               {/* Progresso */}
-              <div className="flex items-center gap-3">
-                <div className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>Progresso</div>
-                <div className="w-32">
-                  <Progress value={progress} className="h-2" />
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className={`text-xs sm:text-sm hidden md:block ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>Progresso</div>
+                <div className="w-16 sm:w-32">
+                  <Progress value={progress} className="h-1.5 sm:h-2" />
                 </div>
-                <div className={`text-sm font-semibold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>{step}/{totalSteps}</div>
+                <div className={`text-xs sm:text-sm font-semibold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>{step}/{totalSteps}</div>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      <main className={`container mx-auto px-4 py-8 max-w-4xl ${fontSizeClasses[fontSize]} overflow-x-hidden`}>
+      <main className={`container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-4xl ${fontSizeClasses[fontSize]} overflow-x-hidden`}>
         {/* Step 1: Abertura */}
         {step === 1 && (
-          <Card className={`p-8 shadow-celestial border-primary/20 space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
+          <Card className={`p-4 sm:p-8 shadow-celestial border-primary/20 space-y-4 sm:space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div className="flex items-center gap-3">
-              <img src={bibleIcon} alt="Bíblia" className="w-16 h-16 rounded-xl shadow-glow" />
+              <img src={bibleIcon} alt="Bíblia" className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl shadow-glow" />
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <Sparkles className="w-4 h-4 text-accent" />
-                  <span className="text-sm font-semibold text-accent">Devocional do Dia</span>
+                  <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent" />
+                  <span className="text-xs sm:text-sm font-semibold text-accent">Devocional do Dia</span>
                 </div>
-                <h1 className="text-2xl font-bold text-foreground">Bem-vindo</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-foreground">Bem-vindo</h1>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>📖 Abertura</h2>
+            <div className="space-y-3 sm:space-y-4">
+              <h2 className={`text-lg sm:text-xl font-semibold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>📖 Abertura</h2>
               {devotional.opening_text ? (
                 <MarkdownRenderer 
                   content={devotional.opening_text} 
@@ -472,7 +472,7 @@ const Devotional = () => {
 
             <Button 
               onClick={() => setStep(2)} 
-              className="w-full bg-gradient-celestial hover:opacity-90 shadow-celestial"
+              className="w-full bg-gradient-celestial hover:opacity-90 shadow-celestial text-sm sm:text-base"
               size="lg"
             >
               Continuar para o Versículo
@@ -482,30 +482,30 @@ const Devotional = () => {
 
         {/* Step 2: Versículo */}
         {step === 2 && (
-          <Card className={`p-8 shadow-celestial border-primary/20 space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
-            <div className="flex items-center gap-3 mb-4">
-              <BookOpen className="w-8 h-8 text-primary" />
-              <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>Versículo do Dia</h2>
+          <Card className={`p-4 sm:p-8 shadow-celestial border-primary/20 space-y-4 sm:space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
+            <div className="flex items-center gap-3 mb-3 sm:mb-4">
+              <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+              <h2 className={`text-xl sm:text-2xl font-bold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>Versículo do Dia</h2>
             </div>
 
-            <div className={`rounded-xl p-6 border ${isDarkMode ? 'bg-gray-700/50 border-gray-600' : 'bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/10'}`}>
-              <h3 className="text-lg font-semibold text-primary mb-4">{devotional.verse_reference}</h3>
-              <p className={`text-lg leading-relaxed italic ${isDarkMode ? 'text-gray-200' : 'text-foreground'}`}>
+            <div className={`rounded-xl p-4 sm:p-6 border ${isDarkMode ? 'bg-gray-700/50 border-gray-600' : 'bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/10'}`}>
+              <h3 className="text-base sm:text-lg font-semibold text-primary mb-3 sm:mb-4">{devotional.verse_reference}</h3>
+              <p className={`text-base sm:text-lg leading-relaxed italic ${isDarkMode ? 'text-gray-200' : 'text-foreground'}`}>
                 "{devotional.verse_text}"
               </p>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <Button 
                 onClick={() => setStep(1)} 
                 variant="outline"
-                className="flex-1"
+                className="flex-1 text-sm sm:text-base"
               >
                 Voltar
               </Button>
               <Button 
                 onClick={() => setStep(3)} 
-                className="flex-1 bg-gradient-celestial hover:opacity-90"
+                className="flex-1 bg-gradient-celestial hover:opacity-90 text-sm sm:text-base"
               >
                 Continuar
               </Button>
@@ -515,9 +515,9 @@ const Devotional = () => {
 
         {/* Step 3: Contexto */}
         {step === 3 && (
-          <Card className={`p-8 shadow-celestial space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
+          <Card className={`p-4 sm:p-8 shadow-celestial space-y-4 sm:space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div>
-              <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>📜 Contexto Rápido</h2>
+              <h2 className={`text-xl sm:text-2xl font-bold mb-3 sm:mb-4 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>📜 Contexto Rápido</h2>
               {devotional.context ? (
                 <MarkdownRenderer 
                   content={devotional.context} 
@@ -528,17 +528,17 @@ const Devotional = () => {
               )}
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <Button 
                 onClick={() => setStep(2)} 
                 variant="outline"
-                className="flex-1"
+                className="flex-1 text-sm sm:text-base"
               >
                 Voltar
               </Button>
               <Button 
                 onClick={() => setStep(4)} 
-                className="flex-1 bg-gradient-celestial hover:opacity-90"
+                className="flex-1 bg-gradient-celestial hover:opacity-90 text-sm sm:text-base"
               >
                 Continuar
               </Button>
@@ -548,10 +548,10 @@ const Devotional = () => {
 
         {/* Step 4: Insight Central */}
         {step === 4 && (
-          <Card className={`p-8 shadow-celestial space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
+          <Card className={`p-4 sm:p-8 shadow-celestial space-y-4 sm:space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div>
-              <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>💡 Reflexão Central</h2>
-              <div className={`rounded-xl p-6 border ${isDarkMode ? 'bg-gray-700/50 border-gray-600' : 'bg-primary/5 border-primary/20'}`}>
+              <h2 className={`text-xl sm:text-2xl font-bold mb-3 sm:mb-4 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>💡 Reflexão Central</h2>
+              <div className={`rounded-xl p-4 sm:p-6 border ${isDarkMode ? 'bg-gray-700/50 border-gray-600' : 'bg-primary/5 border-primary/20'}`}>
                 {devotional.central_insight ? (
                   <MarkdownRenderer 
                     content={devotional.central_insight} 
@@ -563,17 +563,17 @@ const Devotional = () => {
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <Button 
                 onClick={() => setStep(3)} 
                 variant="outline"
-                className="flex-1"
+                className="flex-1 text-sm sm:text-base"
               >
                 Voltar
               </Button>
               <Button 
                 onClick={() => setStep(5)} 
-                className="flex-1 bg-gradient-celestial hover:opacity-90"
+                className="flex-1 bg-gradient-celestial hover:opacity-90 text-sm sm:text-base"
               >
                 Continuar para Reflexão
               </Button>
@@ -583,13 +583,13 @@ const Devotional = () => {
 
         {/* Step 5: Reflexão */}
         {step === 5 && (
-          <Card className={`p-8 shadow-celestial space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
+          <Card className={`p-4 sm:p-8 shadow-celestial space-y-4 sm:space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div>
-              <h2 className={`text-2xl font-bold mb-3 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>💭 Reflexão Guiada</h2>
+              <h2 className={`text-xl sm:text-2xl font-bold mb-2 sm:mb-3 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>💭 Reflexão Guiada</h2>
               {devotional.reflection_question && (
                 <MarkdownRenderer 
                   content={devotional.reflection_question} 
-                  className={isDarkMode ? 'text-gray-400 mb-4' : 'text-muted-foreground mb-4'}
+                  className={isDarkMode ? 'text-gray-400 mb-3 sm:mb-4' : 'text-muted-foreground mb-3 sm:mb-4'}
                 />
               )}
             </div>
@@ -602,21 +602,21 @@ const Devotional = () => {
                 placeholder="De que forma este versículo se aplica à sua vida neste momento? Quais verdades ou ensinamentos Deus está revelando a você por meio dele?"
                 value={reflection}
                 onChange={(e) => setReflection(e.target.value)}
-                className={`min-h-[150px] ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100' : ''}`}
+                className={`min-h-[150px] text-sm sm:text-base ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100' : ''}`}
               />
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <Button 
                 onClick={() => setStep(4)} 
                 variant="outline"
-                className="flex-1"
+                className="flex-1 text-sm sm:text-base"
               >
                 Voltar
               </Button>
               <Button 
                 onClick={() => setStep(6)} 
-                className="flex-1 bg-gradient-celestial hover:opacity-90"
+                className="flex-1 bg-gradient-celestial hover:opacity-90 text-sm sm:text-base"
                 disabled={!reflection.trim()}
               >
                 Continuar
@@ -627,13 +627,13 @@ const Devotional = () => {
 
         {/* Step 6: Aplicação */}
         {step === 6 && (
-          <Card className={`p-8 shadow-celestial space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
+          <Card className={`p-4 sm:p-8 shadow-celestial space-y-4 sm:space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div>
-              <h2 className={`text-2xl font-bold mb-3 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>✨ Aplicação Prática</h2>
+              <h2 className={`text-xl sm:text-2xl font-bold mb-2 sm:mb-3 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>✨ Aplicação Prática</h2>
               {devotional.application_question && (
                 <MarkdownRenderer 
                   content={devotional.application_question} 
-                  className={isDarkMode ? 'text-gray-400 mb-4' : 'text-muted-foreground mb-4'}
+                  className={isDarkMode ? 'text-gray-400 mb-3 sm:mb-4' : 'text-muted-foreground mb-3 sm:mb-4'}
                 />
               )}
             </div>
@@ -646,21 +646,21 @@ const Devotional = () => {
                 placeholder="Seja específico: Que ação concreta você vai tomar hoje para exercitar sua fé?"
                 value={application}
                 onChange={(e) => setApplication(e.target.value)}
-                className={`min-h-[150px] ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100' : ''}`}
+                className={`min-h-[150px] text-sm sm:text-base ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100' : ''}`}
               />
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <Button 
                 onClick={() => setStep(5)} 
                 variant="outline"
-                className="flex-1"
+                className="flex-1 text-sm sm:text-base"
               >
                 Voltar
               </Button>
               <Button 
                 onClick={() => setStep(7)} 
-                className="flex-1 bg-gradient-celestial hover:opacity-90"
+                className="flex-1 bg-gradient-celestial hover:opacity-90 text-sm sm:text-base"
                 disabled={!application.trim()}
               >
                 Continuar
@@ -671,20 +671,20 @@ const Devotional = () => {
 
         {/* Step 7: Memorização */}
         {step === 7 && (
-          <Card className={`p-8 shadow-celestial space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
+          <Card className={`p-4 sm:p-8 shadow-celestial space-y-4 sm:space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div>
-              <h2 className={`text-2xl font-bold mb-3 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>
+              <h2 className={`text-xl sm:text-2xl font-bold mb-2 sm:mb-3 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>
                 🧠 Desafio de Memorização
               </h2>
-              <p className={isDarkMode ? 'text-gray-400 mb-4' : 'text-muted-foreground mb-4'}>
+              <p className={`text-sm sm:text-base mb-3 sm:mb-4 ${isDarkMode ? 'text-gray-400' : 'text-muted-foreground'}`}>
                 Escreva o versículo de hoje de memória. Não precisa ser palavra por palavra, 
                 mas tente capturar a essência e o sentido do versículo.
               </p>
-              <div className={`rounded-lg p-4 mb-4 border ${isDarkMode ? 'bg-gray-700/50 border-gray-600' : 'bg-primary/5 border-primary/10'}`}>
-                <p className={`text-sm mb-1 ${isDarkMode ? 'text-gray-400' : 'text-muted-foreground'}`}>
+              <div className={`rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 border ${isDarkMode ? 'bg-gray-700/50 border-gray-600' : 'bg-primary/5 border-primary/10'}`}>
+                <p className={`text-xs sm:text-sm mb-1 ${isDarkMode ? 'text-gray-400' : 'text-muted-foreground'}`}>
                   Versículo de hoje:
                 </p>
-                <p className={`font-semibold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>
+                <p className={`text-sm sm:text-base font-semibold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>
                   {devotional.verse_reference}
                 </p>
               </div>
@@ -698,13 +698,13 @@ const Devotional = () => {
                 placeholder="Escreva o versículo aqui..."
                 value={memorization}
                 onChange={(e) => setMemorization(e.target.value)}
-                className={`min-h-[120px] ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100' : ''}`}
+                className={`min-h-[120px] text-sm sm:text-base ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100' : ''}`}
                 disabled={memorizationValidated}
               />
             </div>
 
             {memorizationValidated && (
-              <div className={`p-4 rounded-lg border ${
+              <div className={`p-3 sm:p-4 rounded-lg border ${
                 memorizationScore >= 70 
                   ? 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800' 
                   : 'bg-yellow-50 dark:bg-yellow-950 border-yellow-200 dark:border-yellow-800'
@@ -712,31 +712,31 @@ const Devotional = () => {
                 <div className="flex items-center gap-2 mb-2">
                   {memorizationScore >= 70 ? (
                     <>
-                      <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
-                      <span className="font-semibold text-green-800 dark:text-green-200">
+                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" />
+                      <span className="text-sm sm:text-base font-semibold text-green-800 dark:text-green-200">
                         Parabéns! Memorização validada! 🎉
                       </span>
                     </>
                   ) : (
                     <>
-                      <AlertCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
-                      <span className="font-semibold text-yellow-800 dark:text-yellow-200">
+                      <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600 dark:text-yellow-400" />
+                      <span className="text-sm sm:text-base font-semibold text-yellow-800 dark:text-yellow-200">
                         Quase lá! Continue praticando 💪
                       </span>
                     </>
                   )}
                 </div>
-                <p className="text-sm text-foreground">
+                <p className="text-xs sm:text-sm text-foreground">
                   Pontuação: {memorizationScore}%
                 </p>
               </div>
             )}
 
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <Button 
                 onClick={() => setStep(6)} 
                 variant="outline"
-                className="flex-1"
+                className="flex-1 text-sm sm:text-base"
                 disabled={validatingMemorization}
               >
                 Voltar
@@ -745,7 +745,7 @@ const Devotional = () => {
               {!memorizationValidated ? (
                 <Button 
                   onClick={handleValidateMemorization}
-                  className="flex-1 bg-gradient-celestial hover:opacity-90"
+                  className="flex-1 bg-gradient-celestial hover:opacity-90 text-sm sm:text-base"
                   disabled={!memorization.trim() || validatingMemorization}
                 >
                   {validatingMemorization ? (
@@ -760,7 +760,7 @@ const Devotional = () => {
               ) : (
                 <Button 
                   onClick={() => setStep(8)}
-                  className="flex-1 bg-gradient-celestial hover:opacity-90"
+                  className="flex-1 bg-gradient-celestial hover:opacity-90 text-sm sm:text-base"
                 >
                   Continuar
                 </Button>
@@ -771,61 +771,61 @@ const Devotional = () => {
 
         {/* Step 8: Fechamento e Revisão */}
         {step === 8 && (
-          <Card className={`p-8 shadow-celestial space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
+          <Card className={`p-4 sm:p-8 shadow-celestial space-y-4 sm:space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : ''}`}>
             <div>
-              <h2 className={`text-2xl font-bold mb-3 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>🙏 Conclusão</h2>
+              <h2 className={`text-xl sm:text-2xl font-bold mb-2 sm:mb-3 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>🙏 Conclusão</h2>
               {devotional.closing_text && (
-                <div className="mb-6">
+                <div className="mb-4 sm:mb-6">
                   <MarkdownRenderer 
                     content={devotional.closing_text} 
                     className={isDarkMode ? 'text-gray-200 leading-relaxed' : 'text-foreground leading-relaxed'}
                   />
                 </div>
               )}
-              <p className={isDarkMode ? 'text-gray-400' : 'text-muted-foreground'}>
+              <p className={`text-sm sm:text-base ${isDarkMode ? 'text-gray-400' : 'text-muted-foreground'}`}>
                 Revise suas anotações antes de finalizar o devocional de hoje.
               </p>
             </div>
 
-            <div className="space-y-4">
-              <div className={`rounded-xl p-6 space-y-3 ${isDarkMode ? 'bg-gray-700/50' : 'bg-muted/30'}`}>
-                <h3 className={`font-semibold flex items-center gap-2 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>
-                  <Heart className="w-5 h-5 text-secondary" />
+            <div className="space-y-3 sm:space-y-4">
+              <div className={`rounded-xl p-4 sm:p-6 space-y-2 sm:space-y-3 ${isDarkMode ? 'bg-gray-700/50' : 'bg-muted/30'}`}>
+                <h3 className={`text-sm sm:text-base font-semibold flex items-center gap-2 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>
+                  <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-secondary" />
                   Sua Reflexão:
                 </h3>
-                <p className={`whitespace-pre-wrap ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>{reflection}</p>
+                <p className={`text-sm sm:text-base whitespace-pre-wrap ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>{reflection}</p>
               </div>
 
-              <div className={`rounded-xl p-6 space-y-3 ${isDarkMode ? 'bg-gray-700/50' : 'bg-accent/10'}`}>
-                <h3 className={`font-semibold flex items-center gap-2 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>
-                  <CheckCircle2 className="w-5 h-5 text-accent" />
+              <div className={`rounded-xl p-4 sm:p-6 space-y-2 sm:space-y-3 ${isDarkMode ? 'bg-gray-700/50' : 'bg-accent/10'}`}>
+                <h3 className={`text-sm sm:text-base font-semibold flex items-center gap-2 ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
                   Sua Aplicação Prática:
                 </h3>
-                <p className={`whitespace-pre-wrap ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>{application}</p>
+                <p className={`text-sm sm:text-base whitespace-pre-wrap ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>{application}</p>
               </div>
             </div>
 
-            <div className={`rounded-xl p-4 border ${isDarkMode ? 'bg-gray-700/50 border-gray-600' : 'bg-primary/5 border-primary/10'}`}>
-              <p className={`text-sm text-center ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>
+            <div className={`rounded-xl p-3 sm:p-4 border ${isDarkMode ? 'bg-gray-700/50 border-gray-600' : 'bg-primary/5 border-primary/10'}`}>
+              <p className={`text-xs sm:text-sm text-center ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>
                 💡 Lembre-se: O crescimento espiritual acontece quando transformamos conhecimento em ação
               </p>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <Button 
                 onClick={() => setStep(7)} 
                 variant="outline"
-                className="flex-1"
+                className="flex-1 text-sm sm:text-base"
               >
                 Voltar
               </Button>
               <Button 
                 onClick={handleComplete} 
-                className="flex-1 bg-gradient-divine hover:opacity-90 shadow-divine"
+                className="flex-1 bg-gradient-divine hover:opacity-90 shadow-divine text-sm sm:text-base"
                 size="lg"
                 disabled={saving}
               >
-                <CheckCircle2 className="w-5 h-5 mr-2" />
+                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 {saving ? 'Salvando...' : 'Completar Devocional'}
               </Button>
             </div>
@@ -833,10 +833,10 @@ const Devotional = () => {
         )}
 
         {/* Help Section */}
-        <div className="mt-6 text-center space-y-3">
+        <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-center">
           <Button 
             variant="outline" 
-            className="border-primary/30 mr-3"
+            className="border-primary/30 w-full sm:w-auto text-sm sm:text-base"
             onClick={() => setShowAIChat(true)}
           >
             <Bot className="w-4 h-4 mr-2" />
@@ -844,7 +844,7 @@ const Devotional = () => {
           </Button>
           <Button 
             variant="outline" 
-            className="border-primary/30"
+            className="border-primary/30 w-full sm:w-auto text-sm sm:text-base"
             onClick={() => setShowPastorDialog(true)}
           >
             <MessageCircle className="w-4 h-4 mr-2" />
