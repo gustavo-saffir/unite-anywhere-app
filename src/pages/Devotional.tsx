@@ -24,6 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useDevotional } from "@/hooks/useDevotional";
 import { useUserStats } from "@/hooks/useUserStats";
 import { useUpdateChallengeProgress } from "@/hooks/useUpdateChallengeProgress";
+import { useDevotionalProgress } from "@/hooks/useDevotionalProgress";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import AIMentorChat from "@/components/AIMentorChat";
 import PastorMessageDialog from "@/components/PastorMessageDialog";
@@ -34,20 +35,34 @@ const Devotional = () => {
   const { devotional, loading, error, saveProgress } = useDevotional();
   const { stats, updateStatsAfterDevotional } = useUserStats();
   const { updateChallengeProgress } = useUpdateChallengeProgress();
-  const [step, setStep] = useState(1);
-  const [reflection, setReflection] = useState("");
-  const [application, setApplication] = useState("");
+  
+  // Use the progress hook with auto-save
+  const {
+    step,
+    setStep,
+    reflection,
+    setReflection,
+    application,
+    setApplication,
+    memorization,
+    setMemorization,
+    memorizationValidated,
+    setMemorizationValidated,
+    memorizationScore,
+    setMemorizationScore,
+    fontSize,
+    setFontSize,
+    isDarkMode,
+    setIsDarkMode,
+    clearProgress,
+  } = useDevotionalProgress(devotional?.id);
+  
   const [completed, setCompleted] = useState(false);
   const [saving, setSaving] = useState(false);
   const [showAIChat, setShowAIChat] = useState(false);
   const [showPastorDialog, setShowPastorDialog] = useState(false);
   const [pastorPosition, setPastorPosition] = useState<string>('Pastor');
-  const [memorization, setMemorization] = useState("");
-  const [memorizationValidated, setMemorizationValidated] = useState(false);
-  const [memorizationScore, setMemorizationScore] = useState(0);
   const [validatingMemorization, setValidatingMemorization] = useState(false);
-  const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Scroll automático para o topo quando muda de step
   useEffect(() => {
@@ -161,6 +176,7 @@ const Devotional = () => {
       
       if (statsResult.success) {
         setCompleted(true);
+        clearProgress(); // Limpa o progresso salvo após completar
         const bonusText = memorizationValidated ? " (+25 XP bônus de memorização!)" : "";
         toast({
           title: "🎉 Devocional Completado!",
@@ -169,6 +185,7 @@ const Devotional = () => {
       } else {
         // Já completou hoje ou outro erro - ainda marca como concluído
         setCompleted(true);
+        clearProgress(); // Limpa o progresso salvo
         toast({
           title: "Devocional salvo",
           description: statsResult.message || "Seu progresso foi salvo!",
