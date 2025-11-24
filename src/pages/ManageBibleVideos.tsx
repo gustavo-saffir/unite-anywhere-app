@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ArrowLeft, Plus, Pencil, Trash2, Upload } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Video } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -367,7 +367,7 @@ const ManageBibleVideos = () => {
                       <img src={video.thumbnail_url} alt={video.title} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
-                        <Upload className="h-12 w-12 text-primary" />
+                        <Video className="h-12 w-12 text-primary" />
                       </div>
                     )}
                   </div>
