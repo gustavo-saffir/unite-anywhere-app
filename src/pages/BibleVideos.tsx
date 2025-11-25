@@ -13,6 +13,20 @@ const BibleVideos = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
 
+  // Fetch categories with images
+  const { data: categories } = useQuery({
+    queryKey: ['video-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('video_categories')
+        .select('*');
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Fetch videos
   const { data: videos, isLoading } = useQuery({
     queryKey: ['bible-videos'],
     queryFn: async () => {
@@ -38,9 +52,23 @@ const BibleVideos = () => {
     return acc;
   }, {});
 
+  // Helper to get category image
+  const getCategoryImage = (categoryName: string) => {
+    const category = categories?.find(cat => cat.name === categoryName && !cat.parent_id);
+    return category?.image_url;
+  };
+
+  // Helper to get subcategory image
+  const getSubcategoryImage = (categoryName: string, subcategoryName: string) => {
+    const mainCategory = categories?.find(cat => cat.name === categoryName && !cat.parent_id);
+    if (!mainCategory) return null;
+    
+    const subcategory = categories?.find(cat => cat.name === subcategoryName && cat.parent_id === mainCategory.id);
+    return subcategory?.image_url;
+  };
+
   const CategoryCard = ({ category, subcategories }: { category: string; subcategories: any }) => {
-    const firstVideo = Object.values(subcategories)[0][0];
-    const imageUrl = firstVideo?.category_image_url || firstVideo?.thumbnail_url;
+    const imageUrl = getCategoryImage(category);
 
     return (
       <Card 
@@ -69,8 +97,7 @@ const BibleVideos = () => {
   };
 
   const SubcategoryCard = ({ subcategory, videos }: { subcategory: string; videos: any[] }) => {
-    const firstVideo = videos[0];
-    const imageUrl = firstVideo?.subcategory_image_url || firstVideo?.thumbnail_url;
+    const imageUrl = getSubcategoryImage(selectedCategory!, subcategory);
 
     return (
       <Card 
