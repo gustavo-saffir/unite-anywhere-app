@@ -337,14 +337,14 @@ const ManageBibleVideos = () => {
                   <div>
                     <Label htmlFor="parent-category">Categoria Pai (deixe vazio para criar categoria principal)</Label>
                     <Select
-                      value={categoryFormData.parent_id}
-                      onValueChange={(value) => setCategoryFormData({ ...categoryFormData, parent_id: value })}
+                      value={categoryFormData.parent_id || "__NONE__"}
+                      onValueChange={(value) => setCategoryFormData({ ...categoryFormData, parent_id: value === "__NONE__" ? "" : value })}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Selecione (opcional)" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Nenhuma (Categoria Principal)</SelectItem>
+                        <SelectItem value="__NONE__">Nenhuma (Categoria Principal)</SelectItem>
                         {mainCategories.map((cat) => (
                           <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
                         ))}
