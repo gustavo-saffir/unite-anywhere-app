@@ -20,6 +20,8 @@ import MyMessages from "./pages/MyMessages";
 import PushDebug from "./pages/PushDebug";
 import BibleVideos from "./pages/BibleVideos";
 import ManageBibleVideos from "./pages/ManageBibleVideos";
+import BibleStudies from "./pages/BibleStudies";
+import ManageBibleStudies from "./pages/ManageBibleStudies";
 import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -153,6 +155,22 @@ const App = () => (
             element={
               <ProtectedRoute requireAdmin>
                 <ManageBibleVideos />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/bible-studies" 
+            element={
+              <ProtectedRoute>
+                <BibleStudies />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/manage-bible-studies" 
+            element={
+              <ProtectedRoute requireAdmin>
+                <ManageBibleStudies />
               </ProtectedRoute>
             } 
           />
