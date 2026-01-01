@@ -108,6 +108,60 @@ export type Database = {
         }
         Relationships: []
       }
+      bible_studies: {
+        Row: {
+          category_id: string | null
+          content: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          subcategory_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          content: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          subcategory_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          subcategory_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bible_studies_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "study_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bible_studies_subcategory_id_fkey"
+            columns: ["subcategory_id"]
+            isOneToOne: false
+            referencedRelation: "study_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bible_videos: {
         Row: {
           category: string
@@ -432,6 +486,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      study_categories: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          name: string
+          parent_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          parent_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          parent_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "study_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_badges: {
         Row: {
