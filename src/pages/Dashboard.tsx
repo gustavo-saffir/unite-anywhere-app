@@ -16,7 +16,8 @@ import {
   Shield,
   Menu,
   History,
-  Video
+  Video,
+  User
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,6 +26,7 @@ import DailyDevotionalCard from "@/components/DailyDevotionalCard";
 import { DailyReadingCard } from "@/components/DailyReadingCard";
 import PastorNotifications from "@/components/PastorNotifications";
 import GeneralMentorChat from "@/components/GeneralMentorChat";
+import AskPastorChat from "@/components/AskPastorChat";
 import ChallengesList from "@/components/ChallengesList";
 import WeeklyCalendar from "@/components/WeeklyCalendar";
 import { useUserStats } from "@/hooks/useUserStats";
@@ -35,6 +37,7 @@ import { PushNotificationToggle } from "@/components/PushNotificationToggle";
 
 const Dashboard = () => {
   const [showMentorChat, setShowMentorChat] = useState(false);
+  const [showPastorChat, setShowPastorChat] = useState(false);
   const { user, signOut, isAdmin } = useAuth();
   const { stats, loading: statsLoading, getXPProgressPercentage } = useUserStats();
   const { goals, loading: goalsLoading } = useSpiritualGoals();
@@ -268,6 +271,23 @@ const Dashboard = () => {
               </Button>
             </Card>
 
+            {/* Ask Pastor */}
+            <Card className="p-6 bg-gradient-to-br from-secondary/5 to-accent/5 border-secondary/20">
+              <div className="flex items-center gap-2 mb-3">
+                <User className="w-5 h-5 text-secondary" />
+                <h3 className="text-lg font-semibold text-foreground">Pergunte ao Pastor</h3>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Envie suas dúvidas diretamente ao seu pastor/líder. Resposta em até 24h.
+              </p>
+              <Button 
+                className="w-full bg-gradient-to-r from-secondary to-accent hover:opacity-90"
+                onClick={() => setShowPastorChat(true)}
+              >
+                Fazer Pergunta
+              </Button>
+            </Card>
+
             {/* Histórico de Devocionais */}
             <Card className="p-6 bg-gradient-to-br from-accent/5 to-primary/5 border-accent/20">
               <div className="flex items-center gap-2 mb-3">
@@ -355,6 +375,11 @@ const Dashboard = () => {
       {/* Mentor Virtual Chat */}
       {showMentorChat && (
         <GeneralMentorChat onClose={() => setShowMentorChat(false)} />
+      )}
+
+      {/* Ask Pastor Chat */}
+      {showPastorChat && (
+        <AskPastorChat onClose={() => setShowPastorChat(false)} />
       )}
 
       {/* Notificações em tempo real para pastores */}
