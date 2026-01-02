@@ -77,6 +77,9 @@ export default function DailyReading() {
   // Format date without timezone issues
   const [year, month, day] = firstReading.date.split('-');
   const dateFormatted = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  
+  // Get unique books for display
+  const uniqueBooks = [...new Set(dailyReadings.map(r => r.book))];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
@@ -99,7 +102,7 @@ export default function DailyReading() {
                     <span className="text-sm font-medium">Leitura Diária - A Bíblia em 1 Ano</span>
                   </div>
                   <CardTitle className="text-3xl">
-                    {firstReading.book} - {dailyReadings.length} {dailyReadings.length === 1 ? 'Capítulo' : 'Capítulos'}
+                    {uniqueBooks.join(' e ')} - {dailyReadings.length} {dailyReadings.length === 1 ? 'Capítulo' : 'Capítulos'}
                   </CardTitle>
                   <CardDescription>
                     {dateFormatted.toLocaleDateString('pt-BR', {
@@ -125,7 +128,7 @@ export default function DailyReading() {
           {dailyReadings.map((reading, index) => (
             <Card key={reading.id} className="border-primary/20 shadow-lg">
               <CardHeader>
-                <CardTitle className="text-2xl">Capítulo {reading.chapter}</CardTitle>
+                <CardTitle className="text-2xl">{reading.book} - Capítulo {reading.chapter}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="prose prose-lg dark:prose-invert max-w-none">

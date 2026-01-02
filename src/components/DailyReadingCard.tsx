@@ -38,6 +38,7 @@ export const DailyReadingCard = () => {
   }
 
   const firstReading = dailyReadings[0];
+  const uniqueBooks = [...new Set(dailyReadings.map(r => r.book))];
 
   return (
     <Card className="hover:shadow-lg transition-shadow">
@@ -49,7 +50,7 @@ export const DailyReadingCard = () => {
               Leitura Diária - A Bíblia em 1 Ano
             </CardTitle>
             <CardDescription>
-              {firstReading.book} - {dailyReadings.length} {dailyReadings.length === 1 ? 'Capítulo' : 'Capítulos'}
+              {uniqueBooks.join(' e ')} - {dailyReadings.length} {dailyReadings.length === 1 ? 'Capítulo' : 'Capítulos'}
             </CardDescription>
           </div>
           
