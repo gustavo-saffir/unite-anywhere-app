@@ -5,8 +5,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, Edit, Trash2, Plus, BookOpen } from 'lucide-react';
-import { format, isPast, isFuture } from 'date-fns';
+import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { getBrazilDate } from '@/lib/brazilTimezone';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -97,8 +98,9 @@ const ManageDevotionals = () => {
   };
 
   const getDateStatus = (dateStr: string) => {
-    const date = new Date(dateStr + 'T00:00:00');
-    const today = new Date();
+    const [year, month, day] = dateStr.split('-');
+    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    const today = getBrazilDate();
     today.setHours(0, 0, 0, 0);
     
     if (date < today) return 'past';

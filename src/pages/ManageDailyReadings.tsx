@@ -9,6 +9,7 @@ import { ArrowLeft, BookOpen, Plus, Pencil, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { getBrazilDateString } from '@/lib/brazilTimezone';
 
 interface DailyReading {
   id: string;
@@ -43,7 +44,7 @@ export default function ManageDailyReadings() {
   const [loading, setLoading] = useState(true);
   const [editingDate, setEditingDate] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    date: new Date().toISOString().split('T')[0],
+    date: getBrazilDateString(),
     readings: [
       { book: '', chapter: 1, chapter_text: '' },
       { book: '', chapter: 1, chapter_text: '' },
@@ -211,7 +212,7 @@ export default function ManageDailyReadings() {
   const resetForm = () => {
     setEditingDate(null);
     setFormData({
-      date: new Date().toISOString().split('T')[0],
+      date: getBrazilDateString(),
       readings: [
         { book: '', chapter: 1, chapter_text: '' },
         { book: '', chapter: 1, chapter_text: '' },

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-
+import { getBrazilDateString } from '@/lib/brazilTimezone';
 interface DevotionalProgress {
   step: number;
   reflection: string;
@@ -15,7 +15,7 @@ interface DevotionalProgress {
 
 export const useDevotionalProgress = (devotionalId: string | undefined) => {
   const STORAGE_KEY = 'devotional_progress';
-  const today = new Date().toISOString().split('T')[0];
+  const today = getBrazilDateString();
 
   const getInitialProgress = (): Partial<DevotionalProgress> => {
     if (!devotionalId) return {};

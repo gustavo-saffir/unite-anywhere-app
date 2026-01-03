@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { getBrazilDateString } from '@/lib/brazilTimezone';
 
 interface DailyReading {
   id: string;
@@ -23,7 +24,7 @@ export const useDailyReading = () => {
 
   const loadTodayReading = async () => {
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getBrazilDateString();
       
       const { data, error } = await supabase
         .from('daily_readings')

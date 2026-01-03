@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { BookOpen, Sparkles, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { getBrazilDateString } from '@/lib/brazilTimezone';
 import growthJourney from '@/assets/growth-journey.jpg';
 
 const DailyDevotionalCard = () => {
@@ -17,7 +18,7 @@ const DailyDevotionalCard = () => {
 
   const loadTodayDevotional = async () => {
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getBrazilDateString();
       
       const { data } = await supabase
         .from('devotionals')

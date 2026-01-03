@@ -34,6 +34,7 @@ import { useSpiritualGoals } from "@/hooks/useSpiritualGoals";
 import { supabase } from "@/integrations/supabase/client";
 import { RecentBadges } from "@/components/RecentBadges";
 import { PushNotificationToggle } from "@/components/PushNotificationToggle";
+import { getBrazilDate } from "@/lib/brazilTimezone";
 
 const Dashboard = () => {
   const [showMentorChat, setShowMentorChat] = useState(false);
@@ -62,7 +63,7 @@ const Dashboard = () => {
     fetchUserProfile();
   }, [user]);
 
-  const today = new Date().toLocaleDateString('pt-BR', { 
+  const today = getBrazilDate().toLocaleDateString('pt-BR', { 
     weekday: 'long', 
     day: 'numeric', 
     month: 'long' 

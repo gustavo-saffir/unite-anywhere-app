@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { getBrazilDate, getBrazilWeekBounds } from "@/lib/brazilTimezone";
 
 const WeeklyCalendar = () => {
   const { user } = useAuth();
@@ -12,18 +13,7 @@ const WeeklyCalendar = () => {
     if (!user) return;
 
     const loadWeeklyProgress = async () => {
-      const today = new Date();
-      const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
-      
-      // Get the start of the current week (Sunday)
-      const startOfWeek = new Date(today);
-      startOfWeek.setDate(today.getDate() - dayOfWeek);
-      startOfWeek.setHours(0, 0, 0, 0);
-
-      // Get the end of the current week (Saturday)
-      const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 6);
-      endOfWeek.setHours(23, 59, 59, 999);
+      const { startOfWeek, endOfWeek } = getBrazilWeekBounds();
 
       try {
         const { data, error } = await supabase
@@ -53,7 +43,7 @@ const WeeklyCalendar = () => {
   }, [user]);
 
   const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-  const today = new Date().getDay();
+  const today = getBrazilDate().getDay();
 
   return (
     <Card className="p-6">
