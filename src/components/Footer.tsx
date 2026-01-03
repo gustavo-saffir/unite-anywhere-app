@@ -22,10 +22,10 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold text-foreground mb-4">Redes Sociais</h3>
             <div className="flex gap-3">
-              <a href="mailto:ipvmilagres@gmail.com" className="w-10 h-10 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center">
+              <a href="mailto:caminhodiario.gs@gmail.com" className="w-10 h-10 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center">
                 <Mail className="w-5 h-5" />
               </a>
-              <a href="https://www.instagram.com/pr_gustavo__/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center">
+              <a href="https://www.instagram.com/caminhodiario.devocional/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center">
                 <Instagram className="w-5 h-5" />
               </a>
             </div>
