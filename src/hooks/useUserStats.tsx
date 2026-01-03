@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-
+import { getBrazilDateString } from '@/lib/brazilTimezone';
 interface UserStats {
   total_xp: number;
   current_level: number;
@@ -128,14 +128,16 @@ export const useUserStats = () => {
         base = created;
       }
 
-      const today = new Date().toISOString().split('T')[0];
+      const today = getBrazilDateString();
       const lastDate = base.last_devotional_date;
 
       // Calculate streak based on DB value
       let newStreak = base.current_streak;
       if (lastDate) {
-        const lastDateObj = new Date(lastDate);
-        const todayObj = new Date(today);
+        const [lastYear, lastMonth, lastDay] = lastDate.split('-');
+        const [todayYear, todayMonth, todayDay] = today.split('-');
+        const lastDateObj = new Date(parseInt(lastYear), parseInt(lastMonth) - 1, parseInt(lastDay));
+        const todayObj = new Date(parseInt(todayYear), parseInt(todayMonth) - 1, parseInt(todayDay));
         const diffDays = Math.floor((todayObj.getTime() - lastDateObj.getTime()) / (1000 * 60 * 60 * 24));
 
         if (diffDays === 1) {

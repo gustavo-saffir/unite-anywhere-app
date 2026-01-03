@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-
+import { getBrazilDate } from '@/lib/brazilTimezone';
 interface SpiritualGoals {
   reading: number;
   prayer: number;
@@ -25,8 +25,8 @@ export const useSpiritualGoals = () => {
 
       console.log('Calculating spiritual goals for user:', user.id);
 
-      // Get date 7 days ago
-      const sevenDaysAgo = new Date();
+      // Get date 7 days ago in Brazil timezone
+      const sevenDaysAgo = getBrazilDate();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
       const sevenDaysAgoStr = sevenDaysAgo.toISOString();
 

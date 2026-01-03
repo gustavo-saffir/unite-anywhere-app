@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { getBrazilDateString } from '@/lib/brazilTimezone';
 
 interface Devotional {
   id: string;
@@ -25,7 +26,7 @@ export const useDevotional = () => {
 
   const loadTodayDevotional = async () => {
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getBrazilDateString();
       
       const { data, error } = await supabase
         .from('devotionals')

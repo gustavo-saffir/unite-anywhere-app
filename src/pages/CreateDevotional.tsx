@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import bibleIcon from '@/assets/bible-icon.jpg';
+import { getBrazilDateString } from '@/lib/brazilTimezone';
 
 const CreateDevotional = () => {
   const { user } = useAuth();
@@ -26,7 +27,7 @@ const CreateDevotional = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
-    date: new Date().toISOString().split('T')[0],
+    date: getBrazilDateString(),
     verse_reference: '',
     verse_text: '',
     opening_text: '',
