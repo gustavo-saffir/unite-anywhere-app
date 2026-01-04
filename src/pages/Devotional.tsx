@@ -396,48 +396,12 @@ const Devotional = () => {
               <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="text-sm sm:text-base font-medium">Voltar</span>
             </Link>
-            <div className="flex items-center gap-2 sm:gap-4">
-              {/* Controles de Acessibilidade */}
-              <div className="flex items-center gap-1 sm:gap-2 border-r border-border/50 pr-2 sm:pr-4">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={decreaseFontSize}
-                  disabled={fontSize === 'small'}
-                  className="h-7 w-7 sm:h-8 sm:w-8"
-                  title="Diminuir fonte"
-                >
-                  <Type className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </Button>
-                <span className={`text-xs font-medium hidden sm:inline ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>A</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={increaseFontSize}
-                  disabled={fontSize === 'large'}
-                  className="h-7 w-7 sm:h-8 sm:w-8"
-                  title="Aumentar fonte"
-                >
-                  <Type className="w-4 h-4 sm:w-5 sm:h-5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsDarkMode(!isDarkMode)}
-                  className="h-7 w-7 sm:h-8 sm:w-8"
-                  title={isDarkMode ? "Modo claro" : "Modo escuro"}
-                >
-                  {isDarkMode ? <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
-                </Button>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className={`text-xs sm:text-sm hidden md:block ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>Progresso</div>
+              <div className="w-16 sm:w-32">
+                <Progress value={progress} className="h-1.5 sm:h-2" />
               </div>
-              {/* Progresso */}
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className={`text-xs sm:text-sm hidden md:block ${isDarkMode ? 'text-gray-300' : 'text-muted-foreground'}`}>Progresso</div>
-                <div className="w-16 sm:w-32">
-                  <Progress value={progress} className="h-1.5 sm:h-2" />
-                </div>
-                <div className={`text-xs sm:text-sm font-semibold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>{step}/{totalSteps}</div>
-              </div>
+              <div className={`text-xs sm:text-sm font-semibold ${isDarkMode ? 'text-gray-100' : 'text-foreground'}`}>{step}/{totalSteps}</div>
             </div>
           </div>
         </div>
