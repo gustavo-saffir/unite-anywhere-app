@@ -24,6 +24,7 @@ import ManageBibleVideos from "./pages/ManageBibleVideos";
 import BibleStudies from "./pages/BibleStudies";
 import ManageBibleStudies from "./pages/ManageBibleStudies";
 import Install from "./pages/Install";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AccessibilityProvider } from "./hooks/useAccessibility";
@@ -177,6 +178,14 @@ const App = () => (
             element={
               <ProtectedRoute requireAdmin>
                 <ManageBibleStudies />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/settings" 
+            element={
+              <ProtectedRoute>
+                <Settings />
               </ProtectedRoute>
             } 
           />
