@@ -17,7 +17,8 @@ import {
   Menu,
   History,
   Video,
-  User
+  User,
+  Settings
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -113,6 +114,12 @@ const Dashboard = () => {
                   </Link>
                 </Button>
               )}
+              <Button variant="outline" className="border-primary/30" asChild>
+                <Link to="/settings">
+                  <Settings className="w-4 h-4 mr-2" />
+                  Configurações
+                </Link>
+              </Button>
               <Button variant="outline" className="border-primary/30" onClick={handleSignOut}>
                 <LogOut className="w-4 h-4 mr-2" />
                 Sair
@@ -144,6 +151,12 @@ const Dashboard = () => {
                       </Link>
                     </Button>
                   )}
+                  <Button variant="outline" className="w-full justify-start" asChild>
+                    <Link to="/settings">
+                      <Settings className="w-4 h-4 mr-2" />
+                      Configurações
+                    </Link>
+                  </Button>
                   <Button variant="outline" className="w-full justify-start" onClick={handleSignOut}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Sair
