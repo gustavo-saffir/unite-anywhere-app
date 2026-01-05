@@ -13,11 +13,11 @@ export const AccessibilityControls = () => {
   const isDark = theme === 'dark';
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2">
+    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2 pointer-events-none">
       {/* Controls Panel */}
       <div
         className={cn(
-          "bg-card border border-border rounded-xl shadow-lg p-3 transition-all duration-300 origin-bottom-right",
+          "bg-card border border-border rounded-xl shadow-lg p-3 transition-all duration-300 origin-bottom-right pointer-events-auto",
           isOpen ? "scale-100 opacity-100" : "scale-0 opacity-0 pointer-events-none"
         )}
       >
@@ -84,7 +84,7 @@ export const AccessibilityControls = () => {
         onClick={() => setIsOpen(!isOpen)}
         size="icon"
         className={cn(
-          "h-12 w-12 rounded-full shadow-lg transition-all",
+          "h-12 w-12 rounded-full shadow-lg transition-all pointer-events-auto",
           isOpen ? "bg-destructive hover:bg-destructive/90" : "bg-primary hover:bg-primary/90"
         )}
         title={isOpen ? "Fechar" : "Acessibilidade"}
