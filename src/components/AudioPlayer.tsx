@@ -58,33 +58,38 @@ const AudioPlayer = ({ text, className, isDarkMode }: AudioPlayerProps) => {
     { value: 1.5, label: '1.5x' },
   ];
 
-  // Group voices by language
-  const groupedVoices = voices.reduce((acc, voice) => {
-    const lang = voice.lang.split('-')[0];
-    if (!acc[lang]) {
-      acc[lang] = [];
+  // Filter voices to only show pt-BR, en-US, es-ES
+  const allowedLocales = ['pt-BR', 'en-US', 'es-ES'];
+  const filteredVoices = voices.filter((voice) => 
+    allowedLocales.some((locale) => voice.lang === locale || voice.lang.startsWith(locale.split('-')[0]))
+  );
+
+  // Group voices by locale
+  const groupedVoices = filteredVoices.reduce((acc, voice) => {
+    // Determine the group based on exact locale match
+    let group = 'other';
+    if (voice.lang === 'pt-BR' || voice.lang.startsWith('pt')) group = 'pt-BR';
+    else if (voice.lang === 'en-US' || voice.lang === 'en') group = 'en-US';
+    else if (voice.lang === 'es-ES' || voice.lang === 'es') group = 'es-ES';
+    
+    if (!acc[group]) {
+      acc[group] = [];
     }
-    acc[lang].push(voice);
+    acc[group].push(voice);
     return acc;
   }, {} as Record<string, SpeechSynthesisVoice[]>);
 
-  // Prioritize Portuguese voices
-  const sortedLanguages = Object.keys(groupedVoices).sort((a, b) => {
-    if (a === 'pt') return -1;
-    if (b === 'pt') return 1;
-    return a.localeCompare(b);
-  });
+  // Define order: Portuguese first, then English, then Spanish
+  const languageOrder = ['pt-BR', 'en-US', 'es-ES'];
+  const sortedLanguages = languageOrder.filter((lang) => groupedVoices[lang]?.length > 0);
 
   const getLanguageName = (code: string) => {
     const names: Record<string, string> = {
-      'pt': 'Português',
-      'en': 'English',
-      'es': 'Español',
-      'fr': 'Français',
-      'de': 'Deutsch',
-      'it': 'Italiano',
+      'pt-BR': 'Português (Brasil)',
+      'en-US': 'English (USA)',
+      'es-ES': 'Español (España)',
     };
-    return names[code] || code.toUpperCase();
+    return names[code] || code;
   };
 
   return (
@@ -159,7 +164,7 @@ const AudioPlayer = ({ text, className, isDarkMode }: AudioPlayerProps) => {
       )}
 
       {/* Voice Selector - Always visible */}
-      {voices.length > 1 && (
+      {filteredVoices.length > 1 && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
