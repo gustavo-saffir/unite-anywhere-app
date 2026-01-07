@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
-import { Settings, Users, BookOpen, LogOut, Target, Book, Video, GraduationCap } from 'lucide-react';
+import { Settings, Users, BookOpen, LogOut, Target, Book, Video, GraduationCap, Activity } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Admin = () => {
@@ -48,6 +48,16 @@ const Admin = () => {
 
           {/* Admin Options */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Link to="/user-activity">
+              <Card className="p-6 hover:shadow-lg transition-all cursor-pointer">
+                <Activity className="w-12 h-12 mb-4 text-primary" />
+                <h3 className="text-xl font-semibold mb-2">Atividade dos Usuários</h3>
+                <p className="text-muted-foreground">
+                  Veja o histórico de uso e atividades dos usuários
+                </p>
+              </Card>
+            </Link>
+
             <Link to="/manage-users">
               <Card className="p-6 hover:shadow-lg transition-all cursor-pointer">
                 <Users className="w-12 h-12 mb-4 text-primary" />

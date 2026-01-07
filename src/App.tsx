@@ -25,6 +25,7 @@ import BibleStudies from "./pages/BibleStudies";
 import ManageBibleStudies from "./pages/ManageBibleStudies";
 import Install from "./pages/Install";
 import Settings from "./pages/Settings";
+import UserActivity from "./pages/UserActivity";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AccessibilityProvider } from "./hooks/useAccessibility";
@@ -186,6 +187,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Settings />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/user-activity" 
+            element={
+              <ProtectedRoute requireAdmin>
+                <UserActivity />
               </ProtectedRoute>
             } 
           />
