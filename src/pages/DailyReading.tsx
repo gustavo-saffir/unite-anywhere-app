@@ -4,12 +4,14 @@ import { ArrowLeft, BookOpen, CheckCircle2, Clock, Bot, MessageSquare } from 'lu
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDailyReading } from '@/hooks/useDailyReading';
+import { useActivityTracking } from '@/hooks/useActivityTracking';
 import { toast } from 'sonner';
 import DailyReadingAIMentor from '@/components/DailyReadingAIMentor';
 import DailyReadingPastorMessage from '@/components/DailyReadingPastorMessage';
 
 export default function DailyReading() {
   const { dailyReadings, loading, error, hasCompleted, markAsCompleted } = useDailyReading();
+  const { trackActivity } = useActivityTracking();
   const [startTime, setStartTime] = useState<number>(Date.now());
   const [isMarking, setIsMarking] = useState(false);
   const [showAIMentor, setShowAIMentor] = useState(false);
@@ -28,6 +30,18 @@ export default function DailyReading() {
     
     if (result.success) {
       setCompletedChapters(prev => new Set(prev).add(readingId));
+      
+      // Encontrar a leitura para obter detalhes
+      const reading = dailyReadings?.find(r => r.id === readingId);
+      
+      // Rastrear atividade de conclusão da leitura diária
+      await trackActivity('daily_reading_completed', {
+        reading_id: readingId,
+        book: reading?.book,
+        chapter: reading?.chapter,
+        reading_time_seconds: readingTime
+      });
+      
       toast.success('Capítulo marcado como concluído!');
     } else {
       toast.error('Erro ao marcar capítulo como concluído');

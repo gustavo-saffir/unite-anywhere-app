@@ -25,6 +25,7 @@ import { useDevotional } from "@/hooks/useDevotional";
 import { useUserStats } from "@/hooks/useUserStats";
 import { useUpdateChallengeProgress } from "@/hooks/useUpdateChallengeProgress";
 import { useDevotionalProgress } from "@/hooks/useDevotionalProgress";
+import { useActivityTracking } from "@/hooks/useActivityTracking";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import AIMentorChat from "@/components/AIMentorChat";
 import PastorMessageDialog from "@/components/PastorMessageDialog";
@@ -36,6 +37,7 @@ const Devotional = () => {
   const { devotional, loading, error, saveProgress } = useDevotional();
   const { stats, updateStatsAfterDevotional } = useUserStats();
   const { updateChallengeProgress } = useUpdateChallengeProgress();
+  const { trackActivity } = useActivityTracking();
   
   // Use the progress hook with auto-save
   const {
@@ -174,6 +176,14 @@ const Devotional = () => {
       
       // Atualizar progresso dos desafios
       await updateChallengeProgress();
+      
+      // Rastrear atividade de conclusão do devocional
+      await trackActivity('devotional_completed', { 
+        devotional_id: devotional.id,
+        verse_reference: devotional.verse_reference,
+        xp_gained: xpGained,
+        memorization_validated: memorizationValidated
+      });
       
       if (statsResult.success) {
         setCompleted(true);
