@@ -101,36 +101,52 @@ const UserActivity = () => {
           
           const { data: activities } = await activitiesQuery;
 
-          // Get devotional completions
+          // Get devotional completions with last date
           let devotionalQuery = supabase
             .from('user_devotionals')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_id', profile.id);
+            .select('completed_at')
+            .eq('user_id', profile.id)
+            .order('completed_at', { ascending: false });
           
           if (startDate) {
             devotionalQuery = devotionalQuery.gte('completed_at', startDate.toISOString());
           }
           
-          const { count: devotionalCount } = await devotionalQuery;
+          const { data: devotionals } = await devotionalQuery;
 
-          // Get reading completions
+          // Get reading completions with last date
           let readingQuery = supabase
             .from('user_daily_readings')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_id', profile.id);
+            .select('completed_at')
+            .eq('user_id', profile.id)
+            .order('completed_at', { ascending: false });
           
           if (startDate) {
             readingQuery = readingQuery.gte('completed_at', startDate.toISOString());
           }
           
-          const { count: readingCount } = await readingQuery;
+          const { data: readings } = await readingQuery;
+
+          // Determine last access from any source
+          const lastActivityDate = activities?.[0]?.created_at;
+          const lastDevotionalDate = devotionals?.[0]?.completed_at;
+          const lastReadingDate = readings?.[0]?.completed_at;
+          
+          // Find the most recent date among all sources
+          const dates = [lastActivityDate, lastDevotionalDate, lastReadingDate]
+            .filter(Boolean)
+            .map(d => new Date(d!).getTime());
+          
+          const lastAccess = dates.length > 0 
+            ? new Date(Math.max(...dates)).toISOString() 
+            : null;
 
           return {
             profile,
-            lastAccess: activities?.[0]?.created_at || null,
+            lastAccess,
             totalActivities: activities?.length || 0,
-            devotionalsCompleted: devotionalCount || 0,
-            readingsCompleted: readingCount || 0,
+            devotionalsCompleted: devotionals?.length || 0,
+            readingsCompleted: readings?.length || 0,
           };
         })
       );
