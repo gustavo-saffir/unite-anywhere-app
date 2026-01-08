@@ -55,7 +55,7 @@ const UserActivity = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activityFilter, setActivityFilter] = useState<string>('all');
-  const [dateFilter, setDateFilter] = useState<string>('7');
+  const [dateFilter, setDateFilter] = useState<string>('all');
 
   useEffect(() => {
     loadUsersWithStats();
@@ -79,34 +79,51 @@ const UserActivity = () => {
       if (profilesError) throw profilesError;
 
       // Calculate date range
-      const daysAgo = parseInt(dateFilter);
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - daysAgo);
+      const daysAgo = dateFilter === 'all' ? null : parseInt(dateFilter);
+      const startDate = daysAgo ? new Date() : null;
+      if (startDate && daysAgo) {
+        startDate.setDate(startDate.getDate() - daysAgo);
+      }
 
       // Get activity stats for each user
       const usersWithStats: UserWithStats[] = await Promise.all(
         (profiles || []).map(async (profile) => {
           // Get activity counts
-          const { data: activities } = await supabase
+          let activitiesQuery = supabase
             .from('user_activity')
             .select('activity_type, created_at')
             .eq('user_id', profile.id)
-            .gte('created_at', startDate.toISOString())
             .order('created_at', { ascending: false });
+          
+          if (startDate) {
+            activitiesQuery = activitiesQuery.gte('created_at', startDate.toISOString());
+          }
+          
+          const { data: activities } = await activitiesQuery;
 
           // Get devotional completions
-          const { count: devotionalCount } = await supabase
+          let devotionalQuery = supabase
             .from('user_devotionals')
             .select('*', { count: 'exact', head: true })
-            .eq('user_id', profile.id)
-            .gte('completed_at', startDate.toISOString());
+            .eq('user_id', profile.id);
+          
+          if (startDate) {
+            devotionalQuery = devotionalQuery.gte('completed_at', startDate.toISOString());
+          }
+          
+          const { count: devotionalCount } = await devotionalQuery;
 
           // Get reading completions
-          const { count: readingCount } = await supabase
+          let readingQuery = supabase
             .from('user_daily_readings')
             .select('*', { count: 'exact', head: true })
-            .eq('user_id', profile.id)
-            .gte('completed_at', startDate.toISOString());
+            .eq('user_id', profile.id);
+          
+          if (startDate) {
+            readingQuery = readingQuery.gte('completed_at', startDate.toISOString());
+          }
+          
+          const { count: readingCount } = await readingQuery;
 
           return {
             profile,
@@ -231,6 +248,7 @@ const UserActivity = () => {
                     <SelectValue placeholder="Período" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="all">Todo o período</SelectItem>
                     <SelectItem value="1">Últimas 24h</SelectItem>
                     <SelectItem value="7">Últimos 7 dias</SelectItem>
                     <SelectItem value="30">Últimos 30 dias</SelectItem>
