@@ -249,6 +249,35 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_reading_quizzes: {
+        Row: {
+          created_at: string | null
+          daily_reading_id: string
+          id: string
+          questions: Json
+        }
+        Insert: {
+          created_at?: string | null
+          daily_reading_id: string
+          id?: string
+          questions: Json
+        }
+        Update: {
+          created_at?: string | null
+          daily_reading_id?: string
+          id?: string
+          questions?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_reading_quizzes_daily_reading_id_fkey"
+            columns: ["daily_reading_id"]
+            isOneToOne: true
+            referencedRelation: "daily_readings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       daily_readings: {
         Row: {
           book: string
@@ -688,6 +717,41 @@ export type Database = {
             columns: ["devotional_id"]
             isOneToOne: false
             referencedRelation: "devotionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_quiz_attempts: {
+        Row: {
+          answers: Json
+          completed_at: string | null
+          id: string
+          quiz_id: string
+          score: number
+          user_id: string
+        }
+        Insert: {
+          answers: Json
+          completed_at?: string | null
+          id?: string
+          quiz_id: string
+          score: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          completed_at?: string | null
+          id?: string
+          quiz_id?: string
+          score?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "daily_reading_quizzes"
             referencedColumns: ["id"]
           },
         ]

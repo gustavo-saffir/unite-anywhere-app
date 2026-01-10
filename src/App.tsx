@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Devotional from "./pages/Devotional";
 import DevotionalHistory from "./pages/DevotionalHistory";
 import DailyReading from "./pages/DailyReading";
+import DailyReadingQuiz from "./pages/DailyReadingQuiz";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import PastorPanel from "./pages/PastorPanel";
@@ -75,6 +76,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <DailyReading />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/daily-reading-quiz" 
+            element={
+              <ProtectedRoute requireAdmin>
+                <DailyReadingQuiz />
               </ProtectedRoute>
             } 
           />
