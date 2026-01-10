@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, BookOpen, CheckCircle2, Clock, Bot, MessageSquare } from 'lucide-react';
+import { ArrowLeft, BookOpen, CheckCircle2, Clock, Bot, MessageSquare, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDailyReading } from '@/hooks/useDailyReading';
 import { useActivityTracking } from '@/hooks/useActivityTracking';
+import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import DailyReadingAIMentor from '@/components/DailyReadingAIMentor';
 import DailyReadingPastorMessage from '@/components/DailyReadingPastorMessage';
@@ -13,6 +14,7 @@ import AudioPlayer from '@/components/AudioPlayer';
 export default function DailyReading() {
   const { dailyReadings, loading, error, hasCompleted, markAsCompleted } = useDailyReading();
   const { trackActivity } = useActivityTracking();
+  const { isAdmin } = useAuth();
   const [startTime, setStartTime] = useState<number>(Date.now());
   const [isMarking, setIsMarking] = useState(false);
   const [showAIMentor, setShowAIMentor] = useState(false);
@@ -208,6 +210,21 @@ export default function DailyReading() {
                   Falar com Pastor
                 </Button>
               </div>
+
+              {/* Quiz Button - Admin only for now */}
+              {isAdmin && (
+                <div className="pt-4 mt-4 border-t">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Teste seus conhecimentos sobre a leitura:
+                  </p>
+                  <Link to="/daily-reading-quiz">
+                    <Button variant="default" className="w-full">
+                      <Brain className="mr-2 h-4 w-4" />
+                      Fazer Quiz da Leitura
+                    </Button>
+                  </Link>
+                </div>
+              )}
 
               {firstReading.devotional_id && (
                 <div className="pt-4 mt-4 border-t">
