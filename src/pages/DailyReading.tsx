@@ -8,6 +8,7 @@ import { useActivityTracking } from '@/hooks/useActivityTracking';
 import { toast } from 'sonner';
 import DailyReadingAIMentor from '@/components/DailyReadingAIMentor';
 import DailyReadingPastorMessage from '@/components/DailyReadingPastorMessage';
+import AudioPlayer from '@/components/AudioPlayer';
 
 export default function DailyReading() {
   const { dailyReadings, loading, error, hasCompleted, markAsCompleted } = useDailyReading();
@@ -142,7 +143,13 @@ export default function DailyReading() {
           {dailyReadings.map((reading, index) => (
             <Card key={reading.id} className="border-primary/20 shadow-lg">
               <CardHeader>
-                <CardTitle className="text-2xl">{reading.book} - Capítulo {reading.chapter}</CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-2xl">{reading.book} - Capítulo {reading.chapter}</CardTitle>
+                  <AudioPlayer 
+                    text={reading.chapter_text} 
+                    className="flex-shrink-0"
+                  />
+                </div>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="prose prose-lg dark:prose-invert max-w-none">
