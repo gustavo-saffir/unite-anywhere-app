@@ -82,7 +82,7 @@ const App = () => (
           <Route 
             path="/daily-reading-quiz" 
             element={
-              <ProtectedRoute requireAdmin>
+              <ProtectedRoute>
                 <DailyReadingQuiz />
               </ProtectedRoute>
             } 
