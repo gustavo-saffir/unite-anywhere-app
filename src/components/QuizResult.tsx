@@ -1,14 +1,18 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, XCircle, Trophy, Star, ThumbsUp, BookOpen, Zap, Award } from 'lucide-react';
+import { CheckCircle, XCircle, Trophy, Star, ThumbsUp, BookOpen, Zap, Award, BookMarked, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface QuizQuestion {
   question: string;
   options: string[];
   correctAnswer: number;
   explanation: string;
+  verseReference?: string;
+  verseText?: string;
 }
 
 interface QuizResultProps {
@@ -136,6 +140,7 @@ export default function QuizResult({
           const userAnswer = userAnswers[index];
           const isCorrect = userAnswer === question.correctAnswer;
           const optionLabels = ['A', 'B', 'C', 'D'];
+          const hasVerseReference = question.verseReference && question.verseText;
 
           return (
             <Card key={index} className={cn(
@@ -180,6 +185,42 @@ export default function QuizResult({
                     <span className="font-medium">Explicação:</span> {question.explanation}
                   </p>
                 </div>
+
+                {/* Verse Reference - Review Mode */}
+                {hasVerseReference && (
+                  <Collapsible>
+                    <CollapsibleTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="w-full mt-2 text-primary hover:text-primary/80 hover:bg-primary/5"
+                      >
+                        <BookMarked className="w-4 h-4 mr-2" />
+                        Ver versículo ({question.verseReference})
+                        <ChevronDown className="w-4 h-4 ml-auto transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-2 p-4 bg-primary/5 border border-primary/20 rounded-lg"
+                      >
+                        <div className="flex items-start gap-2">
+                          <BookMarked className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-sm font-semibold text-primary mb-1">
+                              {question.verseReference}
+                            </p>
+                            <p className="text-sm italic text-foreground/80">
+                              "{question.verseText}"
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                )}
               </CardContent>
             </Card>
           );
