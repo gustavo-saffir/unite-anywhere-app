@@ -850,7 +850,18 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      weekly_quiz_ranking: {
+        Row: {
+          avatar_url: string | null
+          avg_score: number | null
+          full_name: string | null
+          perfect_scores: number | null
+          total_quizzes: number | null
+          total_score: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_my_pastor_info: {

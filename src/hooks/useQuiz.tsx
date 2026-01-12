@@ -23,6 +23,8 @@ interface UserAttempt {
   answers: number[];
   score: number;
   completed_at: string;
+  xpEarned: number;
+  newBadge: string | null;
 }
 
 export const useQuiz = () => {
@@ -73,6 +75,8 @@ export const useQuiz = () => {
               answers: attempt.answers as unknown as number[],
               score: attempt.score,
               completed_at: attempt.completed_at || '',
+              xpEarned: attempt.score * 10,
+              newBadge: null,
             });
           }
         }
@@ -137,6 +141,15 @@ export const useQuiz = () => {
         }
       });
 
+      // Calculate XP (10 XP per correct answer)
+      const xpEarned = score * 10;
+
+      // Check for new badge before insert to compare after
+      const { data: badgesBefore } = await supabase
+        .from('user_badges')
+        .select('badges(name)')
+        .eq('user_id', user.id);
+
       const { data: attempt, error: insertError } = await supabase
         .from('user_quiz_attempts')
         .insert({
@@ -150,6 +163,26 @@ export const useQuiz = () => {
 
       if (insertError) throw insertError;
 
+      // Check for new badges after insert (trigger may have awarded one)
+      let newBadge: string | null = null;
+      if (score === quiz.questions.length) {
+        const { data: badgesAfter } = await supabase
+          .from('user_badges')
+          .select('badges(name)')
+          .eq('user_id', user.id);
+
+        const beforeNames = new Set(badgesBefore?.map((b: any) => b.badges?.name) || []);
+        const afterBadges = badgesAfter || [];
+        
+        for (const badge of afterBadges) {
+          const badgeName = (badge as any).badges?.name;
+          if (badgeName && !beforeNames.has(badgeName)) {
+            newBadge = badgeName;
+            break;
+          }
+        }
+      }
+
       const formattedAttempt: UserAttempt = {
         id: attempt.id,
         user_id: attempt.user_id,
@@ -157,6 +190,8 @@ export const useQuiz = () => {
         answers: attempt.answers as unknown as number[],
         score: attempt.score,
         completed_at: attempt.completed_at || '',
+        xpEarned,
+        newBadge,
       };
 
       setUserAttempt(formattedAttempt);

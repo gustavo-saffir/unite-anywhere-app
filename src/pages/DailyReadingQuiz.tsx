@@ -8,6 +8,7 @@ import { useQuiz } from '@/hooks/useQuiz';
 import { useActivityTracking } from '@/hooks/useActivityTracking';
 import QuizQuestion from '@/components/QuizQuestion';
 import QuizResult from '@/components/QuizResult';
+import WeeklyQuizRanking from '@/components/WeeklyQuizRanking';
 import { toast } from 'sonner';
 import { AnimatePresence } from 'framer-motion';
 
@@ -269,13 +270,22 @@ export default function DailyReadingQuiz() {
 
         {/* Result state */}
         {quizState === 'result' && quiz && userAttempt && (
-          <QuizResult
-            score={userAttempt.score}
-            totalQuestions={quiz.questions.length}
-            questions={quiz.questions}
-            userAnswers={userAttempt.answers}
-            onReturnToReading={handleReturnToReading}
-          />
+          <>
+            <QuizResult
+              score={userAttempt.score}
+              totalQuestions={quiz.questions.length}
+              questions={quiz.questions}
+              userAnswers={userAttempt.answers}
+              onReturnToReading={handleReturnToReading}
+              xpEarned={userAttempt.xpEarned}
+              newBadge={userAttempt.newBadge}
+            />
+            
+            {/* Weekly Ranking */}
+            <div className="mt-6">
+              <WeeklyQuizRanking />
+            </div>
+          </>
         )}
       </div>
     </div>
