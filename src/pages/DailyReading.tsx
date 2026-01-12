@@ -211,20 +211,18 @@ export default function DailyReading() {
                 </Button>
               </div>
 
-              {/* Quiz Button - Admin only for now */}
-              {isAdmin && (
-                <div className="pt-4 mt-4 border-t">
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Teste seus conhecimentos sobre a leitura:
-                  </p>
-                  <Link to="/daily-reading-quiz">
-                    <Button variant="default" className="w-full">
-                      <Brain className="mr-2 h-4 w-4" />
-                      Fazer Quiz da Leitura
-                    </Button>
-                  </Link>
-                </div>
-              )}
+              {/* Quiz Button */}
+              <div className="pt-4 mt-4 border-t">
+                <p className="text-sm text-muted-foreground mb-3">
+                  Teste seus conhecimentos sobre a leitura:
+                </p>
+                <Link to="/daily-reading-quiz">
+                  <Button variant="default" className="w-full">
+                    <Brain className="mr-2 h-4 w-4" />
+                    Fazer Quiz da Leitura
+                  </Button>
+                </Link>
+              </div>
 
               {firstReading.devotional_id && (
                 <div className="pt-4 mt-4 border-t">
