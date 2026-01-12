@@ -7,6 +7,8 @@ interface QuizQuestion {
   options: string[];
   correctAnswer: number;
   explanation: string;
+  verseReference?: string;
+  verseText?: string;
 }
 
 interface Quiz {

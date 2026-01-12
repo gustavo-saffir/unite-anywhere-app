@@ -80,6 +80,7 @@ REGRAS IMPORTANTES:
 4. As perguntas devem focar em fatos específicos do texto
 5. Inclua uma breve explicação para cada resposta correta
 6. Use linguagem clara e acessível
+7. MUITO IMPORTANTE: Inclua o versículo exato (número do versículo e texto) que contém a resposta
 
 Responda APENAS com um JSON válido no seguinte formato:
 {
@@ -88,7 +89,9 @@ Responda APENAS com um JSON válido no seguinte formato:
       "question": "Texto da pergunta?",
       "options": ["Opção A", "Opção B", "Opção C", "Opção D"],
       "correctAnswer": 0,
-      "explanation": "Explicação breve de por que esta é a resposta correta"
+      "explanation": "Explicação breve de por que esta é a resposta correta",
+      "verseReference": "v. 5",
+      "verseText": "O texto exato do versículo que contém a resposta"
     }
   ]
 }`
@@ -101,7 +104,9 @@ Livro: ${reading.book}
 Capítulo: ${reading.chapter}
 
 Texto:
-${reading.chapter_text}`
+${reading.chapter_text}
+
+IMPORTANTE: Para cada pergunta, inclua o número do versículo (ex: "v. 3" ou "vv. 3-4") e o texto exato do versículo que justifica a resposta correta.`
           }
         ],
         temperature: 0.7,
