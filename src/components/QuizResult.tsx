@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, XCircle, Trophy, Star, ThumbsUp, BookOpen } from 'lucide-react';
+import { CheckCircle, XCircle, Trophy, Star, ThumbsUp, BookOpen, Zap, Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -17,6 +17,8 @@ interface QuizResultProps {
   questions: QuizQuestion[];
   userAnswers: number[];
   onReturnToReading: () => void;
+  xpEarned?: number;
+  newBadge?: string | null;
 }
 
 export default function QuizResult({
@@ -25,6 +27,8 @@ export default function QuizResult({
   questions,
   userAnswers,
   onReturnToReading,
+  xpEarned = 0,
+  newBadge = null,
 }: QuizResultProps) {
   const percentage = Math.round((score / totalQuestions) * 100);
 
@@ -63,6 +67,9 @@ export default function QuizResult({
   const result = getResultMessage();
   const ResultIcon = result.icon;
 
+  // Calculate XP based on score (10 XP per correct answer)
+  const calculatedXP = xpEarned || score * 10;
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -90,6 +97,34 @@ export default function QuizResult({
             <span>{totalQuestions}</span>
           </div>
           <p className="text-sm text-muted-foreground mt-1">{percentage}% de acertos</p>
+
+          {/* XP Earned */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full"
+          >
+            <Zap className="w-5 h-5 text-primary" />
+            <span className="font-bold text-primary">+{calculatedXP} XP</span>
+          </motion.div>
+
+          {/* New Badge */}
+          {newBadge && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
+              className="mt-4"
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
+                <Award className="w-5 h-5 text-yellow-500" />
+                <span className="font-medium text-yellow-600 dark:text-yellow-400">
+                  Nova conquista: {newBadge}
+                </span>
+              </div>
+            </motion.div>
+          )}
         </CardContent>
       </Card>
 
